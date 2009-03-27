@@ -1,0 +1,375 @@
+==9704== Memcheck, a memory error detector.
+==9704== Copyright (C) 2002-2007, and GNU GPL'd, by Julian Seward et al.
+==9704== Using LibVEX rev 1854, a library for dynamic binary translation.
+==9704== Copyright (C) 2004-2007, and GNU GPL'd, by OpenWorks LLP.
+==9704== Using valgrind-3.3.1-Debian, a dynamic binary instrumentation framework.
+==9704== Copyright (C) 2000-2007, and GNU GPL'd, by Julian Seward et al.
+==9704== 
+==9704== My PID = 9704, parent PID = 4007.  Prog and args are:
+==9704==    ./bin/Debug/WebGenAll
+==9704==    ./test.all
+==9704== 
+--9704-- 
+--9704-- Command line
+--9704--    ./bin/Debug/WebGenAll
+--9704--    ./test.all
+--9704-- Startup, with flags:
+--9704--    -v
+--9704--    --show-reachable=yes
+--9704--    --leak-check=full
+--9704--    --demangle=yes
+--9704--    --tool=memcheck
+--9704--    --log-file=valgrind.out
+--9704-- Contents of /proc/version:
+--9704--   Linux version 2.6.28-7-generic (buildd@yellow) (gcc version 4.3.3 (Ubuntu 4.3.3-3ubuntu2) ) #20-Ubuntu SMP Mon Feb 9 15:42:34 UTC 2009
+--9704-- Arch and hwcaps: AMD64, amd64-sse2
+--9704-- Page sizes: currently 4096, max supported 4096
+--9704-- Valgrind library directory: /usr/lib/valgrind
+--9704-- Reading syms from /home/richard/Projects/WebGenAll/bin/Debug/WebGenAll (0x400000)
+--9704-- Reading syms from /lib/ld-2.9.so (0x4000000)
+--9704-- Reading debug info from /lib/ld-2.9.so...
+--9704-- ... CRC mismatch (computed fc3fede2 wanted 319958c3)
+--9704--    object doesn't have a symbol table
+--9704-- Reading syms from /usr/lib/valgrind/amd64-linux/memcheck (0x38000000)
+--9704--    object doesn't have a dynamic symbol table
+--9704-- Reading suppressions file: /usr/lib/valgrind/default.supp
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x4018177: (within /lib/ld-2.9.so)
+==9704==    by 0x4005412: (within /lib/ld-2.9.so)
+==9704==    by 0x4006F18: (within /lib/ld-2.9.so)
+==9704==    by 0x40034C4: (within /lib/ld-2.9.so)
+==9704==    by 0x40162B4: (within /lib/ld-2.9.so)
+==9704==    by 0x40013E1: (within /lib/ld-2.9.so)
+==9704==    by 0x4000A97: (within /lib/ld-2.9.so)
+==9704==    by 0x1: ???
+==9704==    by 0x7FF0005AA: ???
+==9704==    by 0x7FF0005C0: ???
+--9704-- Reading syms from /usr/lib/valgrind/amd64-linux/vgpreload_core.so (0x4A21000)
+==9704== 
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x4017F3E: (within /lib/ld-2.9.so)
+==9704==    by 0x40068AA: (within /lib/ld-2.9.so)
+==9704==    by 0x4008AF3: (within /lib/ld-2.9.so)
+==9704==    by 0x400184A: (within /lib/ld-2.9.so)
+==9704==    by 0x400E825: (within /lib/ld-2.9.so)
+==9704==    by 0x400174E: (within /lib/ld-2.9.so)
+==9704==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==9704==    by 0x40162B4: (within /lib/ld-2.9.so)
+==9704==    by 0x40013E1: (within /lib/ld-2.9.so)
+==9704==    by 0x4000A97: (within /lib/ld-2.9.so)
+==9704==    by 0x1: ???
+==9704==    by 0x7FF0005AA: ???
+==9704== 
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x4017F49: (within /lib/ld-2.9.so)
+==9704==    by 0x40068AA: (within /lib/ld-2.9.so)
+==9704==    by 0x4008AF3: (within /lib/ld-2.9.so)
+==9704==    by 0x400184A: (within /lib/ld-2.9.so)
+==9704==    by 0x400E825: (within /lib/ld-2.9.so)
+==9704==    by 0x400174E: (within /lib/ld-2.9.so)
+==9704==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==9704==    by 0x40162B4: (within /lib/ld-2.9.so)
+==9704==    by 0x40013E1: (within /lib/ld-2.9.so)
+==9704==    by 0x4000A97: (within /lib/ld-2.9.so)
+==9704==    by 0x1: ???
+==9704==    by 0x7FF0005AA: ???
+==9704== 
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x4017F54: (within /lib/ld-2.9.so)
+==9704==    by 0x40068AA: (within /lib/ld-2.9.so)
+==9704==    by 0x4008AF3: (within /lib/ld-2.9.so)
+==9704==    by 0x400184A: (within /lib/ld-2.9.so)
+==9704==    by 0x400E825: (within /lib/ld-2.9.so)
+==9704==    by 0x400174E: (within /lib/ld-2.9.so)
+==9704==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==9704==    by 0x40162B4: (within /lib/ld-2.9.so)
+==9704==    by 0x40013E1: (within /lib/ld-2.9.so)
+==9704==    by 0x4000A97: (within /lib/ld-2.9.so)
+==9704==    by 0x1: ???
+==9704==    by 0x7FF0005AA: ???
+==9704== 
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x4018191: (within /lib/ld-2.9.so)
+==9704==    by 0x40068B7: (within /lib/ld-2.9.so)
+==9704==    by 0x4008AF3: (within /lib/ld-2.9.so)
+==9704==    by 0x400184A: (within /lib/ld-2.9.so)
+==9704==    by 0x400E825: (within /lib/ld-2.9.so)
+==9704==    by 0x400174E: (within /lib/ld-2.9.so)
+==9704==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==9704==    by 0x40162B4: (within /lib/ld-2.9.so)
+==9704==    by 0x40013E1: (within /lib/ld-2.9.so)
+==9704==    by 0x4000A97: (within /lib/ld-2.9.so)
+==9704==    by 0x1: ???
+==9704==    by 0x7FF0005AA: ???
+==9704== 
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x4018191: (within /lib/ld-2.9.so)
+==9704==    by 0x400B07E: (within /lib/ld-2.9.so)
+==9704==    by 0x400786F: (within /lib/ld-2.9.so)
+==9704==    by 0x4008B9A: (within /lib/ld-2.9.so)
+==9704==    by 0x400184A: (within /lib/ld-2.9.so)
+==9704==    by 0x400E825: (within /lib/ld-2.9.so)
+==9704==    by 0x400174E: (within /lib/ld-2.9.so)
+==9704==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==9704==    by 0x40162B4: (within /lib/ld-2.9.so)
+==9704==    by 0x40013E1: (within /lib/ld-2.9.so)
+==9704==    by 0x4000A97: (within /lib/ld-2.9.so)
+==9704==    by 0x1: ???
+--9704-- Reading syms from /usr/lib/valgrind/amd64-linux/vgpreload_memcheck.so (0x4C23000)
+--9704-- Reading syms from /usr/lib/libstdc++.so.6.0.10 (0x4E2C000)
+--9704-- Reading debug info from /usr/lib/libstdc++.so.6.0.10...
+--9704-- ... CRC mismatch (computed 869d3a28 wanted f8faa5c3)
+--9704--    object doesn't have a symbol table
+--9704-- Reading syms from /lib/libm-2.9.so (0x5139000)
+--9704-- Reading debug info from /lib/libm-2.9.so...
+--9704-- ... CRC mismatch (computed 1ae1354a wanted 9639064d)
+--9704--    object doesn't have a symbol table
+--9704-- Reading syms from /lib/libgcc_s.so.1 (0x53BE000)
+--9704-- Reading debug info from /lib/libgcc_s.so.1...
+--9704-- ... CRC mismatch (computed 70b4cf6a wanted fdb2167f)
+--9704--    object doesn't have a symbol table
+--9704-- Reading syms from /lib/libc-2.9.so (0x55D6000)
+--9704-- Reading debug info from /lib/libc-2.9.so...
+--9704-- ... CRC mismatch (computed 3c63ddef wanted b3591d17)
+--9704--    object doesn't have a symbol table
+==9704== 
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x400B7FB: (within /lib/ld-2.9.so)
+==9704==    by 0x4003EAA: (within /lib/ld-2.9.so)
+==9704==    by 0x40162B4: (within /lib/ld-2.9.so)
+==9704==    by 0x40013E1: (within /lib/ld-2.9.so)
+==9704==    by 0x4000A97: (within /lib/ld-2.9.so)
+==9704==    by 0x1: ???
+==9704==    by 0x7FF0005AA: ???
+==9704==    by 0x7FF0005C0: ???
+==9704== 
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x400B808: (within /lib/ld-2.9.so)
+==9704==    by 0x4003EAA: (within /lib/ld-2.9.so)
+==9704==    by 0x40162B4: (within /lib/ld-2.9.so)
+==9704==    by 0x40013E1: (within /lib/ld-2.9.so)
+==9704==    by 0x4000A97: (within /lib/ld-2.9.so)
+==9704==    by 0x1: ???
+==9704==    by 0x7FF0005AA: ???
+==9704==    by 0x7FF0005C0: ???
+--9704-- REDIR: 0x5657190 (rindex) redirected to 0x4c27900 (rindex)
+--9704-- REDIR: 0x5656cc0 (strlen) redirected to 0x4c27d20 (strlen)
+--9704-- REDIR: 0x565a050 (memcpy) redirected to 0x4c28170 (memcpy)
+--9704-- REDIR: 0x5656f60 (strncmp) redirected to 0x4c27f80 (strncmp)
+--9704-- REDIR: 0x5652820 (malloc) redirected to 0x4c274e0 (malloc)
+--9704-- REDIR: 0x5658be0 (memset) redirected to 0x4c28ba0 (memset)
+--9704-- REDIR: 0x4ef39a0 (operator new(unsigned long)) redirected to 0x4c26ea0 (operator new(unsigned long))
+--9704-- REDIR: 0x4ef2140 (operator delete(void*)) redirected to 0x4c25ce0 (operator delete(void*))
+--9704-- REDIR: 0x5650290 (free) redirected to 0x4c261e0 (free)
+==9704== 
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x4065BC: main (main.cpp:50)
+==9704== 
+==9704== ERROR SUMMARY: 9 errors from 9 contexts (suppressed: 0 from 0)
+==9704== 
+==9704== 1 errors in context 1 of 9:
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x4065BC: main (main.cpp:50)
+==9704== 
+==9704== 1 errors in context 2 of 9:
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x400B808: (within /lib/ld-2.9.so)
+==9704==    by 0x4003EAA: (within /lib/ld-2.9.so)
+==9704==    by 0x40162B4: (within /lib/ld-2.9.so)
+==9704==    by 0x40013E1: (within /lib/ld-2.9.so)
+==9704==    by 0x4000A97: (within /lib/ld-2.9.so)
+==9704==    by 0x1: ???
+==9704==    by 0x7FF0005AA: ???
+==9704==    by 0x7FF0005C0: ???
+==9704== 
+==9704== 1 errors in context 3 of 9:
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x400B7FB: (within /lib/ld-2.9.so)
+==9704==    by 0x4003EAA: (within /lib/ld-2.9.so)
+==9704==    by 0x40162B4: (within /lib/ld-2.9.so)
+==9704==    by 0x40013E1: (within /lib/ld-2.9.so)
+==9704==    by 0x4000A97: (within /lib/ld-2.9.so)
+==9704==    by 0x1: ???
+==9704==    by 0x7FF0005AA: ???
+==9704==    by 0x7FF0005C0: ???
+==9704== 
+==9704== 1 errors in context 4 of 9:
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x4018191: (within /lib/ld-2.9.so)
+==9704==    by 0x400B07E: (within /lib/ld-2.9.so)
+==9704==    by 0x400786F: (within /lib/ld-2.9.so)
+==9704==    by 0x4008B9A: (within /lib/ld-2.9.so)
+==9704==    by 0x400184A: (within /lib/ld-2.9.so)
+==9704==    by 0x400E825: (within /lib/ld-2.9.so)
+==9704==    by 0x400174E: (within /lib/ld-2.9.so)
+==9704==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==9704==    by 0x40162B4: (within /lib/ld-2.9.so)
+==9704==    by 0x40013E1: (within /lib/ld-2.9.so)
+==9704==    by 0x4000A97: (within /lib/ld-2.9.so)
+==9704==    by 0x1: ???
+==9704== 
+==9704== 1 errors in context 5 of 9:
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x4018191: (within /lib/ld-2.9.so)
+==9704==    by 0x40068B7: (within /lib/ld-2.9.so)
+==9704==    by 0x4008AF3: (within /lib/ld-2.9.so)
+==9704==    by 0x400184A: (within /lib/ld-2.9.so)
+==9704==    by 0x400E825: (within /lib/ld-2.9.so)
+==9704==    by 0x400174E: (within /lib/ld-2.9.so)
+==9704==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==9704==    by 0x40162B4: (within /lib/ld-2.9.so)
+==9704==    by 0x40013E1: (within /lib/ld-2.9.so)
+==9704==    by 0x4000A97: (within /lib/ld-2.9.so)
+==9704==    by 0x1: ???
+==9704==    by 0x7FF0005AA: ???
+==9704== 
+==9704== 1 errors in context 6 of 9:
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x4017F54: (within /lib/ld-2.9.so)
+==9704==    by 0x40068AA: (within /lib/ld-2.9.so)
+==9704==    by 0x4008AF3: (within /lib/ld-2.9.so)
+==9704==    by 0x400184A: (within /lib/ld-2.9.so)
+==9704==    by 0x400E825: (within /lib/ld-2.9.so)
+==9704==    by 0x400174E: (within /lib/ld-2.9.so)
+==9704==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==9704==    by 0x40162B4: (within /lib/ld-2.9.so)
+==9704==    by 0x40013E1: (within /lib/ld-2.9.so)
+==9704==    by 0x4000A97: (within /lib/ld-2.9.so)
+==9704==    by 0x1: ???
+==9704==    by 0x7FF0005AA: ???
+==9704== 
+==9704== 1 errors in context 7 of 9:
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x4017F49: (within /lib/ld-2.9.so)
+==9704==    by 0x40068AA: (within /lib/ld-2.9.so)
+==9704==    by 0x4008AF3: (within /lib/ld-2.9.so)
+==9704==    by 0x400184A: (within /lib/ld-2.9.so)
+==9704==    by 0x400E825: (within /lib/ld-2.9.so)
+==9704==    by 0x400174E: (within /lib/ld-2.9.so)
+==9704==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==9704==    by 0x40162B4: (within /lib/ld-2.9.so)
+==9704==    by 0x40013E1: (within /lib/ld-2.9.so)
+==9704==    by 0x4000A97: (within /lib/ld-2.9.so)
+==9704==    by 0x1: ???
+==9704==    by 0x7FF0005AA: ???
+==9704== 
+==9704== 1 errors in context 8 of 9:
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x4017F3E: (within /lib/ld-2.9.so)
+==9704==    by 0x40068AA: (within /lib/ld-2.9.so)
+==9704==    by 0x4008AF3: (within /lib/ld-2.9.so)
+==9704==    by 0x400184A: (within /lib/ld-2.9.so)
+==9704==    by 0x400E825: (within /lib/ld-2.9.so)
+==9704==    by 0x400174E: (within /lib/ld-2.9.so)
+==9704==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==9704==    by 0x40162B4: (within /lib/ld-2.9.so)
+==9704==    by 0x40013E1: (within /lib/ld-2.9.so)
+==9704==    by 0x4000A97: (within /lib/ld-2.9.so)
+==9704==    by 0x1: ???
+==9704==    by 0x7FF0005AA: ???
+==9704== 
+==9704== 1 errors in context 9 of 9:
+==9704== Conditional jump or move depends on uninitialised value(s)
+==9704==    at 0x4018177: (within /lib/ld-2.9.so)
+==9704==    by 0x4005412: (within /lib/ld-2.9.so)
+==9704==    by 0x4006F18: (within /lib/ld-2.9.so)
+==9704==    by 0x40034C4: (within /lib/ld-2.9.so)
+==9704==    by 0x40162B4: (within /lib/ld-2.9.so)
+==9704==    by 0x40013E1: (within /lib/ld-2.9.so)
+==9704==    by 0x4000A97: (within /lib/ld-2.9.so)
+==9704==    by 0x1: ???
+==9704==    by 0x7FF0005AA: ???
+==9704==    by 0x7FF0005C0: ???
+==9704== IN SUMMARY: 9 errors from 9 contexts (suppressed: 0 from 0)
+==9704== 
+==9704== malloc/free: in use at exit: 21,316 bytes in 245 blocks.
+==9704== malloc/free: 250 allocs, 5 frees, 21,999 bytes allocated.
+==9704== 
+==9704== searching for pointers to 245 not-freed blocks.
+==9704== checked 169,632 bytes.
+==9704== 
+==9704== 
+==9704== 8 bytes in 1 blocks are still reachable in loss record 1 of 6
+==9704==    at 0x4C26F6C: operator new(unsigned long) (vg_replace_malloc.c:230)
+==9704==    by 0x405F6B: yylex() (lex.l:70)
+==9704==    by 0x403A32: yyparse (grammar.tab.c:1347)
+==9704==    by 0x40658B: main (main.cpp:43)
+==9704== 
+==9704== 
+==9704== 49 (8 direct, 41 indirect) bytes in 1 blocks are definitely lost in loss record 2 of 6
+==9704==    at 0x4C26F6C: operator new(unsigned long) (vg_replace_malloc.c:230)
+==9704==    by 0x405DD3: yylex() (lex.l:30)
+==9704==    by 0x403A32: yyparse (grammar.tab.c:1347)
+==9704==    by 0x40658B: main (main.cpp:43)
+==9704== 
+==9704== 
+==9704== 35 bytes in 1 blocks are possibly lost in loss record 3 of 6
+==9704==    at 0x4C26F6C: operator new(unsigned long) (vg_replace_malloc.c:230)
+==9704==    by 0x4ED1160: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib/libstdc++.so.6.0.10)
+==9704==    by 0x4ED1B24: (within /usr/lib/libstdc++.so.6.0.10)
+==9704==    by 0x4ED1C62: std::string::string(char const*, std::allocator<char> const&) (in /usr/lib/libstdc++.so.6.0.10)
+==9704==    by 0x405F8C: yylex() (lex.l:70)
+==9704==    by 0x403A32: yyparse (grammar.tab.c:1347)
+==9704==    by 0x40658B: main (main.cpp:43)
+==9704== 
+==9704== 
+==9704== 4,766 (952 direct, 3,814 indirect) bytes in 119 blocks are definitely lost in loss record 4 of 6
+==9704==    at 0x4C26F6C: operator new(unsigned long) (vg_replace_malloc.c:230)
+==9704==    by 0x405F6B: yylex() (lex.l:70)
+==9704==    by 0x403A32: yyparse (grammar.tab.c:1347)
+==9704==    by 0x40658B: main (main.cpp:43)
+==9704== 
+==9704== 
+==9704== 3,855 bytes in 120 blocks are indirectly lost in loss record 5 of 6
+==9704==    at 0x4C26F6C: operator new(unsigned long) (vg_replace_malloc.c:230)
+==9704==    by 0x4ED1160: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib/libstdc++.so.6.0.10)
+==9704==    by 0x4ED1B24: (within /usr/lib/libstdc++.so.6.0.10)
+==9704==    by 0x4ED1C62: std::string::string(char const*, std::allocator<char> const&) (in /usr/lib/libstdc++.so.6.0.10)
+==9704==    by 0x405F8C: yylex() (lex.l:70)
+==9704==    by 0x403A32: yyparse (grammar.tab.c:1347)
+==9704==    by 0x40658B: main (main.cpp:43)
+==9704== 
+==9704== 
+==9704== 16,458 bytes in 3 blocks are still reachable in loss record 6 of 6
+==9704==    at 0x4C275AE: malloc (vg_replace_malloc.c:207)
+==9704==    by 0x4049E2: yyalloc(unsigned long) (lex.yy.c:1894)
+==9704==    by 0x404C19: _ZL21yyensure_buffer_stackv (lex.yy.c:1595)
+==9704==    by 0x405B97: yylex() (lex.yy.c:719)
+==9704==    by 0x403A32: yyparse (grammar.tab.c:1347)
+==9704==    by 0x40658B: main (main.cpp:43)
+==9704== 
+==9704== LEAK SUMMARY:
+==9704==    definitely lost: 960 bytes in 120 blocks.
+==9704==    indirectly lost: 3,855 bytes in 120 blocks.
+==9704==      possibly lost: 35 bytes in 1 blocks.
+==9704==    still reachable: 16,466 bytes in 4 blocks.
+==9704==         suppressed: 0 bytes in 0 blocks.
+--9704--  memcheck: sanity checks: 2 cheap, 2 expensive
+--9704--  memcheck: auxmaps: 0 auxmap entries (0k, 0M) in use
+--9704--  memcheck: auxmaps_L1: 0 searches, 0 cmps, ratio 0:10
+--9704--  memcheck: auxmaps_L2: 0 searches, 0 nodes
+--9704--  memcheck: SMs: n_issued      = 20 (320k, 0M)
+--9704--  memcheck: SMs: n_deissued    = 0 (0k, 0M)
+--9704--  memcheck: SMs: max_noaccess  = 524287 (8388592k, 8191M)
+--9704--  memcheck: SMs: max_undefined = 0 (0k, 0M)
+--9704--  memcheck: SMs: max_defined   = 238 (3808k, 3M)
+--9704--  memcheck: SMs: max_non_DSM   = 20 (320k, 0M)
+--9704--  memcheck: max sec V bit nodes:    0 (0k, 0M)
+--9704--  memcheck: set_sec_vbits8 calls: 0 (new: 0, updates: 0)
+--9704--  memcheck: max shadow mem size:   4464k, 4M
+--9704-- translate:            fast SP updates identified: 2,415 ( 87.0%)
+--9704-- translate:   generic_known SP updates identified: 250 (  9.0%)
+--9704-- translate: generic_unknown SP updates identified: 109 (  3.9%)
+--9704--     tt/tc: 6,053 tt lookups requiring 6,174 probes
+--9704--     tt/tc: 6,053 fast-cache updates, 2 flushes
+--9704--  transtab: new        2,911 (72,804 -> 1,058,985; ratio 145:10) [0 scs]
+--9704--  transtab: dumped     0 (0 -> ??)
+--9704--  transtab: discarded  0 (0 -> ??)
+--9704-- scheduler: 266,021 jumps (bb entries).
+--9704-- scheduler: 2/3,500 major/minor sched events.
+--9704--    sanity: 3 cheap, 2 expensive checks.
+--9704--    exectx: 769 lists, 20 contexts (avg 0 per list)
+--9704--    exectx: 264 searches, 244 full compares (924 per 1000)
+--9704--    exectx: 354 cmp2, 36 cmp4, 0 cmpAll
+--9704--  errormgr: 15 supplist searches, 1,290 comparisons during search
+--9704--  errormgr: 9 errlist searches, 36 comparisons during search
