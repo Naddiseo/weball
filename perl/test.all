@@ -1,0 +1,23 @@
+type t_test
+	uint 
+	[0:5]
+	
+class Foo
+	pk(id)
+	id t_test auto_increment
+	uint fee
+	bool fi
+	string fo
+	int fum
+	dbfunction getFum(id, fi)
+		return(fum)
+		
+class Shu
+	pk(id)
+	id t_test
+
+include(./bar.all)		
+
+dbfunction getTroll(Foo.id)
+	return(Bar.troll)
+	join(Foo.id, Bar.id, Shu.id)

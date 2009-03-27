@@ -1,0 +1,6 @@
+class Bar
+	pk(id)
+	id t_test
+	string troll
+		
+		

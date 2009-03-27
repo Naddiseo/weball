@@ -1,0 +1,940 @@
+DROP PROCEDURE IF EXISTS #db#.ROOT_test//
+CREATE PROCEDURE #db#.ROOT_test (
+	a_activationkey VARCHAR(40) ,
+	a_id INT UNSIGNED 
+)
+BEGIN
+	SELECT 
+		User.id,
+		User.role,
+		User.username,
+		User.email,
+		User.password,
+		User.timezone,
+		User.lastturntime,
+		User.datecreated,
+		User.active,
+		User.datebanned,
+		User.reason,
+		User.nation,
+		User.clicks,
+		User.food,
+		User.steel,
+		User.oil,
+		User.exp,
+		User.gold,
+		User.morale,
+		User.rank,
+		User.civilians,
+		User.airforce,
+		User.army,
+		User.naval,
+		User.spies,
+		User.newmessages,
+		User.totalmessages 
+	FROM
+		User INNER JOIN UserSignup ON (User.username = UserSignup.username) 
+	WHERE
+		UserSignup.activationkey = a_activationkey AND
+		User.id = a_id;
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.ROOT_CLASS_User_FEEFIFOFUM//
+CREATE PROCEDURE #db#.ROOT_CLASS_User_FEEFIFOFUM (
+	a_id INT UNSIGNED ,
+	a_role INT UNSIGNED 
+)
+BEGIN
+	SELECT 
+		User.role 
+	FROM
+		User
+	WHERE
+		User.id = a_id AND
+		User.role = a_role;
+END;//
+
+CREATE TABLE #db#.`User` (
+	`id`  INT UNSIGNED auto_increment NOT NULL DEFAULT 0 ,
+	`role`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`username`  VARCHAR(30)  NOT NULL DEFAULT "" ,
+	`email`  VARCHAR(255)  NOT NULL DEFAULT "" ,
+	`password`  VARCHAR(32)  NOT NULL DEFAULT "" ,
+	`timezone`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`lastturntime`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`datecreated`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`active`  TINYINT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`datebanned`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`reason`  VARCHAR(1024)  NOT NULL DEFAULT "" ,
+	`nation`  TINYINT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`clicks`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`food`  INT UNSIGNED  NOT NULL DEFAULT 50000 ,
+	`steel`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`oil`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`exp`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`gold`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`morale`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`rank`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`civilians`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`airforce`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`army`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`naval`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`spies`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`newmessages`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`totalmessages`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	INDEX (username),
+	PRIMARY KEY (id)
+) Engine=InnoDb;//
+
+DROP PROCEDURE IF EXISTS #db#.createUser//
+CREATE PROCEDURE #db#.createUser (
+	a_role INT UNSIGNED ,
+	a_username VARCHAR(30) ,
+	a_email VARCHAR(255) ,
+	a_password VARCHAR(32) ,
+	a_timezone INT UNSIGNED ,
+	a_lastturntime INT UNSIGNED ,
+	a_datecreated INT UNSIGNED ,
+	a_active TINYINT UNSIGNED ,
+	a_datebanned INT UNSIGNED ,
+	a_reason VARCHAR(1024) ,
+	a_nation TINYINT UNSIGNED ,
+	a_clicks INT UNSIGNED ,
+	a_food INT UNSIGNED ,
+	a_steel INT UNSIGNED ,
+	a_oil INT UNSIGNED ,
+	a_exp INT UNSIGNED ,
+	a_gold INT UNSIGNED ,
+	a_morale INT UNSIGNED ,
+	a_rank INT UNSIGNED ,
+	a_civilians INT UNSIGNED ,
+	a_airforce INT UNSIGNED ,
+	a_army INT UNSIGNED ,
+	a_naval INT UNSIGNED ,
+	a_spies INT UNSIGNED ,
+	a_newmessages INT UNSIGNED ,
+	a_totalmessages INT UNSIGNED 
+) BEGIN
+	INSERT INTO #db#.User SET
+		`role` = a_role,
+		`username` = a_username,
+		`email` = a_email,
+		`password` = a_password,
+		`timezone` = a_timezone,
+		`lastturntime` = a_lastturntime,
+		`datecreated` = a_datecreated,
+		`active` = a_active,
+		`datebanned` = a_datebanned,
+		`reason` = a_reason,
+		`nation` = a_nation,
+		`clicks` = a_clicks,
+		`food` = a_food,
+		`steel` = a_steel,
+		`oil` = a_oil,
+		`exp` = a_exp,
+		`gold` = a_gold,
+		`morale` = a_morale,
+		`rank` = a_rank,
+		`civilians` = a_civilians,
+		`airforce` = a_airforce,
+		`army` = a_army,
+		`naval` = a_naval,
+		`spies` = a_spies,
+		`newmessages` = a_newmessages,
+		`totalmessages` = a_totalmessages;
+	SELECT last_insert_id() as retCode;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.getUser//
+CREATE PROCEDURE #db#.getUser (
+	a_id INT UNSIGNED 
+) BEGIN
+	SELECT * FROM #db#.User 
+	WHERE
+		User.id = a_id;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.updateUser//
+CREATE PROCEDURE #db#.updateUser (
+	a_id INT UNSIGNED ,
+	a_role INT UNSIGNED ,
+	a_username VARCHAR(30) ,
+	a_email VARCHAR(255) ,
+	a_password VARCHAR(32) ,
+	a_timezone INT UNSIGNED ,
+	a_lastturntime INT UNSIGNED ,
+	a_datecreated INT UNSIGNED ,
+	a_active TINYINT UNSIGNED ,
+	a_datebanned INT UNSIGNED ,
+	a_reason VARCHAR(1024) ,
+	a_nation TINYINT UNSIGNED ,
+	a_clicks INT UNSIGNED ,
+	a_food INT UNSIGNED ,
+	a_steel INT UNSIGNED ,
+	a_oil INT UNSIGNED ,
+	a_exp INT UNSIGNED ,
+	a_gold INT UNSIGNED ,
+	a_morale INT UNSIGNED ,
+	a_rank INT UNSIGNED ,
+	a_civilians INT UNSIGNED ,
+	a_airforce INT UNSIGNED ,
+	a_army INT UNSIGNED ,
+	a_naval INT UNSIGNED ,
+	a_spies INT UNSIGNED ,
+	a_newmessages INT UNSIGNED ,
+	a_totalmessages INT UNSIGNED 
+) BEGIN
+	UPDATE #db#.User SET
+		User.role = a_role,
+		User.username = a_username,
+		User.email = a_email,
+		User.password = a_password,
+		User.timezone = a_timezone,
+		User.lastturntime = a_lastturntime,
+		User.datecreated = a_datecreated,
+		User.active = a_active,
+		User.datebanned = a_datebanned,
+		User.reason = a_reason,
+		User.nation = a_nation,
+		User.clicks = a_clicks,
+		User.food = a_food,
+		User.steel = a_steel,
+		User.oil = a_oil,
+		User.exp = a_exp,
+		User.gold = a_gold,
+		User.morale = a_morale,
+		User.rank = a_rank,
+		User.civilians = a_civilians,
+		User.airforce = a_airforce,
+		User.army = a_army,
+		User.naval = a_naval,
+		User.spies = a_spies,
+		User.newmessages = a_newmessages,
+		User.totalmessages = a_totalmessages
+	WHERE
+		User.id = a_id;
+	SELECT ROW_COUNT() as retCode;
+
+END//
+
+DROP PROCEDURE IF EXISTS #db#.deleteUser//
+CREATE PROCEDURE #db#.deleteUser (
+	a_id INT UNSIGNED 
+) BEGIN
+	DELETE t FROM #db#.User WHERE
+	t.id = a_id;
+	SELECT ROW_COUNT() as retCode;
+END;//
+
+
+CREATE TABLE #db#.`UserSignup` (
+	`activationkey`  VARCHAR(40)  NOT NULL DEFAULT "" ,
+	`username`  VARCHAR(30)  NOT NULL DEFAULT "" ,
+	`email`  VARCHAR(255)  NOT NULL DEFAULT "" ,
+	`timezone`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`datecreated`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`nation`  TINYINT UNSIGNED  NOT NULL DEFAULT 0 ,
+	PRIMARY KEY (activationkey)
+) Engine=InnoDb;//
+
+DROP PROCEDURE IF EXISTS #db#.createUserSignup//
+CREATE PROCEDURE #db#.createUserSignup (
+	a_activationkey VARCHAR(40) ,
+	a_username VARCHAR(30) ,
+	a_email VARCHAR(255) ,
+	a_timezone INT UNSIGNED ,
+	a_datecreated INT UNSIGNED ,
+	a_nation TINYINT UNSIGNED 
+) BEGIN
+	INSERT INTO #db#.UserSignup SET
+		`activationkey` = a_activationkey,
+		`username` = a_username,
+		`email` = a_email,
+		`timezone` = a_timezone,
+		`datecreated` = a_datecreated,
+		`nation` = a_nation;
+	SELECT last_insert_id() as retCode;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.getUserSignup//
+CREATE PROCEDURE #db#.getUserSignup (
+	a_activationkey VARCHAR(40) 
+) BEGIN
+	SELECT * FROM #db#.UserSignup 
+	WHERE
+		UserSignup.activationkey = a_activationkey;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.updateUserSignup//
+CREATE PROCEDURE #db#.updateUserSignup (
+	a_activationkey VARCHAR(40) ,
+	a_username VARCHAR(30) ,
+	a_email VARCHAR(255) ,
+	a_timezone INT UNSIGNED ,
+	a_datecreated INT UNSIGNED ,
+	a_nation TINYINT UNSIGNED 
+) BEGIN
+	UPDATE #db#.UserSignup SET
+		UserSignup.username = a_username,
+		UserSignup.email = a_email,
+		UserSignup.timezone = a_timezone,
+		UserSignup.datecreated = a_datecreated,
+		UserSignup.nation = a_nation
+	WHERE
+		UserSignup.activationkey = a_activationkey;
+	SELECT ROW_COUNT() as retCode;
+
+END//
+
+DROP PROCEDURE IF EXISTS #db#.deleteUserSignup//
+CREATE PROCEDURE #db#.deleteUserSignup (
+	a_activationkey VARCHAR(40) 
+) BEGIN
+	DELETE t FROM #db#.UserSignup WHERE
+	t.activationkey = a_activationkey;
+	SELECT ROW_COUNT() as retCode;
+END;//
+
+
+CREATE TABLE #db#.`Stats` (
+	`id`  INT UNSIGNED auto_increment NOT NULL DEFAULT 0 ,
+	`aerial`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`terrestrial`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`marine`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`covert`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`retaliation`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	PRIMARY KEY (id)
+) Engine=InnoDb;//
+
+DROP PROCEDURE IF EXISTS #db#.createStats//
+CREATE PROCEDURE #db#.createStats (
+	a_aerial INT UNSIGNED ,
+	a_terrestrial INT UNSIGNED ,
+	a_marine INT UNSIGNED ,
+	a_covert INT UNSIGNED ,
+	a_retaliation INT UNSIGNED 
+) BEGIN
+	INSERT INTO #db#.Stats SET
+		`aerial` = a_aerial,
+		`terrestrial` = a_terrestrial,
+		`marine` = a_marine,
+		`covert` = a_covert,
+		`retaliation` = a_retaliation;
+	SELECT last_insert_id() as retCode;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.getStats//
+CREATE PROCEDURE #db#.getStats (
+	a_id INT UNSIGNED 
+) BEGIN
+	SELECT * FROM #db#.Stats 
+	WHERE
+		Stats.id = a_id;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.updateStats//
+CREATE PROCEDURE #db#.updateStats (
+	a_id INT UNSIGNED ,
+	a_aerial INT UNSIGNED ,
+	a_terrestrial INT UNSIGNED ,
+	a_marine INT UNSIGNED ,
+	a_covert INT UNSIGNED ,
+	a_retaliation INT UNSIGNED 
+) BEGIN
+	UPDATE #db#.Stats SET
+		Stats.aerial = a_aerial,
+		Stats.terrestrial = a_terrestrial,
+		Stats.marine = a_marine,
+		Stats.covert = a_covert,
+		Stats.retaliation = a_retaliation
+	WHERE
+		Stats.id = a_id;
+	SELECT ROW_COUNT() as retCode;
+
+END//
+
+DROP PROCEDURE IF EXISTS #db#.deleteStats//
+CREATE PROCEDURE #db#.deleteStats (
+	a_id INT UNSIGNED 
+) BEGIN
+	DELETE t FROM #db#.Stats WHERE
+	t.id = a_id;
+	SELECT ROW_COUNT() as retCode;
+END;//
+
+
+CREATE TABLE #db#.`Ranks` (
+	`id`  INT UNSIGNED auto_increment NOT NULL DEFAULT 0 ,
+	`aerial`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`terrestrial`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`marine`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`covert`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`retaliation`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	PRIMARY KEY (id)
+) Engine=InnoDb;//
+
+DROP PROCEDURE IF EXISTS #db#.createRanks//
+CREATE PROCEDURE #db#.createRanks (
+	a_aerial INT UNSIGNED ,
+	a_terrestrial INT UNSIGNED ,
+	a_marine INT UNSIGNED ,
+	a_covert INT UNSIGNED ,
+	a_retaliation INT UNSIGNED 
+) BEGIN
+	INSERT INTO #db#.Ranks SET
+		`aerial` = a_aerial,
+		`terrestrial` = a_terrestrial,
+		`marine` = a_marine,
+		`covert` = a_covert,
+		`retaliation` = a_retaliation;
+	SELECT last_insert_id() as retCode;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.getRanks//
+CREATE PROCEDURE #db#.getRanks (
+	a_id INT UNSIGNED 
+) BEGIN
+	SELECT * FROM #db#.Ranks 
+	WHERE
+		Ranks.id = a_id;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.updateRanks//
+CREATE PROCEDURE #db#.updateRanks (
+	a_id INT UNSIGNED ,
+	a_aerial INT UNSIGNED ,
+	a_terrestrial INT UNSIGNED ,
+	a_marine INT UNSIGNED ,
+	a_covert INT UNSIGNED ,
+	a_retaliation INT UNSIGNED 
+) BEGIN
+	UPDATE #db#.Ranks SET
+		Ranks.aerial = a_aerial,
+		Ranks.terrestrial = a_terrestrial,
+		Ranks.marine = a_marine,
+		Ranks.covert = a_covert,
+		Ranks.retaliation = a_retaliation
+	WHERE
+		Ranks.id = a_id;
+	SELECT ROW_COUNT() as retCode;
+
+END//
+
+DROP PROCEDURE IF EXISTS #db#.deleteRanks//
+CREATE PROCEDURE #db#.deleteRanks (
+	a_id INT UNSIGNED 
+) BEGIN
+	DELETE t FROM #db#.Ranks WHERE
+	t.id = a_id;
+	SELECT ROW_COUNT() as retCode;
+END;//
+
+
+CREATE TABLE #db#.`Infrastructure` (
+	`id`  INT UNSIGNED auto_increment NOT NULL DEFAULT 0 ,
+	`houses`  INT UNSIGNED  NOT NULL DEFAULT 500 ,
+	`hospitals`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`laboratories`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`farms`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`mines`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`barracks`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`airfields`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`navalyards`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`housingupgrade`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`hospitalupgrade`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`laboratoryupgrade`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`farmupgrade`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`mineupgrade`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`barrackupgrade`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`airfeildupgrade`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`navalupgrade`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	PRIMARY KEY (id)
+) Engine=InnoDb;//
+
+DROP PROCEDURE IF EXISTS #db#.createInfrastructure//
+CREATE PROCEDURE #db#.createInfrastructure (
+	a_houses INT UNSIGNED ,
+	a_hospitals INT UNSIGNED ,
+	a_laboratories INT UNSIGNED ,
+	a_farms INT UNSIGNED ,
+	a_mines INT UNSIGNED ,
+	a_barracks INT UNSIGNED ,
+	a_airfields INT UNSIGNED ,
+	a_navalyards INT UNSIGNED ,
+	a_housingupgrade INT UNSIGNED ,
+	a_hospitalupgrade INT UNSIGNED ,
+	a_laboratoryupgrade INT UNSIGNED ,
+	a_farmupgrade INT UNSIGNED ,
+	a_mineupgrade INT UNSIGNED ,
+	a_barrackupgrade INT UNSIGNED ,
+	a_airfeildupgrade INT UNSIGNED ,
+	a_navalupgrade INT UNSIGNED 
+) BEGIN
+	INSERT INTO #db#.Infrastructure SET
+		`houses` = a_houses,
+		`hospitals` = a_hospitals,
+		`laboratories` = a_laboratories,
+		`farms` = a_farms,
+		`mines` = a_mines,
+		`barracks` = a_barracks,
+		`airfields` = a_airfields,
+		`navalyards` = a_navalyards,
+		`housingupgrade` = a_housingupgrade,
+		`hospitalupgrade` = a_hospitalupgrade,
+		`laboratoryupgrade` = a_laboratoryupgrade,
+		`farmupgrade` = a_farmupgrade,
+		`mineupgrade` = a_mineupgrade,
+		`barrackupgrade` = a_barrackupgrade,
+		`airfeildupgrade` = a_airfeildupgrade,
+		`navalupgrade` = a_navalupgrade;
+	SELECT last_insert_id() as retCode;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.getInfrastructure//
+CREATE PROCEDURE #db#.getInfrastructure (
+	a_id INT UNSIGNED 
+) BEGIN
+	SELECT * FROM #db#.Infrastructure 
+	WHERE
+		Infrastructure.id = a_id;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.updateInfrastructure//
+CREATE PROCEDURE #db#.updateInfrastructure (
+	a_id INT UNSIGNED ,
+	a_houses INT UNSIGNED ,
+	a_hospitals INT UNSIGNED ,
+	a_laboratories INT UNSIGNED ,
+	a_farms INT UNSIGNED ,
+	a_mines INT UNSIGNED ,
+	a_barracks INT UNSIGNED ,
+	a_airfields INT UNSIGNED ,
+	a_navalyards INT UNSIGNED ,
+	a_housingupgrade INT UNSIGNED ,
+	a_hospitalupgrade INT UNSIGNED ,
+	a_laboratoryupgrade INT UNSIGNED ,
+	a_farmupgrade INT UNSIGNED ,
+	a_mineupgrade INT UNSIGNED ,
+	a_barrackupgrade INT UNSIGNED ,
+	a_airfeildupgrade INT UNSIGNED ,
+	a_navalupgrade INT UNSIGNED 
+) BEGIN
+	UPDATE #db#.Infrastructure SET
+		Infrastructure.houses = a_houses,
+		Infrastructure.hospitals = a_hospitals,
+		Infrastructure.laboratories = a_laboratories,
+		Infrastructure.farms = a_farms,
+		Infrastructure.mines = a_mines,
+		Infrastructure.barracks = a_barracks,
+		Infrastructure.airfields = a_airfields,
+		Infrastructure.navalyards = a_navalyards,
+		Infrastructure.housingupgrade = a_housingupgrade,
+		Infrastructure.hospitalupgrade = a_hospitalupgrade,
+		Infrastructure.laboratoryupgrade = a_laboratoryupgrade,
+		Infrastructure.farmupgrade = a_farmupgrade,
+		Infrastructure.mineupgrade = a_mineupgrade,
+		Infrastructure.barrackupgrade = a_barrackupgrade,
+		Infrastructure.airfeildupgrade = a_airfeildupgrade,
+		Infrastructure.navalupgrade = a_navalupgrade
+	WHERE
+		Infrastructure.id = a_id;
+	SELECT ROW_COUNT() as retCode;
+
+END//
+
+DROP PROCEDURE IF EXISTS #db#.deleteInfrastructure//
+CREATE PROCEDURE #db#.deleteInfrastructure (
+	a_id INT UNSIGNED 
+) BEGIN
+	DELETE t FROM #db#.Infrastructure WHERE
+	t.id = a_id;
+	SELECT ROW_COUNT() as retCode;
+END;//
+
+
+CREATE TABLE #db#.`DivisionArtillery` (
+	`userid`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`divisionid`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`what`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`count`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`damage`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`strength`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	PRIMARY KEY (userid, divisionid)
+) Engine=InnoDb;//
+
+DROP PROCEDURE IF EXISTS #db#.createDivisionArtillery//
+CREATE PROCEDURE #db#.createDivisionArtillery (
+	a_userid INT UNSIGNED ,
+	a_divisionid INT UNSIGNED ,
+	a_what INT UNSIGNED ,
+	a_count INT UNSIGNED ,
+	a_damage INT UNSIGNED ,
+	a_strength INT UNSIGNED 
+) BEGIN
+	INSERT INTO #db#.DivisionArtillery SET
+		`userid` = a_userid,
+		`divisionid` = a_divisionid,
+		`what` = a_what,
+		`count` = a_count,
+		`damage` = a_damage,
+		`strength` = a_strength;
+	SELECT last_insert_id() as retCode;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.getDivisionArtillery//
+CREATE PROCEDURE #db#.getDivisionArtillery (
+	a_userid INT UNSIGNED ,
+	a_divisionid INT UNSIGNED 
+) BEGIN
+	SELECT * FROM #db#.DivisionArtillery 
+	WHERE
+		DivisionArtillery.userid = a_useridAND
+		DivisionArtillery.divisionid = a_divisionid;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.updateDivisionArtillery//
+CREATE PROCEDURE #db#.updateDivisionArtillery (
+	a_userid INT UNSIGNED ,
+	a_divisionid INT UNSIGNED ,
+	a_what INT UNSIGNED ,
+	a_count INT UNSIGNED ,
+	a_damage INT UNSIGNED ,
+	a_strength INT UNSIGNED 
+) BEGIN
+	UPDATE #db#.DivisionArtillery SET
+		DivisionArtillery.what = a_what,
+		DivisionArtillery.count = a_count,
+		DivisionArtillery.damage = a_damage,
+		DivisionArtillery.strength = a_strength
+	WHERE
+		DivisionArtillery.userid = a_useridAND
+		DivisionArtillery.divisionid = a_divisionid;
+	SELECT ROW_COUNT() as retCode;
+
+END//
+
+DROP PROCEDURE IF EXISTS #db#.deleteDivisionArtillery//
+CREATE PROCEDURE #db#.deleteDivisionArtillery (
+	a_userid INT UNSIGNED ,
+	a_divisionid INT UNSIGNED 
+) BEGIN
+	DELETE t FROM #db#.DivisionArtillery WHERE
+	t.userid = a_useridAND
+	t.divisionid = a_divisionid;
+	SELECT ROW_COUNT() as retCode;
+END;//
+
+
+CREATE TABLE #db#.`Division` (
+	`id`  INT UNSIGNED auto_increment NOT NULL DEFAULT 0 ,
+	`userid`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`active`  TINYINT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`name`  VARCHAR(30)  NOT NULL DEFAULT "" ,
+	PRIMARY KEY (id)
+) Engine=InnoDb;//
+
+DROP PROCEDURE IF EXISTS #db#.createDivision//
+CREATE PROCEDURE #db#.createDivision (
+	a_userid INT UNSIGNED ,
+	a_active TINYINT UNSIGNED ,
+	a_name VARCHAR(30) 
+) BEGIN
+	INSERT INTO #db#.Division SET
+		`userid` = a_userid,
+		`active` = a_active,
+		`name` = a_name;
+	SELECT last_insert_id() as retCode;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.getDivision//
+CREATE PROCEDURE #db#.getDivision (
+	a_id INT UNSIGNED 
+) BEGIN
+	SELECT * FROM #db#.Division 
+	WHERE
+		Division.id = a_id;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.updateDivision//
+CREATE PROCEDURE #db#.updateDivision (
+	a_id INT UNSIGNED ,
+	a_userid INT UNSIGNED ,
+	a_active TINYINT UNSIGNED ,
+	a_name VARCHAR(30) 
+) BEGIN
+	UPDATE #db#.Division SET
+		Division.userid = a_userid,
+		Division.active = a_active,
+		Division.name = a_name
+	WHERE
+		Division.id = a_id;
+	SELECT ROW_COUNT() as retCode;
+
+END//
+
+DROP PROCEDURE IF EXISTS #db#.deleteDivision//
+CREATE PROCEDURE #db#.deleteDivision (
+	a_id INT UNSIGNED 
+) BEGIN
+	DELETE t FROM #db#.Division WHERE
+	t.id = a_id;
+	SELECT ROW_COUNT() as retCode;
+END;//
+
+
+CREATE TABLE #db#.`BuyQueue` (
+	`id`  INT UNSIGNED auto_increment NOT NULL DEFAULT 0 ,
+	`userid`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`what`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`ticks`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`quantity`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`civilians`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	PRIMARY KEY (id)
+) Engine=InnoDb;//
+
+DROP PROCEDURE IF EXISTS #db#.createBuyQueue//
+CREATE PROCEDURE #db#.createBuyQueue (
+	a_userid INT UNSIGNED ,
+	a_what INT UNSIGNED ,
+	a_ticks INT UNSIGNED ,
+	a_quantity INT UNSIGNED ,
+	a_civilians INT UNSIGNED 
+) BEGIN
+	INSERT INTO #db#.BuyQueue SET
+		`userid` = a_userid,
+		`what` = a_what,
+		`ticks` = a_ticks,
+		`quantity` = a_quantity,
+		`civilians` = a_civilians;
+	SELECT last_insert_id() as retCode;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.getBuyQueue//
+CREATE PROCEDURE #db#.getBuyQueue (
+	a_id INT UNSIGNED 
+) BEGIN
+	SELECT * FROM #db#.BuyQueue 
+	WHERE
+		BuyQueue.id = a_id;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.updateBuyQueue//
+CREATE PROCEDURE #db#.updateBuyQueue (
+	a_id INT UNSIGNED ,
+	a_userid INT UNSIGNED ,
+	a_what INT UNSIGNED ,
+	a_ticks INT UNSIGNED ,
+	a_quantity INT UNSIGNED ,
+	a_civilians INT UNSIGNED 
+) BEGIN
+	UPDATE #db#.BuyQueue SET
+		BuyQueue.userid = a_userid,
+		BuyQueue.what = a_what,
+		BuyQueue.ticks = a_ticks,
+		BuyQueue.quantity = a_quantity,
+		BuyQueue.civilians = a_civilians
+	WHERE
+		BuyQueue.id = a_id;
+	SELECT ROW_COUNT() as retCode;
+
+END//
+
+DROP PROCEDURE IF EXISTS #db#.deleteBuyQueue//
+CREATE PROCEDURE #db#.deleteBuyQueue (
+	a_id INT UNSIGNED 
+) BEGIN
+	DELETE t FROM #db#.BuyQueue WHERE
+	t.id = a_id;
+	SELECT ROW_COUNT() as retCode;
+END;//
+
+
+CREATE TABLE #db#.`Attack` (
+	`id`  INT UNSIGNED auto_increment NOT NULL DEFAULT 0 ,
+	`time`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`attackerid`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`defenderid`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`ticks`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`food`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`steel`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`oil`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`gold`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`aerial`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`army`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`naval`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	PRIMARY KEY (id)
+) Engine=InnoDb;//
+
+DROP PROCEDURE IF EXISTS #db#.createAttack//
+CREATE PROCEDURE #db#.createAttack (
+	a_time INT UNSIGNED ,
+	a_attackerid INT UNSIGNED ,
+	a_defenderid INT UNSIGNED ,
+	a_ticks INT UNSIGNED ,
+	a_food INT UNSIGNED ,
+	a_steel INT UNSIGNED ,
+	a_oil INT UNSIGNED ,
+	a_gold INT UNSIGNED ,
+	a_aerial INT UNSIGNED ,
+	a_army INT UNSIGNED ,
+	a_naval INT UNSIGNED 
+) BEGIN
+	INSERT INTO #db#.Attack SET
+		`time` = a_time,
+		`attackerid` = a_attackerid,
+		`defenderid` = a_defenderid,
+		`ticks` = a_ticks,
+		`food` = a_food,
+		`steel` = a_steel,
+		`oil` = a_oil,
+		`gold` = a_gold,
+		`aerial` = a_aerial,
+		`army` = a_army,
+		`naval` = a_naval;
+	SELECT last_insert_id() as retCode;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.getAttack//
+CREATE PROCEDURE #db#.getAttack (
+	a_id INT UNSIGNED 
+) BEGIN
+	SELECT * FROM #db#.Attack 
+	WHERE
+		Attack.id = a_id;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.updateAttack//
+CREATE PROCEDURE #db#.updateAttack (
+	a_id INT UNSIGNED ,
+	a_time INT UNSIGNED ,
+	a_attackerid INT UNSIGNED ,
+	a_defenderid INT UNSIGNED ,
+	a_ticks INT UNSIGNED ,
+	a_food INT UNSIGNED ,
+	a_steel INT UNSIGNED ,
+	a_oil INT UNSIGNED ,
+	a_gold INT UNSIGNED ,
+	a_aerial INT UNSIGNED ,
+	a_army INT UNSIGNED ,
+	a_naval INT UNSIGNED 
+) BEGIN
+	UPDATE #db#.Attack SET
+		Attack.time = a_time,
+		Attack.attackerid = a_attackerid,
+		Attack.defenderid = a_defenderid,
+		Attack.ticks = a_ticks,
+		Attack.food = a_food,
+		Attack.steel = a_steel,
+		Attack.oil = a_oil,
+		Attack.gold = a_gold,
+		Attack.aerial = a_aerial,
+		Attack.army = a_army,
+		Attack.naval = a_naval
+	WHERE
+		Attack.id = a_id;
+	SELECT ROW_COUNT() as retCode;
+
+END//
+
+DROP PROCEDURE IF EXISTS #db#.deleteAttack//
+CREATE PROCEDURE #db#.deleteAttack (
+	a_id INT UNSIGNED 
+) BEGIN
+	DELETE t FROM #db#.Attack WHERE
+	t.id = a_id;
+	SELECT ROW_COUNT() as retCode;
+END;//
+
+
+CREATE TABLE #db#.`Arsenal` (
+	`id`  INT UNSIGNED auto_increment NOT NULL DEFAULT 0 ,
+	`planes`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`bombers`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`weapons`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`tanks`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`battleships`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	`submarines`  INT UNSIGNED  NOT NULL DEFAULT 0 ,
+	PRIMARY KEY (id)
+) Engine=InnoDb;//
+
+DROP PROCEDURE IF EXISTS #db#.createArsenal//
+CREATE PROCEDURE #db#.createArsenal (
+	a_planes INT UNSIGNED ,
+	a_bombers INT UNSIGNED ,
+	a_weapons INT UNSIGNED ,
+	a_tanks INT UNSIGNED ,
+	a_battleships INT UNSIGNED ,
+	a_submarines INT UNSIGNED 
+) BEGIN
+	INSERT INTO #db#.Arsenal SET
+		`planes` = a_planes,
+		`bombers` = a_bombers,
+		`weapons` = a_weapons,
+		`tanks` = a_tanks,
+		`battleships` = a_battleships,
+		`submarines` = a_submarines;
+	SELECT last_insert_id() as retCode;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.getArsenal//
+CREATE PROCEDURE #db#.getArsenal (
+	a_id INT UNSIGNED 
+) BEGIN
+	SELECT * FROM #db#.Arsenal 
+	WHERE
+		Arsenal.id = a_id;
+
+END;//
+
+DROP PROCEDURE IF EXISTS #db#.updateArsenal//
+CREATE PROCEDURE #db#.updateArsenal (
+	a_id INT UNSIGNED ,
+	a_planes INT UNSIGNED ,
+	a_bombers INT UNSIGNED ,
+	a_weapons INT UNSIGNED ,
+	a_tanks INT UNSIGNED ,
+	a_battleships INT UNSIGNED ,
+	a_submarines INT UNSIGNED 
+) BEGIN
+	UPDATE #db#.Arsenal SET
+		Arsenal.planes = a_planes,
+		Arsenal.bombers = a_bombers,
+		Arsenal.weapons = a_weapons,
+		Arsenal.tanks = a_tanks,
+		Arsenal.battleships = a_battleships,
+		Arsenal.submarines = a_submarines
+	WHERE
+		Arsenal.id = a_id;
+	SELECT ROW_COUNT() as retCode;
+
+END//
+
+DROP PROCEDURE IF EXISTS #db#.deleteArsenal//
+CREATE PROCEDURE #db#.deleteArsenal (
+	a_id INT UNSIGNED 
+) BEGIN
+	DELETE t FROM #db#.Arsenal WHERE
+	t.id = a_id;
+	SELECT ROW_COUNT() as retCode;
+END;//
+
+

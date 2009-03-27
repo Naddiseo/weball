@@ -1,0 +1,471 @@
+==21405== Memcheck, a memory error detector.
+==21405== Copyright (C) 2002-2007, and GNU GPL'd, by Julian Seward et al.
+==21405== Using LibVEX rev 1854, a library for dynamic binary translation.
+==21405== Copyright (C) 2004-2007, and GNU GPL'd, by OpenWorks LLP.
+==21405== Using valgrind-3.3.1-Debian, a dynamic binary instrumentation framework.
+==21405== Copyright (C) 2000-2007, and GNU GPL'd, by Julian Seward et al.
+==21405== 
+==21405== My PID = 21405, parent PID = 20411.  Prog and args are:
+==21405==    ./weball
+==21405==    ../test.all
+==21405== 
+--21405-- 
+--21405-- Command line
+--21405--    ./weball
+--21405--    ../test.all
+--21405-- Startup, with flags:
+--21405--    -v
+--21405--    --show-reachable=yes
+--21405--    --leak-check=full
+--21405--    --demangle=yes
+--21405--    --tool=memcheck
+--21405--    --log-file=valgrind.out
+--21405-- Contents of /proc/version:
+--21405--   Linux version 2.6.28-6-generic (buildd@crested) (gcc version 4.3.3 (Ubuntu 4.3.3-3ubuntu1) ) #17-Ubuntu SMP Fri Jan 30 15:35:08 UTC 2009
+--21405-- Arch and hwcaps: AMD64, amd64-sse2
+--21405-- Page sizes: currently 4096, max supported 4096
+--21405-- Valgrind library directory: /usr/lib/valgrind
+--21405-- Reading syms from /home/richard/Projects/weball/C/weball (0x400000)
+--21405-- Reading syms from /lib/ld-2.9.so (0x4000000)
+--21405-- Reading debug info from /lib/ld-2.9.so...
+--21405-- ... CRC mismatch (computed fc3fede2 wanted 319958c3)
+--21405--    object doesn't have a symbol table
+--21405-- Reading syms from /usr/lib/valgrind/amd64-linux/memcheck (0x38000000)
+--21405--    object doesn't have a dynamic symbol table
+--21405-- Reading suppressions file: /usr/lib/valgrind/default.supp
+==21405== Conditional jump or move depends on uninitialised value(s)
+==21405==    at 0x4018177: (within /lib/ld-2.9.so)
+==21405==    by 0x4005412: (within /lib/ld-2.9.so)
+==21405==    by 0x4006F18: (within /lib/ld-2.9.so)
+==21405==    by 0x40034C4: (within /lib/ld-2.9.so)
+==21405==    by 0x40162B4: (within /lib/ld-2.9.so)
+==21405==    by 0x40013E1: (within /lib/ld-2.9.so)
+==21405==    by 0x4000A97: (within /lib/ld-2.9.so)
+==21405==    by 0x1: ???
+==21405==    by 0x7FF0005E6: ???
+==21405==    by 0x7FF0005EF: ???
+--21405-- Reading syms from /usr/lib/valgrind/amd64-linux/vgpreload_core.so (0x4A21000)
+==21405== 
+==21405== Conditional jump or move depends on uninitialised value(s)
+==21405==    at 0x4017F3E: (within /lib/ld-2.9.so)
+==21405==    by 0x40068AA: (within /lib/ld-2.9.so)
+==21405==    by 0x4008AF3: (within /lib/ld-2.9.so)
+==21405==    by 0x400184A: (within /lib/ld-2.9.so)
+==21405==    by 0x400E825: (within /lib/ld-2.9.so)
+==21405==    by 0x400174E: (within /lib/ld-2.9.so)
+==21405==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==21405==    by 0x40162B4: (within /lib/ld-2.9.so)
+==21405==    by 0x40013E1: (within /lib/ld-2.9.so)
+==21405==    by 0x4000A97: (within /lib/ld-2.9.so)
+==21405==    by 0x1: ???
+==21405==    by 0x7FF0005E6: ???
+==21405== 
+==21405== Conditional jump or move depends on uninitialised value(s)
+==21405==    at 0x4017F49: (within /lib/ld-2.9.so)
+==21405==    by 0x40068AA: (within /lib/ld-2.9.so)
+==21405==    by 0x4008AF3: (within /lib/ld-2.9.so)
+==21405==    by 0x400184A: (within /lib/ld-2.9.so)
+==21405==    by 0x400E825: (within /lib/ld-2.9.so)
+==21405==    by 0x400174E: (within /lib/ld-2.9.so)
+==21405==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==21405==    by 0x40162B4: (within /lib/ld-2.9.so)
+==21405==    by 0x40013E1: (within /lib/ld-2.9.so)
+==21405==    by 0x4000A97: (within /lib/ld-2.9.so)
+==21405==    by 0x1: ???
+==21405==    by 0x7FF0005E6: ???
+==21405== 
+==21405== Conditional jump or move depends on uninitialised value(s)
+==21405==    at 0x4017F54: (within /lib/ld-2.9.so)
+==21405==    by 0x40068AA: (within /lib/ld-2.9.so)
+==21405==    by 0x4008AF3: (within /lib/ld-2.9.so)
+==21405==    by 0x400184A: (within /lib/ld-2.9.so)
+==21405==    by 0x400E825: (within /lib/ld-2.9.so)
+==21405==    by 0x400174E: (within /lib/ld-2.9.so)
+==21405==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==21405==    by 0x40162B4: (within /lib/ld-2.9.so)
+==21405==    by 0x40013E1: (within /lib/ld-2.9.so)
+==21405==    by 0x4000A97: (within /lib/ld-2.9.so)
+==21405==    by 0x1: ???
+==21405==    by 0x7FF0005E6: ???
+==21405== 
+==21405== Conditional jump or move depends on uninitialised value(s)
+==21405==    at 0x4018191: (within /lib/ld-2.9.so)
+==21405==    by 0x40068B7: (within /lib/ld-2.9.so)
+==21405==    by 0x4008AF3: (within /lib/ld-2.9.so)
+==21405==    by 0x400184A: (within /lib/ld-2.9.so)
+==21405==    by 0x400E825: (within /lib/ld-2.9.so)
+==21405==    by 0x400174E: (within /lib/ld-2.9.so)
+==21405==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==21405==    by 0x40162B4: (within /lib/ld-2.9.so)
+==21405==    by 0x40013E1: (within /lib/ld-2.9.so)
+==21405==    by 0x4000A97: (within /lib/ld-2.9.so)
+==21405==    by 0x1: ???
+==21405==    by 0x7FF0005E6: ???
+==21405== 
+==21405== Conditional jump or move depends on uninitialised value(s)
+==21405==    at 0x4018191: (within /lib/ld-2.9.so)
+==21405==    by 0x400B07E: (within /lib/ld-2.9.so)
+==21405==    by 0x400786F: (within /lib/ld-2.9.so)
+==21405==    by 0x4008B9A: (within /lib/ld-2.9.so)
+==21405==    by 0x400184A: (within /lib/ld-2.9.so)
+==21405==    by 0x400E825: (within /lib/ld-2.9.so)
+==21405==    by 0x400174E: (within /lib/ld-2.9.so)
+==21405==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==21405==    by 0x40162B4: (within /lib/ld-2.9.so)
+==21405==    by 0x40013E1: (within /lib/ld-2.9.so)
+==21405==    by 0x4000A97: (within /lib/ld-2.9.so)
+==21405==    by 0x1: ???
+--21405-- Reading syms from /usr/lib/valgrind/amd64-linux/vgpreload_memcheck.so (0x4C23000)
+--21405-- Reading syms from /lib/libc-2.9.so (0x4E2C000)
+--21405-- Reading debug info from /lib/libc-2.9.so...
+--21405-- ... CRC mismatch (computed 3c63ddef wanted b3591d17)
+--21405--    object doesn't have a symbol table
+==21405== 
+==21405== Conditional jump or move depends on uninitialised value(s)
+==21405==    at 0x400B7FB: (within /lib/ld-2.9.so)
+==21405==    by 0x4003EAA: (within /lib/ld-2.9.so)
+==21405==    by 0x40162B4: (within /lib/ld-2.9.so)
+==21405==    by 0x40013E1: (within /lib/ld-2.9.so)
+==21405==    by 0x4000A97: (within /lib/ld-2.9.so)
+==21405==    by 0x1: ???
+==21405==    by 0x7FF0005E6: ???
+==21405==    by 0x7FF0005EF: ???
+==21405== 
+==21405== Conditional jump or move depends on uninitialised value(s)
+==21405==    at 0x400B808: (within /lib/ld-2.9.so)
+==21405==    by 0x4003EAA: (within /lib/ld-2.9.so)
+==21405==    by 0x40162B4: (within /lib/ld-2.9.so)
+==21405==    by 0x40013E1: (within /lib/ld-2.9.so)
+==21405==    by 0x4000A97: (within /lib/ld-2.9.so)
+==21405==    by 0x1: ???
+==21405==    by 0x7FF0005E6: ???
+==21405==    by 0x7FF0005EF: ???
+--21405-- REDIR: 0x4ead190 (rindex) redirected to 0x4c27900 (rindex)
+--21405-- REDIR: 0x4eacf60 (strncmp) redirected to 0x4c27f80 (strncmp)
+--21405-- REDIR: 0x4ea8820 (malloc) redirected to 0x4c274e0 (malloc)
+--21405-- REDIR: 0x4eb2d90 (strchrnul) redirected to 0x4c28c70 (strchrnul)
+--21405-- REDIR: 0x4eaccc0 (strlen) redirected to 0x4c27d20 (strlen)
+--21405-- REDIR: 0x4ea8480 (calloc) redirected to 0x4c252b0 (calloc)
+--21405-- REDIR: 0x4eaebe0 (memset) redirected to 0x4c28ba0 (memset)
+--21405-- REDIR: 0x4eb0050 (memcpy) redirected to 0x4c28170 (memcpy)
+--21405-- REDIR: 0x4ea8d10 (realloc) redirected to 0x4c27600 (realloc)
+==21405== 
+==21405== Invalid write of size 1
+==21405==    at 0x402549: yylex (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x401878: yyparse (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40424B: main (in /home/richard/Projects/weball/C/weball)
+==21405==  Address 0x51a6552 is 0 bytes after a block of size 10 alloc'd
+==21405==    at 0x4C276E1: realloc (vg_replace_malloc.c:429)
+==21405==    by 0x40257D: yylex (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x401878: yyparse (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40424B: main (in /home/richard/Projects/weball/C/weball)
+==21405== 
+==21405== Invalid write of size 1
+==21405==    at 0x402533: yylex (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x401878: yyparse (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40424B: main (in /home/richard/Projects/weball/C/weball)
+==21405==  Address 0x51a6554 is 2 bytes after a block of size 10 alloc'd
+==21405==    at 0x4C276E1: realloc (vg_replace_malloc.c:429)
+==21405==    by 0x40257D: yylex (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x401878: yyparse (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40424B: main (in /home/richard/Projects/weball/C/weball)
+--21405-- REDIR: 0x4ea6290 (free) redirected to 0x4c261e0 (free)
+==21405== 
+==21405== Invalid read of size 8
+==21405==    at 0x40467B: free_entry (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404612: free_bucket (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x4045C1: delete_hash (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40433B: deinit_weball_fn (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404297: main (in /home/richard/Projects/weball/C/weball)
+==21405==  Address 0x7fefff8e8 is not stack'd, malloc'd or (recently) free'd
+==21405== 
+==21405== Invalid read of size 8
+==21405==    at 0x4042E7: class_t_dtor (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404682: free_entry (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404612: free_bucket (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x4045C1: delete_hash (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40433B: deinit_weball_fn (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404297: main (in /home/richard/Projects/weball/C/weball)
+==21405==  Address 0xfe54600000ccff08 is not stack'd, malloc'd or (recently) free'd
+==21405== 
+==21405== Process terminating with default action of signal 11 (SIGSEGV)
+==21405==  General Protection Fault
+==21405==    at 0x4042E7: class_t_dtor (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404682: free_entry (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404612: free_bucket (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x4045C1: delete_hash (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40433B: deinit_weball_fn (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404297: main (in /home/richard/Projects/weball/C/weball)
+==21405== 
+==21405== ERROR SUMMARY: 13 errors from 12 contexts (suppressed: 0 from 0)
+==21405== 
+==21405== 1 errors in context 1 of 12:
+==21405== Invalid read of size 8
+==21405==    at 0x4042E7: class_t_dtor (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404682: free_entry (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404612: free_bucket (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x4045C1: delete_hash (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40433B: deinit_weball_fn (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404297: main (in /home/richard/Projects/weball/C/weball)
+==21405==  Address 0xfe54600000ccff08 is not stack'd, malloc'd or (recently) free'd
+==21405== 
+==21405== 1 errors in context 2 of 12:
+==21405== Invalid read of size 8
+==21405==    at 0x40467B: free_entry (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404612: free_bucket (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x4045C1: delete_hash (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40433B: deinit_weball_fn (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404297: main (in /home/richard/Projects/weball/C/weball)
+==21405==  Address 0x7fefff8e8 is not stack'd, malloc'd or (recently) free'd
+==21405== 
+==21405== 1 errors in context 3 of 12:
+==21405== Invalid write of size 1
+==21405==    at 0x402533: yylex (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x401878: yyparse (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40424B: main (in /home/richard/Projects/weball/C/weball)
+==21405==  Address 0x51a6554 is 2 bytes after a block of size 10 alloc'd
+==21405==    at 0x4C276E1: realloc (vg_replace_malloc.c:429)
+==21405==    by 0x40257D: yylex (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x401878: yyparse (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40424B: main (in /home/richard/Projects/weball/C/weball)
+==21405== 
+==21405== 1 errors in context 4 of 12:
+==21405== Conditional jump or move depends on uninitialised value(s)
+==21405==    at 0x400B808: (within /lib/ld-2.9.so)
+==21405==    by 0x4003EAA: (within /lib/ld-2.9.so)
+==21405==    by 0x40162B4: (within /lib/ld-2.9.so)
+==21405==    by 0x40013E1: (within /lib/ld-2.9.so)
+==21405==    by 0x4000A97: (within /lib/ld-2.9.so)
+==21405==    by 0x1: ???
+==21405==    by 0x7FF0005E6: ???
+==21405==    by 0x7FF0005EF: ???
+==21405== 
+==21405== 1 errors in context 5 of 12:
+==21405== Conditional jump or move depends on uninitialised value(s)
+==21405==    at 0x400B7FB: (within /lib/ld-2.9.so)
+==21405==    by 0x4003EAA: (within /lib/ld-2.9.so)
+==21405==    by 0x40162B4: (within /lib/ld-2.9.so)
+==21405==    by 0x40013E1: (within /lib/ld-2.9.so)
+==21405==    by 0x4000A97: (within /lib/ld-2.9.so)
+==21405==    by 0x1: ???
+==21405==    by 0x7FF0005E6: ???
+==21405==    by 0x7FF0005EF: ???
+==21405== 
+==21405== 1 errors in context 6 of 12:
+==21405== Conditional jump or move depends on uninitialised value(s)
+==21405==    at 0x4018191: (within /lib/ld-2.9.so)
+==21405==    by 0x400B07E: (within /lib/ld-2.9.so)
+==21405==    by 0x400786F: (within /lib/ld-2.9.so)
+==21405==    by 0x4008B9A: (within /lib/ld-2.9.so)
+==21405==    by 0x400184A: (within /lib/ld-2.9.so)
+==21405==    by 0x400E825: (within /lib/ld-2.9.so)
+==21405==    by 0x400174E: (within /lib/ld-2.9.so)
+==21405==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==21405==    by 0x40162B4: (within /lib/ld-2.9.so)
+==21405==    by 0x40013E1: (within /lib/ld-2.9.so)
+==21405==    by 0x4000A97: (within /lib/ld-2.9.so)
+==21405==    by 0x1: ???
+==21405== 
+==21405== 1 errors in context 7 of 12:
+==21405== Conditional jump or move depends on uninitialised value(s)
+==21405==    at 0x4018191: (within /lib/ld-2.9.so)
+==21405==    by 0x40068B7: (within /lib/ld-2.9.so)
+==21405==    by 0x4008AF3: (within /lib/ld-2.9.so)
+==21405==    by 0x400184A: (within /lib/ld-2.9.so)
+==21405==    by 0x400E825: (within /lib/ld-2.9.so)
+==21405==    by 0x400174E: (within /lib/ld-2.9.so)
+==21405==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==21405==    by 0x40162B4: (within /lib/ld-2.9.so)
+==21405==    by 0x40013E1: (within /lib/ld-2.9.so)
+==21405==    by 0x4000A97: (within /lib/ld-2.9.so)
+==21405==    by 0x1: ???
+==21405==    by 0x7FF0005E6: ???
+==21405== 
+==21405== 1 errors in context 8 of 12:
+==21405== Conditional jump or move depends on uninitialised value(s)
+==21405==    at 0x4017F54: (within /lib/ld-2.9.so)
+==21405==    by 0x40068AA: (within /lib/ld-2.9.so)
+==21405==    by 0x4008AF3: (within /lib/ld-2.9.so)
+==21405==    by 0x400184A: (within /lib/ld-2.9.so)
+==21405==    by 0x400E825: (within /lib/ld-2.9.so)
+==21405==    by 0x400174E: (within /lib/ld-2.9.so)
+==21405==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==21405==    by 0x40162B4: (within /lib/ld-2.9.so)
+==21405==    by 0x40013E1: (within /lib/ld-2.9.so)
+==21405==    by 0x4000A97: (within /lib/ld-2.9.so)
+==21405==    by 0x1: ???
+==21405==    by 0x7FF0005E6: ???
+==21405== 
+==21405== 1 errors in context 9 of 12:
+==21405== Conditional jump or move depends on uninitialised value(s)
+==21405==    at 0x4017F49: (within /lib/ld-2.9.so)
+==21405==    by 0x40068AA: (within /lib/ld-2.9.so)
+==21405==    by 0x4008AF3: (within /lib/ld-2.9.so)
+==21405==    by 0x400184A: (within /lib/ld-2.9.so)
+==21405==    by 0x400E825: (within /lib/ld-2.9.so)
+==21405==    by 0x400174E: (within /lib/ld-2.9.so)
+==21405==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==21405==    by 0x40162B4: (within /lib/ld-2.9.so)
+==21405==    by 0x40013E1: (within /lib/ld-2.9.so)
+==21405==    by 0x4000A97: (within /lib/ld-2.9.so)
+==21405==    by 0x1: ???
+==21405==    by 0x7FF0005E6: ???
+==21405== 
+==21405== 1 errors in context 10 of 12:
+==21405== Conditional jump or move depends on uninitialised value(s)
+==21405==    at 0x4017F3E: (within /lib/ld-2.9.so)
+==21405==    by 0x40068AA: (within /lib/ld-2.9.so)
+==21405==    by 0x4008AF3: (within /lib/ld-2.9.so)
+==21405==    by 0x400184A: (within /lib/ld-2.9.so)
+==21405==    by 0x400E825: (within /lib/ld-2.9.so)
+==21405==    by 0x400174E: (within /lib/ld-2.9.so)
+==21405==    by 0x4004FDD: (within /lib/ld-2.9.so)
+==21405==    by 0x40162B4: (within /lib/ld-2.9.so)
+==21405==    by 0x40013E1: (within /lib/ld-2.9.so)
+==21405==    by 0x4000A97: (within /lib/ld-2.9.so)
+==21405==    by 0x1: ???
+==21405==    by 0x7FF0005E6: ???
+==21405== 
+==21405== 1 errors in context 11 of 12:
+==21405== Conditional jump or move depends on uninitialised value(s)
+==21405==    at 0x4018177: (within /lib/ld-2.9.so)
+==21405==    by 0x4005412: (within /lib/ld-2.9.so)
+==21405==    by 0x4006F18: (within /lib/ld-2.9.so)
+==21405==    by 0x40034C4: (within /lib/ld-2.9.so)
+==21405==    by 0x40162B4: (within /lib/ld-2.9.so)
+==21405==    by 0x40013E1: (within /lib/ld-2.9.so)
+==21405==    by 0x4000A97: (within /lib/ld-2.9.so)
+==21405==    by 0x1: ???
+==21405==    by 0x7FF0005E6: ???
+==21405==    by 0x7FF0005EF: ???
+==21405== 
+==21405== 2 errors in context 12 of 12:
+==21405== Invalid write of size 1
+==21405==    at 0x402549: yylex (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x401878: yyparse (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40424B: main (in /home/richard/Projects/weball/C/weball)
+==21405==  Address 0x51a6552 is 0 bytes after a block of size 10 alloc'd
+==21405==    at 0x4C276E1: realloc (vg_replace_malloc.c:429)
+==21405==    by 0x40257D: yylex (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x401878: yyparse (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40424B: main (in /home/richard/Projects/weball/C/weball)
+==21405== IN SUMMARY: 13 errors from 12 contexts (suppressed: 0 from 0)
+==21405== 
+==21405== malloc/free: in use at exit: 198,565 bytes in 166 blocks.
+==21405== malloc/free: 168 allocs, 2 frees, 199,143 bytes allocated.
+==21405== 
+==21405== searching for pointers to 166 not-freed blocks.
+==21405== checked 88,112 bytes.
+==21405== 
+==21405== 
+==21405== 10 bytes in 1 blocks are definitely lost in loss record 1 of 10
+==21405==    at 0x4C276E1: realloc (vg_replace_malloc.c:429)
+==21405==    by 0x40257D: yylex (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x401878: yyparse (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40424B: main (in /home/richard/Projects/weball/C/weball)
+==21405== 
+==21405== 
+==21405== 24 bytes in 1 blocks are still reachable in loss record 2 of 10
+==21405==    at 0x4C275AE: malloc (vg_replace_malloc.c:207)
+==21405==    by 0x404489: new_hash (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404303: init_weball_fn (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404216: main (in /home/richard/Projects/weball/C/weball)
+==21405== 
+==21405== 
+==21405== 105 bytes in 11 blocks are still reachable in loss record 3 of 10
+==21405==    at 0x4C275AE: malloc (vg_replace_malloc.c:207)
+==21405==    by 0x4EACA31: strdup (in /lib/libc-2.9.so)
+==21405==    by 0x402639: yylex (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x401878: yyparse (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40424B: main (in /home/richard/Projects/weball/C/weball)
+==21405== 
+==21405== 
+==21405== 864 bytes in 109 blocks are definitely lost in loss record 4 of 10
+==21405==    at 0x4C275AE: malloc (vg_replace_malloc.c:207)
+==21405==    by 0x4EACA31: strdup (in /lib/libc-2.9.so)
+==21405==    by 0x402639: yylex (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x401878: yyparse (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40424B: main (in /home/richard/Projects/weball/C/weball)
+==21405== 
+==21405== 
+==21405== 16,384 bytes in 1 blocks are still reachable in loss record 5 of 10
+==21405==    at 0x4C25384: calloc (vg_replace_malloc.c:397)
+==21405==    by 0x4044B9: new_hash (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404303: init_weball_fn (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x404216: main (in /home/richard/Projects/weball/C/weball)
+==21405== 
+==21405== 
+==21405== 16,458 bytes in 3 blocks are still reachable in loss record 6 of 10
+==21405==    at 0x4C275AE: malloc (vg_replace_malloc.c:207)
+==21405==    by 0x4040F7: yyalloc (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x403C23: yyensure_buffer_stack (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40224C: yylex (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x401878: yyparse (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40424B: main (in /home/richard/Projects/weball/C/weball)
+==21405== 
+==21405== 
+==21405== 164,240 (160 direct, 164,080 indirect) bytes in 10 blocks are definitely lost in loss record 7 of 10
+==21405==    at 0x4C275AE: malloc (vg_replace_malloc.c:207)
+==21405==    by 0x404386: new_class (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x401B47: yyparse (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40424B: main (in /home/richard/Projects/weball/C/weball)
+==21405== 
+==21405== 
+==21405== 240 bytes in 10 blocks are indirectly lost in loss record 8 of 10
+==21405==    at 0x4C275AE: malloc (vg_replace_malloc.c:207)
+==21405==    by 0x404489: new_hash (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x4043A3: new_class (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x401B47: yyparse (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40424B: main (in /home/richard/Projects/weball/C/weball)
+==21405== 
+==21405== 
+==21405== 480 bytes in 10 blocks are still reachable in loss record 9 of 10
+==21405==    at 0x4C275AE: malloc (vg_replace_malloc.c:207)
+==21405==    by 0x404A34: add_new (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x4043DA: new_class (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x401B47: yyparse (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40424B: main (in /home/richard/Projects/weball/C/weball)
+==21405== 
+==21405== 
+==21405== 163,840 bytes in 10 blocks are indirectly lost in loss record 10 of 10
+==21405==    at 0x4C25384: calloc (vg_replace_malloc.c:397)
+==21405==    by 0x4044B9: new_hash (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x4043A3: new_class (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x401B47: yyparse (in /home/richard/Projects/weball/C/weball)
+==21405==    by 0x40424B: main (in /home/richard/Projects/weball/C/weball)
+==21405== 
+==21405== LEAK SUMMARY:
+==21405==    definitely lost: 1,034 bytes in 120 blocks.
+==21405==    indirectly lost: 164,080 bytes in 20 blocks.
+==21405==      possibly lost: 0 bytes in 0 blocks.
+==21405==    still reachable: 33,451 bytes in 26 blocks.
+==21405==         suppressed: 0 bytes in 0 blocks.
+--21405--  memcheck: sanity checks: 0 cheap, 1 expensive
+--21405--  memcheck: auxmaps: 1 auxmap entries (64k, 0M) in use
+--21405--  memcheck: auxmaps_L1: 9 searches, 101 cmps, ratio 112:10
+--21405--  memcheck: auxmaps_L2: 1 searches, 1 nodes
+--21405--  memcheck: SMs: n_issued      = 18 (288k, 0M)
+--21405--  memcheck: SMs: n_deissued    = 0 (0k, 0M)
+--21405--  memcheck: SMs: max_noaccess  = 524287 (8388592k, 8191M)
+--21405--  memcheck: SMs: max_undefined = 0 (0k, 0M)
+--21405--  memcheck: SMs: max_defined   = 118 (1888k, 1M)
+--21405--  memcheck: SMs: max_non_DSM   = 18 (288k, 0M)
+--21405--  memcheck: max sec V bit nodes:    0 (0k, 0M)
+--21405--  memcheck: set_sec_vbits8 calls: 0 (new: 0, updates: 0)
+--21405--  memcheck: max shadow mem size:   4432k, 4M
+--21405-- translate:            fast SP updates identified: 1,432 ( 85.3%)
+--21405-- translate:   generic_known SP updates identified: 168 ( 10.0%)
+--21405-- translate: generic_unknown SP updates identified: 78 (  4.6%)
+--21405--     tt/tc: 4,236 tt lookups requiring 4,283 probes
+--21405--     tt/tc: 4,236 fast-cache updates, 2 flushes
+--21405--  transtab: new        2,113 (51,189 -> 765,572; ratio 149:10) [0 scs]
+--21405--  transtab: dumped     0 (0 -> ??)
+--21405--  transtab: discarded  0 (0 -> ??)
+--21405-- scheduler: 75,615 jumps (bb entries).
+--21405-- scheduler: 0/2,359 major/minor sched events.
+--21405--    sanity: 1 cheap, 1 expensive checks.
+--21405--    exectx: 769 lists, 26 contexts (avg 0 per list)
+--21405--    exectx: 182 searches, 156 full compares (857 per 1000)
+--21405--    exectx: 365 cmp2, 35 cmp4, 0 cmpAll
+--21405--  errormgr: 22 supplist searches, 1,892 comparisons during search
+--21405--  errormgr: 13 errlist searches, 67 comparisons during search
