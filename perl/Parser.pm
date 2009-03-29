@@ -2,10 +2,14 @@ package Parser;
 
 use strict;
 use warnings;
+
 use 5.10.0;
+
 use Type;
 use Class;
 use DBFunction;
+use Page;
+use Form;
 
 
 use constant {
@@ -15,9 +19,12 @@ use constant {
 	kclass => 4,
 	kdbfunction => 5,
 	kconfig => 6,
+	kpage => 7,
+	kform => 8,
 };
 
 my $rxIdent = qr/\w[\w\d_-]*/;
+my $rxTypes = qw/uint|int|string|bool|float|double|password_t|email_t/;
 
 
 sub new {
@@ -29,10 +36,14 @@ sub new {
 		state => kinitial,
 		classes => {},
 		roles => {},
+		pages => {},
+		forms => {},
 		dbfunctions => {},
 		currentClass => '',
 		currentType => '',
 		currentDBFunction => '',
+		currentPage => '',
+		currentForm => '',
 		tab => 1,
 		config => {},
 		
@@ -41,6 +52,8 @@ sub new {
 		stack => [kinitial],
 		
 		fh => [],
+		
+		debug => 1,
 	};
 	
 	open my $fh, $file or die $!;
@@ -56,7 +69,7 @@ sub new {
 sub isKw {
 	my ($self, $w) = @_;
 	
-	my %kw = map { $_ => 1 } qw/roles type class dbfunction config/;
+	my %kw = map { $_ => 1 } qw/roles type class dbfunction config page form/;
 	
 	return $kw{$w} and $kw{$w} == 1;
 } 
@@ -99,6 +112,11 @@ sub getTypes {
 	return values %{$self->{types}}
 }
 
+sub getPages {
+	my $self = shift;
+	
+	return values %{$self->{pages}}
+}
 
 sub getClasses {
 	my $self = shift;
@@ -199,6 +217,14 @@ sub parse {
 				$self->sConfig();
 				next;
 			}
+			when (kpage) {
+				$self->sPage();
+				next;
+			}
+			when (kform) {
+				$self->sForm();
+				next;
+			}
 		}
 	}
 	
@@ -257,6 +283,15 @@ sub sInitial {
 			$self->pushState(kconfig, 'config');
 			return
 		}
+		when (/^page\s+($rxIdent)/) {
+			my $pageName = $1;
+			$self->pushState(kpage, "PAGE_$pageName");
+			$self->{currentPage} = $pageName;
+			$self->{pages}{$pageName} = new Page (
+				name => $pageName
+			);
+			return;
+		}
 	}
 }
 
@@ -282,24 +317,24 @@ sub sType {
 	my $self = shift;
 	
 	given ($_) {
-		when (/^uint|int|string|bool|float|double$/) {
+		when (/^$rxTypes$/) {
 			$self->{types}{$self->{currentType}}->setType($_);
 			return;
 		}
-		when (/^\[(\d+)\]$/) {
+		when (/^\[(\d+)\]\s*$/) {
 			$self->{types}{$self->{currentType}}->setMax($1);
 			return
 		}
-		when (/^\[(\d+):(\d+)\]$/) {
+		when (/^\[(\d+):(\d+)\]\s*$/) {
 			$self->{types}{$self->{currentType}}->setMin($1);
 			$self->{types}{$self->{currentType}}->setMax($2);
 			return
 		}
-		when (/^match rx(.*)$/) {
+		when (/^match rx(.*)\s*$/) {
 			$self->{types}{$self->{currentType}}->setMatch($1);
 			return
 		}
-		when (/^default\s*\((.*?)\)$/) {
+		when (/^default\s*\((.*?)\)\s*$/) {
 			$self->{types}{$self->{currentType}}->setDefault($1);
 			return;
 		}
@@ -367,7 +402,7 @@ sub sClass {
 		
 		
 		# match the native types
-		when (/\G(uint|int|string|bool|float|double)/cgox ) {
+		when (/\G($rxTypes)/cgox ) {
 			$type = $1;
 			redo
 		}
@@ -481,5 +516,105 @@ sub sConfig {
 		}
 	}
 }
+
+sub sPage {
+	my $self = shift;
+	
+	for ($_) {
+		when (/^title\s*\((.*)\)\s*$/) {
+			$self->{pages}{$self->{currentPage}}->setTitle($1);
+			return
+		}
+		when (/^privacy\s+(user|public)/) {
+			$self->{pages}{$self->{currentPage}}->setPrivacy($1);
+			return
+		}
+		when (/^use\s+\(($rxIdent)\)/) {
+			say "use $1";
+			$self->{pages}{$self->{currentPage}}->addUse($1);
+			return
+		}
+		when (/^form\s*\(($rxIdent)\)\s+(post|get)/) {
+			my $name = $1;
+			my $method = $2;
+			$self->{currentForm} = $name;
+			$self->{forms}{$name} = new Form(
+				name => $name,
+				method => $method,
+			);
+			$self->{pages}{$self->{currentPage}}->addForm($self->{forms}{$name});
+			$self->pushState(kform, "FORM_$name");
+			return
+		}
+	}
+}
+
+sub sForm {
+	my $self = shift;
+	
+	my $member = new Type();
+	
+	
+	for ($_) {
+		# line is all whitespace, or empty
+		when (/^\s*$/) {
+			# do nothing
+			return;
+		}
+		when (/\G\s/cgox) {
+			redo
+		}
+		when (/\Glabel\s*\((.*)\)/cgox) {
+			$member->setLabel($1);
+			redo
+		}
+		# match max
+		when (/\G\[(\d+)\]/cgox) {
+			$member->setMax($1);
+			redo
+		}
+		
+		# match min/max
+		when (/\G\[(\d+):(\d+)\]/cgox) {
+			$member->setMin($1);
+			$member->setMax($2);
+			redo
+		}
+		
+		# match function
+		when (/\Gmatch rx(?<delim>.)(.*?)\k<delim>/cgoix) {
+			$member->setMatch($1 . $2 . $1);
+			redo
+		}
+		when (/\Gdefault\s*\((.*?)\)/cgoix) {
+			$member->setDefault($1);
+			redo;
+		}
+		# is the field optional?
+		when (/\Gopt/cgox) {
+			$member->setOpt(1);
+			redo
+		}
+		when (/\G($rxTypes)/cgox) {
+			$member->setType($1);
+			redo
+		}
+		when (/\G($rxIdent)/cgox) {
+			if ($self->{types}{$1}) {
+				$member->copy($self->{types}{$1});
+			} else {
+				$member->setName($1);
+			}
+			redo
+		}		
+		when(/\G(.*)/cgox) {
+			say STDERR "Form: couldn't match $1" if $1;
+			last
+		}		
+	}
+	
+	$self->{forms}{$self->{currentForm}}->addField($member);
+}
+
 1;
 
