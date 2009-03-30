@@ -5,6 +5,7 @@ use warnings;
 use 5.10.0;
 use Type;
 use Form;
+use FormAction;
 
 sub new {
 	my ($c, %args) = @_;
@@ -13,6 +14,7 @@ sub new {
 	my $self = {
 		name => $args{name},
 		forms => [],
+		actions => {},
 		privacy => ($args{privacy} || 'public'),
 		'use' => ($args{'use'} || []),
 		title => '',
@@ -25,6 +27,12 @@ sub addForm {
 	my ($self, $form) = @_;
 	
 	push @{$self->{forms}}, $form;
+}
+
+sub addFormAction {
+	my ($self, $formAction) = @_;
+	
+	$self->{actions}{$formAction->{name}} = $formAction;
 }
 
 sub setPrivacy {

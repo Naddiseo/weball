@@ -10,6 +10,7 @@ use Class;
 use DBFunction;
 use Page;
 use Form;
+use FormAction;
 
 
 use constant {
@@ -21,6 +22,7 @@ use constant {
 	kconfig => 6,
 	kpage => 7,
 	kform => 8,
+	kformaction => 9,
 };
 
 my $rxIdent = qr/\w[\w\d_-]*/;
@@ -38,12 +40,14 @@ sub new {
 		roles => {},
 		pages => {},
 		forms => {},
+		formActions => {},
 		dbfunctions => {},
 		currentClass => '',
 		currentType => '',
 		currentDBFunction => '',
 		currentPage => '',
 		currentForm => '',
+		currentFormAction => '',
 		tab => 1,
 		config => {},
 		
@@ -69,7 +73,7 @@ sub new {
 sub isKw {
 	my ($self, $w) = @_;
 	
-	my %kw = map { $_ => 1 } qw/roles type class dbfunction config page form/;
+	my %kw = map { $_ => 1 } qw/roles type class dbfunction config page form action/;
 	
 	return $kw{$w} and $kw{$w} == 1;
 } 
@@ -223,6 +227,10 @@ sub parse {
 			}
 			when (kform) {
 				$self->sForm();
+				next;
+			}
+			when (kformaction) {
+				$self->sFormAction();
 				next;
 			}
 		}
@@ -546,6 +554,16 @@ sub sPage {
 			$self->pushState(kform, "FORM_$name");
 			return
 		}
+		when (/^action\s*\(($rxIdent)\)/) {
+			my $name = $1;
+			$self->{currentFormAction} = $name;
+			$self->{formActions}{$name} = new Form(
+				formName => $name,
+			);
+			$self->{pages}{$self->{currentPage}}->addFormAction($self->{formActions}{$name});
+			$self->pushState(kformaction, "FORMACTION_$name");
+			return
+		}
 	}
 }
 
@@ -614,6 +632,10 @@ sub sForm {
 	}
 	
 	$self->{forms}{$self->{currentForm}}->addField($member);
+}
+
+sub sFormAction {
+	my $self = shift;
 }
 
 1;

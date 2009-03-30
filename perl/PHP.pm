@@ -82,7 +82,7 @@ EOF
 		close $fh;
 		open $fh, ">$self->{libdir}/pages/$p->{name}.php" or die $!;
 		
-		my $requires = ($p->phpUse || '');
+		my $requires = $p->phpUse;
 		my @formG = $p->phpGet;
 		my @formP = $p->phpPost;
 		

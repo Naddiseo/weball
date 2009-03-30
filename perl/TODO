@@ -1,5 +1,3 @@
-- print the custom functions in the PHP::dbinterface output.
-- add support for floats
 - make parser allow for black lines in a block
 - add more keyword/functions for dbfunctions
 	dbfunction foo(Foo.a, Bar.b)
