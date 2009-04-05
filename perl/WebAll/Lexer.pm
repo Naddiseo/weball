@@ -12,10 +12,16 @@ sub new {
 	$c = ref $c || $c;
 	
 	my $self = {
-		
+		text => [],
+		lineN => 0,
+		lastLineLength => 0,
 	};
 	
 	bless $self => $c;
+}
+
+sub yylex {
+	
 }
 
 1;
