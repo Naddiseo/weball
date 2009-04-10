@@ -202,10 +202,10 @@ sub yylex {
 		}
 		
 		
-		when (/\G^type\b/cgox) {
+		when (/\G^type\s+($rxIdent)/cgox) {
 			return [
 				'TYPEDEF',
-				'',
+				$1,
 				$self->lineData(pos($self->{line}), 4)
 			]
 		}
@@ -223,6 +223,14 @@ sub yylex {
 				'PRIKEY',
 				'',
 				$self->lineData(pos($self->{line}), 2)
+			]
+		}
+		
+		when (/\Gindex\b/cgox) {
+			return [
+				'INDEX',
+				'',
+				$self->lineData(pos($self->{line)), 5)
 			]
 		}
 		
@@ -278,6 +286,15 @@ sub yylex {
 				$1, 
 				$self->lineData(pos($self->{line}), length($1))
 			];
+		}
+		
+		#comma
+		when (/\G,/cgox) {
+			return [
+				'LISTSEP',
+				'',
+				$self->lineData(pos($self->{line}), 1)
+			]
 		}
 		
 		# Error on anything else
