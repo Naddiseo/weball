@@ -5,9 +5,13 @@ use warnings;
 
 use 5.010;
 
-our $VERSION = '2.0.0';
+our $VERSION 		= '2.0.0';
 
-my $rxIdent = qr/[a-z_][a-z0-9_]*/i;
+my $rxIdent			= qr/[a-z_][a-z0-9_]*/i;
+my $rxUInt 			= qr/\d+/;
+my $rxInt			= qr/-?$rxUInt/;
+my $rxFloat			= qr/$rxInt\.$rxUInt/;
+my $rxNum 			= qr/$rxInt(?:\.$rxUInt)?/;
 
 sub new {
 	my ($c, %args) = @_;
@@ -161,6 +165,24 @@ sub yylex {
 			]	
 		}
 		
+		# numbers
+		when (/\G(-?\d+(?:\.\d+)?)/cgox) {
+			my $n = $1;
+			my $type = 'INT';
+			if ($n !~ /^\-/) {
+				$type = "U$type"
+			}
+			if ($n =~ /\./) {
+				$type = 'FLOAT'
+			}
+			
+			return [
+				$type,
+				$n,
+				$self->lineData(pos($self->{line}), length($n))
+			]
+		}
+		
 		# Keywords
 		when (/\G^class\s+($rxIdent)\s*$/cgox) {
 			return [
@@ -220,6 +242,24 @@ sub yylex {
 				'', 
 				$self->lineData(pos($self->{line}), 1)
 			];
+		}
+		
+		# min-max range
+		when (/\G(\[\s*($rxNum)\s*:\s*($rxNum)\s*\])/cgox) {
+			return [
+				'MINMAX', 
+				[$2, $3], 
+				$self->lineData(pos($self->{line}), length($1))
+			]
+		}
+		
+		# max range
+		when (/\G(\[\s*($rxNum)\s*])/cgox) {
+			return [
+				'MAX',
+				$2,
+				$self->lineData(pos($self->{line}), length($1))
+			]
 		}
 		
 		# attributes
