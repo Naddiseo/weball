@@ -263,6 +263,70 @@ sub yylex {
 			]
 		}
 		
+		when (/\Gaction\b/cgox) {
+			return [
+				'ACTION',
+				'',
+				$self->lineData(pos($self->{line}), 6)
+			]
+		}
+		
+		when (/\Gform\b/cgox) {
+			return [
+				'FORM',
+				'',
+				$self->lineData(pos($self->{line}), 4)
+			]
+		}
+		
+		when (/\Guse\b/cgox) {
+			return [
+				'USE',
+				'',
+				$self->lineData(pos($self->{line}), 3)
+			]
+		}
+		
+		when (/\Glabel\b/cgox) {
+			return [
+				'LABEL',
+				'',
+				$self->lineData(pos($self->{line}), 5)
+			]
+		}
+		
+		when (/\G(dbfunction\s+($rxIdent))/cgox) {
+			return [
+				'DBFUNCTION',
+				$2,
+				$self->lineData(pos($self->{line}), length($1))
+			]
+		}
+		
+		when (/\G(return($rxUInt))/cgox) {
+			return [
+				'RETURN',
+				$2,
+				$self->lineData(pos($self->{line}), length($1))
+			]
+		}
+		
+		when (/\Gtitle\b/cgox) {
+			return [
+				'TITLE',
+				'',
+				$self->lineData(pos($self->{line}), 5)
+			]
+		}
+		
+		when (/\Gprivacy\b/cgox) {
+			return [
+				'PRIVACY',
+				'',
+				$self->lineData(pos($self->{line}), 7)
+			]
+		}
+		
 		# L Paren
 		when (/\G\(/cgox) {
 			return [
