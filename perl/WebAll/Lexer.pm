@@ -162,20 +162,20 @@ sub yylex {
 		}
 		
 		# Keywords
-		when (/\G^class\b/cgox) {
+		when (/\G^class\s+($rxIdent)\s*$/cgox) {
 			return [
 				'CLASS',
-				'',
-				$self->lineData(pos($self->{line}), 5)
+				$1,
+				$self->lineData(pos($self->{line}), length($1))
 			]
 		}
 		
 		
-		when (/\G^page\b/cgox) {
+		when (/\G^page\s+($rxIdent)\s*$/cgox) {
 			return [
 				'PAGE',
-				'',
-				$self->lineData(pos($self->{line}), 4)
+				$1,
+				$self->lineData(pos($self->{line}), length($1))
 			]
 		}
 		
