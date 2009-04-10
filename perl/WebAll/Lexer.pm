@@ -22,7 +22,10 @@ sub new {
 		line => '',
 		lineN => 0,
 		lastLineLength => 0,
+		basedir => ($args{basedir} || ''),
 	};
+	
+	
 	
 	if ($args{file}) {
 		open my $fh, $args{file} or die $!;
@@ -42,6 +45,26 @@ sub new {
 	bless $self => $c;
 }
 
+=head2 includeFile($)
+
+Adds the text from the given file to the lines stack
+
+=cut
+
+sub includeFile {
+	my ($self, $file) = @_;
+	$file = $self->{basedir} . "/$file";
+	open my $fh, $file or die "Couldn't open file $file: $!";
+	my $text = do { local $/; <$fh> };
+	close $fh;
+	
+	$text =~ s/\r\n/\n/g;
+	$text =~ s/\r/\n/g;
+	
+	my @lines = split /\n/, $text;
+	
+	unshift @{$self->{text}}, @lines
+}
 
 =head2 getLine()
 
@@ -183,6 +206,12 @@ sub yylex {
 			]
 		}
 		
+		when (/\G^(include\s*\(\s*(['"])(.*)\s*\2\)\s*)$/) {
+			$self->includeFile($3);
+			$self->getLine;
+			redo;
+		}
+		
 		# Keywords
 		when (/\G^class\s+($rxIdent)\s*$/cgox) {
 			return [
@@ -230,7 +259,7 @@ sub yylex {
 			return [
 				'INDEX',
 				'',
-				$self->lineData(pos($self->{line)), 5)
+				$self->lineData(pos($self->{line}), 5)
 			]
 		}
 		
