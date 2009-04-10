@@ -93,7 +93,11 @@ sub yylex {
 	
 	# I would really like to use 5.10's given/when structure.
 	# get the tokens out of the current line
-	given ($self->{line}) {
+	for ($self->{line}) {
+		
+		when (!defined) {
+			next
+		}
 		
 		# Kill null lines
 		when (/^\s*$/) {
@@ -108,7 +112,7 @@ sub yylex {
 		}
 		
 		# Initial tabs
-		when (/\G^\t+/cgox) {
+		when (/\G^(\t+)/cgox) {
 			return ['BOL', length($1), 0, 0]
 		}
 		
@@ -126,8 +130,80 @@ sub yylex {
 			];
 		}
 		
+		# Strings
+		when (/\G(['"])/cgox) {
+			my $b = $1;
+			my $pos = pos($self->{line});
+			my $s = '';
+			
+			while (1) {
+				if (/\G$/cgox) {
+					die "String's cannot span multiple lines";
+				}
+				elsif (/\G([^\\$b]*)/cgox) {
+					$s .= $1;
+				}
+				elsif (/\G(\\.)/cgox) {
+					# escape sequence
+					$s .= $1
+				}
+				elsif (/\G$b/cgox) {
+					last;
+				}
+				else {
+					die "Shouldn't get here";
+				}				
+			}
+			return [
+				'STRING',
+				$s,
+				$self->lineData($pos, 0)
+			]	
+		}
+		
 		# Keywords
-
+		when (/\G^class\b/cgox) {
+			return [
+				'CLASS',
+				'',
+				$self->lineData(pos($self->{line}), 5)
+			]
+		}
+		
+		
+		when (/\G^page\b/cgox) {
+			return [
+				'PAGE',
+				'',
+				$self->lineData(pos($self->{line}), 4)
+			]
+		}
+		
+		
+		when (/\G^type\b/cgox) {
+			return [
+				'TYPEDEF',
+				'',
+				$self->lineData(pos($self->{line}), 4)
+			]
+		}
+		
+		when (/\G(int|uint|string|bool|float)\b/cgox) {
+			return [
+				'TYPE',
+				$1,
+				$self->lineData(pos($self->{line}), length($1))
+			]
+		}
+		
+		when (/\Gpk\b/cgox) {
+			return [
+				'PRIKEY',
+				'',
+				$self->lineData(pos($self->{line}), 2)
+			]
+		}
+		
 		# L Paren
 		when (/\G\(/cgox) {
 			return [
@@ -143,6 +219,15 @@ sub yylex {
 				'RPAREN', 
 				'', 
 				$self->lineData(pos($self->{line}), 1)
+			];
+		}
+		
+		# attributes
+		when (/\G:($rxIdent)/cgox) {
+			return [
+				'ATTR',
+				$1,
+				$self->lineData(pos($self->{line}), length($1))
 			];
 		}
 		
