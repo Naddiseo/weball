@@ -22,9 +22,26 @@ sub new {
 	bless $self => $c;	
 }
 
-sub next {}
-sub error {}
-sub expect {}
+sub next {
+	my $self = shift;
+	
+	$self->look
+}
+
+sub error {
+	my ($self, $msg) = @_;
+	
+	my ($line, $char) = @{$self->{look}}[2,3];
+	
+	die "Parse error [$line : $char]: $msg\n"
+	
+}
+
+sub expect {
+	my ($self, $t) = @_;
+	
+	$self->error("Expected $t, got $self->{look}[0]")
+}
 
 
 
