@@ -20,7 +20,7 @@ sub new {
 	my $self = {
 		text => [],
 		line => '',
-		lineN => 0,
+		lineN => 1,
 		lastLineLength => 0,
 		basedir => ($args{basedir} || ''),
 	};
@@ -218,6 +218,15 @@ sub yylex {
 				'CLASS',
 				$1,
 				$self->lineData(pos($self->{line}), length($1))
+			]
+		}
+		
+		# Keywords
+		when (/\G^config\b$/cgox) {
+			return [
+				'CONFIG',
+				'',
+				$self->lineData(pos($self->{line}), 5)
 			]
 		}
 		
