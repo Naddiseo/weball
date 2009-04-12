@@ -7,6 +7,8 @@ use 5.010;
 
 use Data::Dumper;
 
+use WebAll::SymbolTable qw/sym_getType sym_newType/;
+
 our $VERSION = '2.0.0';
 
 sub new {
@@ -18,14 +20,7 @@ sub new {
 		look => undef,
 		peek => undef,
 		t => undef,
-		v => undef,
-		types => {
-			'INT' => {},
-			'UINT' => {},
-			'FLOAT' => {},
-			'STRING' => {},
-			'BOOL' => {},
-		}
+		v => undef
 	};
 	
 	bless $self => $c;	
@@ -104,9 +99,9 @@ sub program {
 			when ('TYPEDEF') {
 				my $name = $self->{v};
 				$self->match('TYPEDEF');
-				my ($type, @attr) = $self->getType;
-				push @attr, @{$self->getAttrs};
-				push @ast, ['TYPEDEF', $type, $name, [@attr]];
+				my ($type, %attr) = $self->getType;
+				push @{%attr}, @{$self->getAttrs};
+				push @ast, ['TYPEDEF', $type, $name, {%attr}];
 			}
 			
 			when ('BOL') {
@@ -114,7 +109,7 @@ sub program {
 				$self->error('Badly indented');
 			}
 		}
-		#$self->next;
+		$self->next;
 	}
 	
 	return [@ast];
@@ -163,10 +158,10 @@ sub getClassLines {
 			
 			when ('TYPE') {				
 				my $ident = $self->getIdent;
-				my ($type, @attrs) = $self->getType;
-				push @attrs, @{$self->getAttrs};
+				my ($type, %attrs) = $self->getType;
+				push @{%attrs}, @{$self->getAttrs};
 				$self->match('EOL');
-				push @ast, ['MEMBER', $type, $ident, [@attrs]]
+				push @ast, ['MEMBER', $type, $ident, {%attrs}]
 			}
 			
 			default {
@@ -261,7 +256,6 @@ sub getAttr {
 	my $self = shift;
 	
 	unless ($self->{t} eq 'ATTR') {
-		die ":) $self->{t}";
 		$self->expect('ATTR')
 	}
 	
@@ -270,5 +264,16 @@ sub getAttr {
 	$self->match('ATTR');
 	
 	return $v
+}
+
+sub getType {
+	my $self = shift;
+	
+	my $name = '';
+	my %attr = ();
+	
+	if ($self->{t} eq 'TYPE') {
+	
+	}
 }
 1;
