@@ -19,6 +19,13 @@ sub new {
 		peek => undef,
 		t => undef,
 		v => undef,
+		types => {
+			'INT' => {},
+			'UINT' => {},
+			'FLOAT' => {},
+			'STRING' => {},
+			'BOOL' => {},
+		}
 	};
 	
 	bless $self => $c;	
@@ -94,12 +101,20 @@ sub program {
 				push @ast, ['CLASS', $name, $self->getClassLines];				
 			}
 			
+			when ('TYPEDEF') {
+				my $name = $self->{v};
+				$self->match('TYPEDEF');
+				my ($type, @attr) = $self->getType;
+				push @attr, @{$self->getAttrs};
+				push @ast, ['TYPEDEF', $type, $name, [@attr]];
+			}
+			
 			when ('BOL') {
 				print Dumper(\@ast);
 				$self->error('Badly indented');
 			}
 		}
-		$self->next;
+		#$self->next;
 	}
 	
 	return [@ast];
@@ -146,13 +161,12 @@ sub getClassLines {
 				$self->match('EOL');
 			}
 			
-			when ('TYPE') {
-				my $type = $self->{v};
-				$self->match('TYPE');
+			when ('TYPE') {				
 				my $ident = $self->getIdent;
-				my $attrs = $self->getAttrs;
+				my ($type, @attrs) = $self->getType;
+				push @attrs, @{$self->getAttrs};
 				$self->match('EOL');
-				push @ast, ['MEMBER', $type, $ident, $attrs]
+				push @ast, ['MEMBER', $type, $ident, [@attrs]]
 			}
 			
 			default {
@@ -201,7 +215,6 @@ sub getAttrs {
 	
 	
 	while ($self->{t} eq 'ATTR') {
-		$self->match('ATTR');
 		my $attr = $self->getAttr;
 		my $values = [];
 		if ($self->{t} eq 'LPAREN') {
@@ -248,6 +261,7 @@ sub getAttr {
 	my $self = shift;
 	
 	unless ($self->{t} eq 'ATTR') {
+		die ":) $self->{t}";
 		$self->expect('ATTR')
 	}
 	

@@ -355,22 +355,22 @@ sub yylex {
 		}
 		
 		# min-max range
-		when (/\G(\[\s*($rxNum)\s*:\s*($rxNum)\s*\])/cgox) {
-			return [
-				'MINMAX', 
-				[$2, $3], 
-				$self->lineData(pos($self->{line}), length($1))
-			]
-		}
+		#when (/\G(\[\s*($rxNum)\s*:\s*($rxNum)\s*\])/cgox) {
+		#	return [
+		#		'MINMAX', 
+		#		[$2, $3], 
+		#		$self->lineData(pos($self->{line}), length($1))
+		#	]
+		#}
 		
 		# max range
-		when (/\G(\[\s*($rxNum)\s*])/cgox) {
-			return [
-				'MAX',
-				$2,
-				$self->lineData(pos($self->{line}), length($1))
-			]
-		}
+		#when (/\G(\[\s*($rxNum)\s*])/cgox) {
+		#	return [
+		#		'MAX',
+		#		$2,
+		#		$self->lineData(pos($self->{line}), length($1))
+		#	]
+		#}
 		
 		# attributes
 		when (/\G:($rxIdent)/cgox) {
