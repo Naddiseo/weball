@@ -1,0 +1,26 @@
+# Comment
+
+# Pythonic like language, no ; and idents matter
+
+# Include the file directly into the current processing as though it was
+# copied and pasted.
+include ("path/to/file")
+
+# C like typedefs
+typedef <type> <name of new type> <attributes of the new type>
+# attributes are in the form :attrName or :attrName(values)
+
+# Config to be passed onto the code generation layer.
+config
+	<config name>(<config value>)
+
+# Abstraction layer for classes
+# can be used for SQL tables, and the business layer ontop
+class <class Name>
+	<type> <member name> <attributes>
+	# primary key, for databases
+	pk(<member_name_list>)
+	# Index for databases
+	index(<member_name_list>)
+	
+	
