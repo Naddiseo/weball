@@ -17,6 +17,9 @@ static void yy_warn (yyconst char* msg ) {
 */
 
 
+char err_buf[100];
+
+
 %}
 %option debug
 %option outfile="lexer.c" header-file="lexer.h"
@@ -28,10 +31,13 @@ static void yy_warn (yyconst char* msg ) {
 
 ^\s+$ { /* do nothing for empty lines */ }
 
+^\r|\r\n|\n { /* skip empty lines */ }
+
 ^\t+ {
 	yylval.indent = yyleng;
 	return t_bol;
 }
+
 
 \r|\r\n|\n {
 	return t_eol;
@@ -50,6 +56,24 @@ config {
 	return t_config;
 }
 
+typedef {
+	return t_typedef;
+}
+
+int    { return t_int;    }
+uint   { return t_uint;   }
+string { return t_string; }
+bool   { return t_bool;   }
+
+
+
+:[a-zA-Z][a-zA-Z0-9_]* {
+	yylval.identval = new std::string(yytext);
+	// remove the initial :
+	yylval.identval->erase(0, 1);
+	return t_attribute;
+}
+
 [a-zA-Z][a-zA-Z0-9_]* {
 	yylval.identval = new std::string(yytext);
 	return t_ident;
@@ -60,8 +84,7 @@ config {
 	
 	register char c;
 	char end = *yytext;
-	while (true) {
-		c = yyinput();
+	while (c = yyinput()) {
 		if (c == end) {
 			break;
 		} 
@@ -92,13 +115,49 @@ config {
 		}
 	}
 	
-	const char* includePath = base_dir.append(path).c_str();
+	if (c != end) {
+		yy_fatal_error ("Didn't find end of string for include path");
+	}
+	
+	bool expect_rparen = true;
+	// Now eat to the end of line
+	while (c = yyinput()) {
+		if (c == EOF) {
+			yy_fatal_error ("End of file reached while looking for t_rparen");
+		}
+		else if (c == ')') {
+			expect_rparen = false;
+		}
+		else if (c == '\r') {
+			c = yyinput();
+			if (c != '\n') {
+				unput(c);
+			}
+			break;
+		}
+		else if (c == '\n') {
+			break;
+		}
+		else if (c == ' ' || c == '\t') {
+			continue;
+		}
+		else {
+			sprintf(err_buf, "Lexer: unexpected character '%c' on line %d", (char)c, yyget_lineno());
+			yy_fatal_error (err_buf);
+		}
+	}
+	
+	if (expect_rparen) {
+		sprintf(err_buf, "Lexer: expected rparen but was not found, on line %d", yyget_lineno());
+		yy_fatal_error (err_buf);
+	}
+	
+	const char* includePath = path.insert(0, base_dir).c_str();
 	yyin = fopen(includePath, "r");
 	
 	if (!yyin) {
-		char buf[100];
-		sprintf(buf, "Lexer: Could not open file(%s) on line %d", includePath, yyget_lineno());
-		yy_fatal_error(buf);
+		sprintf(err_buf, "Lexer: Could not open file(%s) on line %d", includePath, yyget_lineno());
+		yy_fatal_error(err_buf);
 	}
 
 #ifdef NDEBUG
@@ -117,7 +176,7 @@ config {
 	
 	register char c;
 	char end = *yytext;
-	while ((c = yyinput()) != EOF) {
+	while (c = yyinput()) {
 		if (c == end) {
 			break;
 		} 
@@ -149,7 +208,7 @@ config {
 	}
 	
 	yylval.stringval = buf;
-	return t_string;
+	return t_stringval;
 }
 
 \( { return t_lparen; }
@@ -159,9 +218,9 @@ config {
 	yypop_buffer_state();
 	
 	if (!YY_CURRENT_BUFFER) {
-		yyterminate();
+		yyterminate();		
+		return t_eof;
 	}
-	return t_eof;
 }
 
 
