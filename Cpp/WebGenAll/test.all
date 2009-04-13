@@ -14,7 +14,7 @@ class Shu
 	pk(id)
 	id t_test
 
-include(./bar.all)		
+include("./bar.all")		
 
 dbfunction getTroll(Foo.id)
 	return(Bar.troll)

@@ -23,4 +23,17 @@ class <class Name>
 	# Index for databases
 	index(<member_name_list>)
 	
+	# db functions:
+	dbfunction <name>(<member_name_list>)
+		join(<classname>.<membername>,<classname>.<membername>,...)
+		return(<membername>)
+		
+	# example:
+	dbfunction getName(id)
+		join(Foo.id, Bar.id)
+		return(Bar.name)	
+	
+	# will give a sql line like:
+	# select Bar.name from Foo inner join Bar on Foo.id = Bar.id where Foo.id = id;
+	
 	
