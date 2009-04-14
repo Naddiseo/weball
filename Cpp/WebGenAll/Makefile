@@ -1,5 +1,5 @@
 export LC_ALL=en_CA.utf8
-OPTIONSD=-I. -I/usr/include -DNDEBUG=2 -g -ansi -Wall -W -Wfatal-errors -pedantic -pedantic-errors -Wmain
+OPTIONSD=-I. -I/usr/include -DNDEBUG=1 -DYYDEBUG=1 -g -ansi -Wall -W -Wfatal-errors -pedantic -pedantic-errors -Wmain
 OPTIONSR=-I. -I/usr/include -O3 -ansi -Wall -W -Wfatal-errors -pedantic -pedantic-errors -Wmain
 
 TESTFILE=../../../ww2_trunk/ww2_trunk.all
@@ -8,7 +8,7 @@ lex:
 	flex -B lexer.l
 	
 bison:
-	bison --report=state,lookahead,itemset -g -vtd parser.y
+	bison --debug --report=state,lookahead,itemset -vtd parser.y
 	#graph-easy --as=dot --from=vcg parser.vcg | dot -Tpng -o parser.png
 
 Debug: bison lex

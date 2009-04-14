@@ -211,11 +211,9 @@ bool   { return t_bool;   }
 	return t_stringval;
 }
 
-\( { return t_lparen; }
-\) { return t_rparen; }
 
 
-[,] { return *yytext; }
+[,()] { return *yytext; }
 <<EOF>> {
 	yypop_buffer_state();
 	

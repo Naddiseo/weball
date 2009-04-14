@@ -26,6 +26,7 @@ public:
 	void
 	copyAttributes(attributeMap_t* _attr);
 	
+	void print();
 private:
 	std::string name;
 	attributeMap_t* attr;
@@ -41,5 +42,7 @@ Type* addAttributes(std::string typeName, attributeMap_t* attrs);
 
 void types_init();
 void types_dtor();
+
+void types_print();
 
 #endif
