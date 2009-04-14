@@ -1,8 +1,10 @@
 #include <iostream>
 #include <string>
 #include <cstring>
-#include <libgen.h>
+#include <libgen.h> // for dirname()
 #include <lexer.h>
+#include <Types.hpp>
+
 
 extern "C" {
     int yyparse();
@@ -44,9 +46,13 @@ int main (int argc, char* argv[]) {
             }
         }
     }
+	
+	types_init();
 
     while (yyparse() == 0) {}
 
+	types_dtor();
+	
     if (in && in != stdin) {
         fclose (in);
     }

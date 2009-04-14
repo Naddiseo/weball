@@ -9,7 +9,10 @@
 #include <iostream>
 #include <typeinfo>
 #include <Config.hpp>
-//#include <defs.hpp>
+#include <Types.hpp>
+#include <Attributes.hpp>
+#include <TypeValue.hpp>
+
 extern "C" {
     void yyerror (const char *);
     int yyparse();
@@ -24,7 +27,30 @@ void checkIndent (int x, int y) {
 		yyerror("Bad indent");
 	}
 }
+
+TypeValueList_t* currentValueList;
+TypeValue* currentTV;
+Type* currentType;
+attributeMap_t* currentAttributes;
+
+
+#define NEWTYPE(name) {currentType = new Type(name); }
+#define NEWATTRMAP { currentAttributes = new attributeMap_t(); }
+#define NEWVLIST { currentValueList = new TypeValueList_t(); }
+
+#define SETATTR(name, to) { \
+	if (currentAttributes->find(name) != currentAttributes->end()) {} \
+	if (to) { \
+		(*currentAttributes)[name] = to; \
+	} else { \
+		(*currentAttributes)[name] = new TypeValueList_t; \
+	} \
+}
+
+#define ADDVAL(tv) { currentValueList->push_back(tv); }
+
 %}
+
 
 %union {
     std::string* identval;
@@ -51,6 +77,8 @@ void checkIndent (int x, int y) {
 %type <comment> t_comment
 %type <stringval> t_stringval
 %type <boolval> t_boolval
+%type <indent> t_bol
+%type <TypeValue*> type_val
 
 %destructor { delete ($$); } t_ident t_attribute t_rxval t_stringval t_comment
 
@@ -70,24 +98,57 @@ config_section
 	;
 
 config_parts
-	: config_parts t_bol { checkIndent(1, $<indent>2); } t_ident t_lparen t_stringval t_rparen t_eol { addConfig(*$<identval>4, *$<stringval>6); }
+	: config_parts t_bol t_ident t_lparen t_stringval t_rparen t_eol { 
+		checkIndent(1, $2);
+		addConfig(*$3, *$5); 
+	}
 	| 
 	;
 
 typedef_line
-	: t_bool t_ident member_attributes {}
-	| t_int t_ident member_attributes {}
-	| t_uint t_ident member_attributes {}
-	| t_string t_ident member_attributes {}
-	| t_ident t_ident member_attributes {}
-	| 
+	: t_bool t_ident { NEWTYPE(*$2); NEWATTRMAP; } member_attributes {		
+		copyType("bool", *$2);
+		currentType->copyAttributes(currentAttributes);
+				
+	}
+	| t_int t_ident { NEWTYPE(*$2); NEWATTRMAP; }  member_attributes {
+		copyType("int", currentType);
+		currentType->copyAttributes(currentAttributes);
+	}
+	| t_uint t_ident { NEWTYPE(*$2); NEWATTRMAP; }  member_attributes {
+		copyType("uint", currentType);
+		currentType->copyAttributes(currentAttributes);
+	}
+	| t_string t_ident { NEWTYPE(*$2); NEWATTRMAP; }  member_attributes {
+		copyType("string", currentType);
+		currentType->copyAttributes(currentAttributes);
+	}
+	| t_ident t_ident { NEWTYPE(*$2); NEWATTRMAP; } member_attributes {
+		copyType(*$1, currentType);
+		currentType->copyAttributes(currentAttributes);
+	}
 	;
 
 member_attributes
-	: member_attributes t_attribute
-	| member_attributes t_attribute t_lparen 
+	: member_attributes t_attribute {
+		SETATTR(*$2, NULL);
+	}
+	| t_attribute t_lparen {NEWVLIST;} value_list t_rparen {
+		SETATTR(*$1, currentValueList);
+	}
 	;
 
+value_list
+	: value_list ',' type_val { ADDVAL(currentTV); }
+	| type_val { ADDVAL(currentTV); }
+	;
+
+type_val
+	: t_boolval   { currentTV = new TypeValue ($1); }
+	| t_intval    { currentTV= new TypeValue ($1); }
+	| t_uintval   { currentTV = new TypeValue ($1); }
+	| t_stringval { currentTV = new TypeValue ($1); }
+	;
 %%
 
 void

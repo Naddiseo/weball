@@ -8,13 +8,16 @@ lex:
 	flex -B lexer.l
 	
 bison:
-	bison -vtd parser.y
+	bison --report=state,lookahead,itemset -g -vtd parser.y
+	#graph-easy --as=dot --from=vcg parser.vcg | dot -Tpng -o parser.png
 
 Debug: bison lex
 	g++ -I. -I/usr/include -g -W -c parser.tab.c -o ./bin/parser.o
 	g++ -I. -I/usr/include -g -W -c lexer.c -o ./bin/lexer.o
 	g++ $(OPTIONSD) -o ./bin/Config.o -c Config.cpp
 	g++ $(OPTIONSD) -o ./bin/Types.o -c Types.cpp
+	g++ $(OPTIONSD) -o ./bin/TypeValue.o -c TypeValue.cpp
+	g++ $(OPTIONSD) -o ./bin/Attributes.o -c Attributes.cpp
 	g++ $(OPTIONSD) -o ./bin/main.o -c main.cpp
 	g++ ./bin/*.o -o ./bin/WebGenAll
 	
