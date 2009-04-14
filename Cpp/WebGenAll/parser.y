@@ -155,12 +155,13 @@ member_attributes
 attribute_values
 	: /* none */
 	| '(' value_list ')'
+	| '(' ')'
 	;
 
 value_list	
 	: type_val { ADDVAL(currentTV); }
 	| value_list ',' type_val { ADDVAL(currentTV); }
-	| /* empty list */
+//	| /* empty list */
 	;
 
 type_val
