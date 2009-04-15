@@ -4,13 +4,12 @@
 #include <libgen.h> // for dirname()
 #include <lexer.h>
 #include <Types.hpp>
-
+#include <Class.hpp>
 
 extern "C" {
 	int yyparse();
 }
 
-extern FILE *yyin, *yyout;
 extern int yydebug;
 using namespace std;
 
@@ -43,8 +42,7 @@ int main (int argc, char* argv[]) {
 					base_dir = dirname(argv[x]);
 					base_dir.append("/");
 					cerr << "basedir = " << base_dir <<endl;
-					//yyset_in (in);
-					yyin=in;
+					yyset_in (in);
 					break;
 				}
 			}
@@ -57,8 +55,10 @@ int main (int argc, char* argv[]) {
 	yyparse();
 
 	types_print();
-
+	classes_print();
+	
 	types_dtor();
+	classes_dtor();
 	
 	if (in && in != stdin) {
 		fclose (in);

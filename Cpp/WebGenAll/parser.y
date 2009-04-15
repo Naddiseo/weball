@@ -14,6 +14,7 @@
 #include <Attributes.hpp>
 #include <TypeValue.hpp>
 #include <cstdlib>
+#include <Class.hpp>
 
 extern "C" {
 	void yyerror (const char *);
@@ -36,6 +37,21 @@ TypeValue* currentTV;
 Type* currentType;
 attributeMap_t* currentAttributes;
 
+Class* currentClass;
+keylist_t* currentIdentList;
+
+inline void NEWCLASS(std::string name) {
+	std::cerr << "**Created Class " << name << std::endl;
+	currentClass = newClass(name);
+}
+
+inline void ADDPK() {
+	currentClass->addPK(currentIdentList);
+}
+
+inline void ADDINDEX() {
+	currentClass->addIndex(currentIdentList);
+}
 
 inline void NEWTYPE(std::string name) {
 	std::cerr << "**Creating type " << name << std::endl;
@@ -54,6 +70,8 @@ inline void SETATTR(std::string name) {
 
 inline void ADDVAL(TypeValue* tv) { currentValueList->push_back(tv); }
 
+inline void NEWILIST() { currentIdentList = new keylist_t(); }
+inline void ADDI(std::string _s) { currentIdentList->push_back(_s); }
 
 %}
 
@@ -71,6 +89,7 @@ inline void ADDVAL(TypeValue* tv) { currentValueList->push_back(tv); }
 }
 
 %token t_typedef t_attribute t_config t_class
+%token t_index t_pk
 %token t_ident
 %token t_comment
 %token t_int t_uint t_string t_bool
@@ -174,9 +193,9 @@ type_val
 	| t_uintval   { currentTV = new TypeValue ($1);  }
 	| t_stringval { currentTV = new TypeValue (*$1); }
 	;
-	
+
 class_block
-	: t_class t_ident t_eol class_members
+	: t_class t_ident { NEWCLASS(*$2); } t_eol class_members
 	;
 
 class_members
@@ -190,6 +209,18 @@ class_member
 	| t_int t_ident member_attributes
 	| t_string t_ident member_attributes
 	| t_ident t_ident member_attributes
+	| t_pk { NEWILIST(); } ident_list_container { ADDPK(); }
+	| t_index { NEWILIST(); } ident_list_container { ADDINDEX(); }
+	;
+
+ident_list_container
+	: '(' ident_list ')'
+	| '('')'
+	;
+
+ident_list
+	: ident_list ',' t_ident { ADDI(*$3); }
+	| t_ident                { ADDI(*$1); }
 	;
 
 %%

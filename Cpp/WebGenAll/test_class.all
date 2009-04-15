@@ -1,2 +1,6 @@
 class Foo
-	bool id
+	pk(id)
+	index(b, name)
+	uint id
+	int b
+	string name
