@@ -223,11 +223,13 @@ bool   { return t_bool;   }
 
 
 [,()] { return *yytext; }
+
+
 <<EOF>> {
 	yypop_buffer_state();
 	
 	if (!YY_CURRENT_BUFFER) {
-		yyterminate();		
+		yyterminate();
 		return t_eof;
 	}
 }

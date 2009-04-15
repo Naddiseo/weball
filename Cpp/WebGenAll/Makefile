@@ -3,7 +3,7 @@ OPTIONSD=-I. -I/usr/include -DNDEBUG=1 -g -ansi -Wall -W -Wfatal-errors -pedanti
 OPTIONSR=-I. -I/usr/include -O3 -ansi -Wall -W -Wfatal-errors -pedantic -pedantic-errors -Wmain
 
 TESTFILE=../../../ww2_trunk/ww2_trunk.all
-TESTFILE=test_td.all
+TESTFILE=./test_td.all
 
 lex:
 	flex -B lexer.l

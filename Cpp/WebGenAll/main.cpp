@@ -9,6 +9,8 @@
 extern "C" {
 	int yyparse();
 }
+
+extern FILE *yyin, *yyout;
 extern int yydebug;
 using namespace std;
 
@@ -41,7 +43,8 @@ int main (int argc, char* argv[]) {
 					base_dir = dirname(argv[x]);
 					base_dir.append("/");
 					cerr << "basedir = " << base_dir <<endl;
-					yyset_in (in);
+					//yyset_in (in);
+					yyin=in;
 					break;
 				}
 			}
