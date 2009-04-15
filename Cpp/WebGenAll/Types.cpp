@@ -66,7 +66,7 @@ Type::print() {
 void
 Type::addAttribute(std::string _name, TypeValueList_t* _value) {
 	if (attr->find(_name) == attr->end()) {
-		(*attr)[name] = _value;
+		(*attr)[_name] = _value;
 	}		
 }
 
@@ -74,7 +74,9 @@ Type::addAttribute(std::string _name, TypeValueList_t* _value) {
 void
 Type::copyAttributes(attributeMap_t* _attr) {
 	attributeMap_t::iterator it;
-	for (it = _attr->begin(); it != _attr->end(); it++) {}
+	for (it = _attr->begin(); it != _attr->end(); it++) {
+		(*attr)[it->first] = it->second;
+	}
 }
 
 Type* getType(std::string name) {
@@ -107,7 +109,11 @@ Type* copyType(std::string typeName, std::string newName) {
 	
 	if (!newT) {
 		newT = new Type(newName);
+		types[newName] = newT;
 	}
+	
+	
+	std::cout << "Copying " << typeName << " into " << newName << std::endl;
 	
 	attributeMap_t* att = t->getAttributes();	
 	

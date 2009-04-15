@@ -21,7 +21,7 @@ int main (int argc, char* argv[]) {
 #ifdef NDEBUG 
 	cerr << "Setting debug\n";
 	yyset_debug (0);
-	yydebug = 1;
+	//yydebug = 1;
 #endif
 
 	if (argc >= 2) {

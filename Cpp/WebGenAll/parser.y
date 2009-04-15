@@ -16,11 +16,11 @@
 #include <cstdlib>
 
 extern "C" {
-    void yyerror (const char *);
-    int yyparse();
-    int yywrap();
-
+	void yyerror (const char *);
+	int yyparse();
+	int yywrap();
 }
+
 
 extern int yylineno;
 
@@ -37,7 +37,7 @@ Type* currentType;
 attributeMap_t* currentAttributes;
 
 
-inline void NEWTYPE(std::string name) { 
+inline void NEWTYPE(std::string name) {
 	currentAttributes = new attributeMap_t();
 	currentType = new Type(name, currentAttributes); 
 	currentValueList = new TypeValueList_t();
@@ -53,7 +53,7 @@ inline void ADDVAL(TypeValue* tv) { currentValueList->push_back(tv); }
 
 %}
 
-%debug
+//%debug
 
 %union {
 	std::string* identval;
@@ -171,14 +171,14 @@ type_val
 	;
 %%
 
+
 void
 yyerror (const char *str) {
-	extern int yyget_lineno();
-    fprintf (stderr, "Praser Error on line %d: %s\n", yylineno, str);
+	fprintf (stderr, "Praser Error on line %d: %s\n", yylineno, str);
 }
 
 int
 yywrap() {
-    return 1;
+	return 1;
 }
 
