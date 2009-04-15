@@ -44,7 +44,9 @@ inline void NEWTYPE(std::string name) {
 }
 
 inline void SETATTR(std::string name) { 
-	if (currentAttributes->find(name) != currentAttributes->end()) {} 
+	if (currentAttributes->find(name) != currentAttributes->end()) {
+		yyerror("Attribute already exists");
+	} 
 	(*currentAttributes)[name] = currentValueList; 
 }
 
