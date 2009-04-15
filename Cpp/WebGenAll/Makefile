@@ -4,6 +4,7 @@ OPTIONSR=-I. -I/usr/include -O3 -ansi -Wall -W -Wfatal-errors -pedantic -pedanti
 
 TESTFILE=../../../ww2_trunk/ww2_trunk.all
 TESTFILE=./test_td.all
+TESTFILE=./test_class.all
 
 lex:
 	flex -B lexer.l

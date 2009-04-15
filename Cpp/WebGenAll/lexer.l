@@ -52,13 +52,9 @@ include[^(]*\(	{
 	BEGIN(incl); 
 }
 
-config {
-	return t_config;
-}
-
-typedef {
-	return t_typedef;
-}
+class   { return t_class;   }
+config  { return t_config;  }
+typedef { return t_typedef; }
 
 int    { return t_int;    }
 uint   { return t_uint;   }

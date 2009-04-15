@@ -70,7 +70,7 @@ inline void ADDVAL(TypeValue* tv) { currentValueList->push_back(tv); }
 	bool boolval;
 	}
 
-%token t_typedef t_attribute t_config
+%token t_typedef t_attribute t_config t_class
 %token t_ident
 %token t_comment
 %token t_int t_uint t_string t_bool
@@ -110,8 +110,9 @@ line
 	: config_section
 	| t_typedef typedef_line t_eol
 	| t_comment
+	| class_block
 	;
-	
+
 
 config_section 
 	: t_config t_eol config_parts
@@ -173,6 +174,20 @@ type_val
 	| t_uintval   { currentTV = new TypeValue ($1);  }
 	| t_stringval { currentTV = new TypeValue (*$1); }
 	;
+	
+class_block
+	: t_class t_ident t_eol class_members
+	;
+
+class_members
+	: class_members t_bol class_member
+	| t_bol class_member
+	;
+
+class_member
+	: t_bool t_ident member_attributes
+	;
+
 %%
 
 
