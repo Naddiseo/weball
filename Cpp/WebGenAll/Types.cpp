@@ -115,7 +115,7 @@ Type* copyType(std::string typeName, std::string newName) {
 	
 	std::cout << "Copying " << typeName << " into " << newName << std::endl;
 	
-	attributeMap_t* att = t->getAttributes();	
+	attributeMap_t* att = t->getAttributes();
 	
 	newT->copyAttributes(att);
 	
