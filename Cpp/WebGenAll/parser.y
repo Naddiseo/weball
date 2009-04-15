@@ -53,6 +53,10 @@ inline void ADDINDEX() {
 	currentClass->addIndex(currentIdentList);
 }
 
+inline void ADDMEMBER() {
+	currentClass->addMember(currentMember);
+}
+
 inline void NEWTYPE(std::string name) {
 	std::cerr << "**Creating type " << name << std::endl;
 	currentAttributes = new attributeMap_t();
