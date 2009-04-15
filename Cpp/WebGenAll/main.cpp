@@ -53,7 +53,8 @@ int main (int argc, char* argv[]) {
 	
 	types_init();
 
-	while (yyparse() == 0) {}
+	//while (yyparse() == 0) {}
+	yyparse();
 
 	types_print();
 

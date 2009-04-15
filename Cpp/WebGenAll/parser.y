@@ -38,11 +38,13 @@ attributeMap_t* currentAttributes;
 
 
 inline void NEWTYPE(std::string name) {
+	std::cerr << "**Creating type " << name << std::endl;
 	currentAttributes = new attributeMap_t();
-	currentType = new Type(name, currentAttributes); 
+	currentType = newType(name, currentAttributes);
+}
+inline void NEWVLIST() {
 	currentValueList = new TypeValueList_t();
 }
-
 inline void SETATTR(std::string name) { 
 	if (currentAttributes->find(name) != currentAttributes->end()) {
 		yyerror("Attribute already exists");
@@ -85,7 +87,7 @@ inline void ADDVAL(TypeValue* tv) { currentValueList->push_back(tv); }
 %type <indent> t_bol
 %type <TypeValue*> type_val
 
-%destructor { delete ($$); } t_ident t_attribute t_stringval
+%destructor { delete ($$); } t_ident t_attribute t_stringval t_comment
 
 
 %left ','
@@ -149,7 +151,7 @@ typedef_line
 
 member_attributes
 	: /* no attributes */
-	| member_attributes t_attribute attribute_values {
+	| member_attributes t_attribute { NEWVLIST(); } attribute_values {
 		SETATTR(*$2);
 	}
 	;
@@ -166,10 +168,10 @@ value_list
 	;
 
 type_val
-	: t_boolval   { currentTV = new TypeValue ($1); }
-	| t_intval    { currentTV = new TypeValue ($1); }
-	| t_uintval   { currentTV = new TypeValue ($1); }
-	| t_stringval { currentTV = new TypeValue ($1); }
+	: t_boolval   { currentTV = new TypeValue ($1);  }
+	| t_intval    { currentTV = new TypeValue ($1);  }
+	| t_uintval   { currentTV = new TypeValue ($1);  }
+	| t_stringval { currentTV = new TypeValue (*$1); }
 	;
 %%
 

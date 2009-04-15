@@ -22,7 +22,7 @@ private:
 	
 	
 	enum type_e {
-		STR,
+		STR = 1,
 		UINT,
 		INT,
 		B
