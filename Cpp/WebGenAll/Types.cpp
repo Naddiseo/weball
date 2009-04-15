@@ -2,6 +2,9 @@
 #include <TypeValue.hpp>
 
 #include <iostream>
+#include <cstdlib>
+
+extern "C" void yyerror (char const * str);
 
 static typesMap_t types;
 
@@ -29,6 +32,8 @@ void types_init() {
 	v = new TypeValueList_t();
 	v->push_back(new TypeValue(0));
 	t->addAttribute(std::string("min"), v);
+	
+	newType(std::string("string"), NULL);
 }
 
 void types_dtor() {
@@ -96,6 +101,8 @@ Type* copyType(std::string typeName, std::string newName) {
 	Type* newT = getType(newName);
 	if (!t) {
 		//die
+		yyerror("No t");
+		exit(-1);
 	}
 	
 	if (!newT) {
@@ -111,8 +118,15 @@ Type* copyType(std::string typeName, std::string newName) {
 
 Type* copyType(std::string typeName, Type* newT) {
 	Type* t = getType(typeName);
-	if (!t or !newT) {
-		//die
+	std::string error;
+	if (!t) {
+		error = "No type of name " + typeName;
+		yyerror (error.c_str());
+		exit(-1);
+	}
+	if (!newT) {
+		yyerror("No newT");
+		exit(-1);
 	}
 	
 	attributeMap_t* att = t->getAttributes();

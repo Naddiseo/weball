@@ -13,6 +13,7 @@
 #include <Types.hpp>
 #include <Attributes.hpp>
 #include <TypeValue.hpp>
+#include <cstdlib>
 
 extern "C" {
     void yyerror (const char *);
@@ -26,6 +27,7 @@ extern int yylineno;
 void checkIndent (int x, int y) {
 	if (x != y) {
 		yyerror("Bad indent");
+		exit(-1);
 	}
 }
 
@@ -35,20 +37,18 @@ Type* currentType;
 attributeMap_t* currentAttributes;
 
 
-#define NEWTYPE(name) {currentType = new Type(name); }
-#define NEWATTRMAP { currentAttributes = new attributeMap_t(); }
-#define NEWVLIST { currentValueList = new TypeValueList_t(); }
-
-#define SETATTR(name, to) { \
-	if (currentAttributes->find(name) != currentAttributes->end()) {} \
-	if (to) { \
-		(*currentAttributes)[name] = to; \
-	} else { \
-		(*currentAttributes)[name] = new TypeValueList_t; \
-	} \
+inline void NEWTYPE(std::string name) { 
+	currentAttributes = new attributeMap_t();
+	currentType = new Type(name, currentAttributes); 
+	currentValueList = new TypeValueList_t();
 }
 
-#define ADDVAL(tv) { currentValueList->push_back(tv); }
+inline void SETATTR(std::string name) { 
+	if (currentAttributes->find(name) != currentAttributes->end()) {} 
+	(*currentAttributes)[name] = currentValueList; 
+}
+
+inline void ADDVAL(TypeValue* tv) { currentValueList->push_back(tv); }
 
 
 %}
@@ -104,7 +104,7 @@ lines
 
 line
 	: config_section
-	| t_typedef typedef_line
+	| t_typedef typedef_line t_eol
 	| t_comment
 	;
 	
@@ -122,24 +122,24 @@ config_parts
 	;
 
 typedef_line
-	: t_bool t_ident { NEWTYPE(*$2); NEWATTRMAP; } member_attributes {		
-		copyType("bool", *$2);
+	: t_bool t_ident { NEWTYPE(*$2); } member_attributes {
+		copyType(std::string("bool"), *$2);
 		currentType->copyAttributes(currentAttributes);
 				
 	}
-	| t_int t_ident { NEWTYPE(*$2); NEWATTRMAP; }  member_attributes {
-		copyType("int", currentType);
+	| t_int t_ident { NEWTYPE(*$2);  }  member_attributes {
+		copyType(std::string("int"), currentType);
 		currentType->copyAttributes(currentAttributes);
 	}
-	| t_uint t_ident { NEWTYPE(*$2); NEWATTRMAP; }  member_attributes {
-		copyType("uint", currentType);
+	| t_uint t_ident { NEWTYPE(*$2); }  member_attributes {
+		copyType(std::string("uint"), currentType);
 		currentType->copyAttributes(currentAttributes);
 	}
-	| t_string t_ident { NEWTYPE(*$2); NEWATTRMAP; }  member_attributes {
-		copyType("string", currentType);
+	| t_string t_ident { NEWTYPE(*$2); }  member_attributes {
+		copyType(std::string("string"), currentType);
 		currentType->copyAttributes(currentAttributes);
 	}
-	| t_ident t_ident { NEWTYPE(*$2); NEWATTRMAP; NEWVLIST; } member_attributes {
+	| t_ident t_ident { NEWTYPE(*$2); } member_attributes {
 		copyType(*$1, currentType);
 		currentType->copyAttributes(currentAttributes);
 	}
@@ -148,7 +148,7 @@ typedef_line
 member_attributes
 	: /* no attributes */
 	| member_attributes t_attribute attribute_values {
-		SETATTR(*$2, currentValueList);
+		SETATTR(*$2);
 	}
 	;
 
@@ -161,7 +161,6 @@ attribute_values
 value_list	
 	: type_val { ADDVAL(currentTV); }
 	| value_list ',' type_val { ADDVAL(currentTV); }
-//	| /* empty list */
 	;
 
 type_val

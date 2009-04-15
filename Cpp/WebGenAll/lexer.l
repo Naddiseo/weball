@@ -66,6 +66,15 @@ string { return t_string; }
 bool   { return t_bool;   }
 
 
+[0-9]+ {
+	yylval.uintval = atoi(yytext);
+	return t_uintval;
+}
+
+-[0-9]+ {
+	yylval.intval = atoi(yytext);
+	return t_intval;
+}
 
 :[a-zA-Z][a-zA-Z0-9_]* {
 	yylval.identval = new std::string(yytext);
