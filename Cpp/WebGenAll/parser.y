@@ -68,7 +68,7 @@ inline void ADDVAL(TypeValue* tv) { currentValueList->push_back(tv); }
 	int intval;
 	int indent;
 	bool boolval;
-	}
+}
 
 %token t_typedef t_attribute t_config t_class
 %token t_ident
@@ -180,12 +180,16 @@ class_block
 	;
 
 class_members
-	: class_members t_bol class_member
-	| t_bol class_member
+	: class_members t_bol class_member t_eol
+	| t_bol class_member t_eol
 	;
 
 class_member
 	: t_bool t_ident member_attributes
+	| t_uint t_ident member_attributes
+	| t_int t_ident member_attributes
+	| t_string t_ident member_attributes
+	| t_ident t_ident member_attributes
 	;
 
 %%
