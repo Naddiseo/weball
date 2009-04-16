@@ -53,8 +53,13 @@ inline void ADDINDEX() {
 	currentClass->addIndex(currentIdentList);
 }
 
+inline void NEWMEMBER(std::string name) {
+	std::cerr << "** Creating member" << name << std::endl;
+	curentType = currentClass->newMember(name);
+}
+
 inline void ADDMEMBER() {
-	currentClass->addMember(currentMember);
+	currentClass->addMember(currentType);
 }
 
 inline void NEWTYPE(std::string name) {
@@ -150,24 +155,24 @@ config_parts
 	;
 
 typedef_line
-	: t_bool t_ident { NEWTYPE(*$2); } member_attributes {
+	: t_bool t_ident   { NEWTYPE(*$2); } member_attributes {
 		copyType(std::string("bool"), *$2);
 		currentType->copyAttributes(currentAttributes);
 				
 	}
-	| t_int t_ident { NEWTYPE(*$2);  }  member_attributes {
+	| t_int t_ident    { NEWTYPE(*$2); }  member_attributes {
 		copyType(std::string("int"), currentType);
 		currentType->copyAttributes(currentAttributes);
 	}
-	| t_uint t_ident { NEWTYPE(*$2); }  member_attributes {
+	| t_uint t_ident   { NEWTYPE(*$2); } member_attributes {
 		copyType(std::string("uint"), currentType);
 		currentType->copyAttributes(currentAttributes);
 	}
-	| t_string t_ident { NEWTYPE(*$2); }  member_attributes {
+	| t_string t_ident { NEWTYPE(*$2); }member_attributes {
 		copyType(std::string("string"), currentType);
 		currentType->copyAttributes(currentAttributes);
 	}
-	| t_ident t_ident { NEWTYPE(*$2); } member_attributes {
+	| t_ident t_ident  { NEWTYPE(*$2); } member_attributes {
 		copyType(*$1, currentType);
 		currentType->copyAttributes(currentAttributes);
 	}
@@ -187,14 +192,14 @@ attribute_values
 	;
 
 value_list	
-	: type_val { ADDVAL(currentTV); }
+	: type_val                { ADDVAL(currentTV); }
 	| value_list ',' type_val { ADDVAL(currentTV); }
 	;
 
 type_val
-	: t_boolval   { currentTV = new TypeValue ($1);  }
-	| t_intval    { currentTV = new TypeValue ($1);  }
-	| t_uintval   { currentTV = new TypeValue ($1);  }
+	: t_boolval   { currentTV = new TypeValue ( $1);  }
+	| t_intval    { currentTV = new TypeValue ( $1);  }
+	| t_uintval   { currentTV = new TypeValue ( $1);  }
 	| t_stringval { currentTV = new TypeValue (*$1); }
 	;
 
@@ -208,12 +213,12 @@ class_members
 	;
 
 class_member
-	: t_bool t_ident member_attributes
-	| t_uint t_ident member_attributes
-	| t_int t_ident member_attributes
-	| t_string t_ident member_attributes
-	| t_ident t_ident member_attributes
-	| t_pk { NEWILIST(); } ident_list_container { ADDPK(); }
+	: t_bool   t_ident { NEWMEMBER(*$2); } member_attributes
+	| t_uint   t_ident { NEWMEMBER(*$2); } member_attributes
+	| t_int    t_ident { NEWMEMBER(*$2); } member_attributes
+	| t_string t_ident { NEWMEMBER(*$2); } member_attributes
+	| t_ident  t_ident { NEWMEMBER(*$2); } member_attributes
+	| t_pk    { NEWILIST(); } ident_list_container { ADDPK();    }
 	| t_index { NEWILIST(); } ident_list_container { ADDINDEX(); }
 	;
 
