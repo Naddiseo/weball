@@ -94,7 +94,7 @@ inline void ADDI(std::string _s) { currentIdentList->push_back(_s); }
 	bool boolval;
 }
 
-%token t_typedef t_attribute t_config t_class
+%token t_typedef t_attribute t_config t_class t_dbfunction t_return
 %token t_index t_pk
 %token t_ident
 %token t_comment
@@ -206,7 +206,7 @@ class_block
 
 class_members
 	: class_members t_bol class_member t_eol
-	| t_bol class_member t_eol
+	| t_bol { checkIndent(1, $1); } class_member t_eol
 	;
 
 class_member
@@ -217,6 +217,7 @@ class_member
 	| t_ident  t_ident { NEWMEMBER(*$2); } member_attributes
 	| t_pk    { NEWILIST(); } ident_list_container { ADDPK();    }
 	| t_index { NEWILIST(); } ident_list_container { ADDINDEX(); }
+	| dbfunction
 	;
 
 ident_list_container
@@ -228,6 +229,12 @@ ident_list
 	: ident_list ',' t_ident { ADDI(*$3); }
 	| t_ident                { ADDI(*$1); }
 	;
+
+dbfunction
+	: t_dbfunction t_ident ident_list_container t_eol dbfunction_members
+	;
+
+dbfunction_members:;
 
 %%
 

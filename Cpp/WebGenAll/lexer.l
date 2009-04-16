@@ -52,12 +52,14 @@ include[^(]*\(	{
 	BEGIN(incl); 
 }
 
-class   { return t_class;   }
-config  { return t_config;  }
-typedef { return t_typedef; }
+class       { return t_class;      }
+config      { return t_config;     }
+typedef     { return t_typedef;    }
+dbfunction  { return t_dbfunction; }
+return      { return t_return;     }
 
-index   { return t_index;   }
-pk      { return t_pk;      }
+index       { return t_index;     }
+pk          { return t_pk;        }
 
 int    { return t_int;    }
 uint   { return t_uint;   }

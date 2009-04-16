@@ -10,6 +10,7 @@ class Type {
 public:
 	Type (std::string _name) : name(_name), attr(new attributeMap_t()) {}
 	Type (std::string _name, attributeMap_t* _attr) : name(_name), attr(_attr) { }
+	~Type();
 	
 	std::string 
 	getName() const { return name; }
@@ -38,7 +39,6 @@ Type* getType(std::string name);
 Type* newType(std::string name, attributeMap_t* attrs);
 Type* copyType(std::string typeName, std::string newName);
 Type* copyType(std::string typeName, Type* newT);
-Type* addAttributes(std::string typeName, attributeMap_t* attrs);
 
 void types_init();
 void types_dtor();

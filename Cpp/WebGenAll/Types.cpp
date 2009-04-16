@@ -17,13 +17,8 @@ void types_init() {
 	t = newType(std::string("bool"), NULL);
 	v = new TypeValueList_t();
 	v->push_back(new TypeValue(0));
-	t->addAttribute(std::string("min"), v);
-	
-	v = new TypeValueList_t();
 	v->push_back(new TypeValue(1));
-	t->addAttribute(std::string("max"), v);
-	
-	
+	t->addAttribute(std::string("range"), v);	
 	
 	newType(std::string("int"), NULL);
 	
@@ -60,6 +55,15 @@ Type::print() {
 		for (TypeValueList_t::iterator iter2 = iter->second->begin(); iter2 != iter->second->end(); iter2++) {
 			std::cout << "\t\t"; (*iter2)->print(); std::cout << "\n";
 		}
+	}
+}
+
+Type::~Type() {
+	for (attributeMap_t::iterator iter = attr->begin(); iter != attr->end(); iter++) {
+		for (TypeValueList_t::iterator iter2 = iter->second->begin(); iter2 != iter->second->end(); iter2++) {
+			delete(*iter2); 
+		}
+		delete iter->second;
 	}
 }
 
@@ -140,6 +144,4 @@ Type* copyType(std::string typeName, Type* newT) {
 	newT->copyAttributes(att);
 	return newT;
 }
-
-Type* addAttributes(std::string typeName, attributeMap_t* attrs);
 
