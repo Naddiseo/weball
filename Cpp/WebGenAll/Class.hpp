@@ -24,11 +24,15 @@ public:
 	void addPK(keylist_t*);
 	void addIndex(keylist_t*);
 	
+	Type* newMember(std::string name, attributeMap_t* _attr);
+	
 private:
 	std::string name;
 	
 	keylist_t* pkey;
 	indexes_t indexes;
+	
+	typesMap_t members;
 };
 
 typedef std::map<std::string, class Class*> classMap_t;

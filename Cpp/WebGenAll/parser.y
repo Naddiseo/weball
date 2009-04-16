@@ -55,11 +55,8 @@ inline void ADDINDEX() {
 
 inline void NEWMEMBER(std::string name) {
 	std::cerr << "** Creating member" << name << std::endl;
-	curentType = currentClass->newMember(name);
-}
-
-inline void ADDMEMBER() {
-	currentClass->addMember(currentType);
+	currentAttributes = new attributeMap_t();
+	currentType = currentClass->newMember(name, currentAttributes);
 }
 
 inline void NEWTYPE(std::string name) {

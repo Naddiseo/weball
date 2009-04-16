@@ -17,6 +17,12 @@ Class::~Class() {
 			delete *it;
 		}
 	}
+	
+	for (typesMap_t::iterator it = members.begin(); it != members.end(); it++) {
+		if (it->second) {
+			delete it->second;
+		}
+	}
 }
 
 void 
@@ -67,6 +73,19 @@ void classes_print() {
 	}
 }
 
+Type* 
+Class::newMember(std::string name, attributeMap_t* _attr) {
+	if (members.find(name) != members.end()) {
+		yyerror("member already exists");
+		exit(-1);
+	}
+	Type* newT = new Type(name, _attr);
+	
+	members[name] = newT;
+	
+	return newT;
+}
+
 void 
 Class::print() { 
 	std::cout << "Class " << name << std::endl;
@@ -84,6 +103,13 @@ Class::print() {
 				std::cout << *it << ",";
 			}
 			std::cout << ")" << std::endl;
+		}
+	}
+	
+	for (typesMap_t::iterator it = members.begin(); it != members.end(); it++) {
+		std::cout << "\tMember (" << it->first << ")" <<std::endl;
+		if (it->second) {
+			it->second->print();
 		}
 	}
 }

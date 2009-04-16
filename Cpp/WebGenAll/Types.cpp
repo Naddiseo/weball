@@ -54,7 +54,7 @@ void types_print() {
 
 void
 Type::print() {
-	std::cout << "\n\nType(" << name << ")\n";
+	std::cout << "Type(" << name << ")\n";
 	for (attributeMap_t::iterator iter = attr->begin(); iter != attr->end(); iter++) {
 		std::cout << "\tAttr(" << iter->first << ")\n";
 		for (TypeValueList_t::iterator iter2 = iter->second->begin(); iter2 != iter->second->end(); iter2++) {

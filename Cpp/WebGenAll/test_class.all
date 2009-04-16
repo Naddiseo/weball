@@ -3,4 +3,4 @@ class Foo
 	index(b, name)
 	uint id
 	int b
-	string name
+	string name :range(0,5)
