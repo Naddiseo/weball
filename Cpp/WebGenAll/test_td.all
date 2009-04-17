@@ -1,0 +1,7 @@
+
+typedef string mystr :range(0,  500) :match("/^hello/")
+typedef mystr mystr2 :foo("bar")
+
+typedef uint myuint :bar("foo") :set
+
+typedef string noprops
