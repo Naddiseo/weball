@@ -15,6 +15,7 @@
 #include <TypeValue.hpp>
 #include <cstdlib>
 #include <Class.hpp>
+#include <DBFunction.hpp>
 
 extern "C" {
 	void yyerror (const char *);
@@ -39,6 +40,8 @@ attributeMap_t* currentAttributes;
 
 Class* currentClass;
 keylist_t* currentIdentList;
+
+DBFunction* currentDBFunction;
 
 inline void NEWCLASS(std::string name) {
 	std::cerr << "**Created Class " << name << std::endl;
@@ -234,8 +237,14 @@ dbfunction
 	: t_dbfunction t_ident ident_list_container t_eol dbfunction_members
 	;
 
-dbfunction_members:;
+dbfunction_members
+	: dbfunction_members t_bol dbfunction_member t_eol
+	| t_bol dbfunction_member t_eol
+	;
 
+dbfunction_member
+	: t_return ident_list_container
+	;
 %%
 
 
