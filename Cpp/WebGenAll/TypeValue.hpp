@@ -28,5 +28,4 @@ private:
 	};
 	type_e type;
 };
-
 #endif

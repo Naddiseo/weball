@@ -11,13 +11,16 @@
 class Type {
 public:
 	Type(string _name);
-	void addAttribute(SPAttribute attr);
-	SPAttribute getAttribute(string key);
+	~Type();
+	
+	void addAttribute(Attribute* attr);
+	Attribute* addAttribute(string name);
+	Attribute* getAttribute(string key);
 	
 	string getName() { return name; }
 private:
 	string name;
-	MSPAttribute attributes;
+	MAttribute attributes;
 };
 
 #endif

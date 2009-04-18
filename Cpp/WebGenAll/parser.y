@@ -97,23 +97,23 @@ typedef_line
 	: t_bool t_ident   { p.newType(*$2); p.setType(*$2); } member_attributes {
 		p.copyType(string("bool"), *$2);				
 	}
-	| t_int t_ident    { p.newType(*$2); }  member_attributes {
+	| t_int t_ident    { p.newType(*$2); p.setType(*$2); } member_attributes {
 		p.copyType(string("int"), *$2);
 	}
-	| t_uint t_ident   { p.newType(*$2); } member_attributes {
+	| t_uint t_ident   { p.newType(*$2); p.setType(*$2); } member_attributes {
 		p.copyType(string("uint"), *$2);
 	}
-	| t_string t_ident { p.newType(*$2); }member_attributes {
+	| t_string t_ident { p.newType(*$2); p.setType(*$2); } member_attributes {
 		p.copyType(string("string"), *$2);
 	}
-	| t_ident t_ident  { p.newType(*$2); } member_attributes {
+	| t_ident t_ident  { p.newType(*$2); p.setType(*$2); } member_attributes {
 		p.copyType(*$1, *$2);
 	}
 	;
 	
 member_attributes
 	: /* no attributes */
-	| member_attributes t_attribute {/* NEWVLIST();*/ } attribute_values {
+	| member_attributes t_attribute { p.addAttribute(*$2); p.setAttribute(string(*$2)) } attribute_values {
 		//SETATTR(*$2);
 	}
 	;

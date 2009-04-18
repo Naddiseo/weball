@@ -3,8 +3,8 @@
 #include <config.h>
 #include <cstdlib>
 
-void parserError(string, int line);
+void parserError(string, const char* file, int line);
 
-#define pdie(msg) parserError(#msg, __LINE__)
+#define pdie(msg) parserError(msg, __FILE__, __LINE__)
 
 #endif

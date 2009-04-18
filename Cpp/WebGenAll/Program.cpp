@@ -2,21 +2,23 @@
 #include <error.hpp>
 
 Program::Program() {
+
+	types["bool"  ] = new Type("bool"  );
+	types["int"   ] = new Type("int"   );
+	types["uint"  ] = new Type("uint"  );
+	types["string"] = new Type("string");
+
+	types["bool"  ]
+		->addAttribute("range")
+			->addValue(0)
+			->addValue(1);
 	
-	string boolAttrName("range");
-	SPAttribute boolAttr = Attribute::newAttribute(boolAttrName);//(new Attribute(boolAttrName));
-	
-	SPTypeValue min(new TypeValue(0));
-	SPTypeValue max(new TypeValue(1));
-	
-	boolAttr->addValue(min);
-	boolAttr->addValue(max);
-	
-	string boolName = "bool";
-	SPType boolType(new Type(boolName));
-	
-	types[boolName] = boolType;
+	types["uint"]
+		->addAttribute("min")
+			->addValue(0);
 }
+
+
 
 void 
 Program::addConfig(string key, string value) {
@@ -25,8 +27,8 @@ Program::addConfig(string key, string value) {
 
 void 
 Program::setType(string name) {
-	if (types.find(name) != types.end()) {
-		pdie("Type already exists");
+	if (types.find(name) == types.end()) {
+		pdie("Type does not exist");
 	}
 	currentType = types[name];
 }
@@ -34,11 +36,11 @@ Program::setType(string name) {
 void 
 Program::copyType(string original, string name) {
 	if (types.find(original) == types.end()) {
-		pdie("No type of that name found");
+		pdie(string("No type of that name found (") + original + ")" );
 	}
 	
-	SPType ori  = types[original];
-	SPType diff = types[name];
+	Type* ori  = types[original];
+	Type* diff = types[name];
 }
 
 void 
@@ -47,13 +49,30 @@ Program::newType (string name) {
 		pdie("That type exists already");
 	}
 	
-	SPType newT(new Type(name));
+	Type* newT = new Type(name);
+	if (!newT) {
+		pdie("Could not allocate Type" + name);
+	}
 	types[name] = newT;
 }
 
 void 
 Program::addTypeValue(TypeValue* value) {
-	SPTypeValue tv(value);
-	
-	currentAttribute->addValue(tv);
+	currentAttribute->addValue(value);
+}
+
+void 
+Program::addAttribute(string name) {
+	if (!currentType) {
+		pdie("Cannot set attribute on null type");
+	}
+	currentType->addAttribute(new Attribute(name));
+}
+
+void 
+Program::setAttribute(string name) {
+	if (!currentType) {
+		pdie("Current type not set..");
+	}
+	currentAttribute = currentType->getAttribute(name);
 }

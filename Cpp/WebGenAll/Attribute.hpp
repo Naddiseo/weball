@@ -1,19 +1,25 @@
 #ifndef __ATTRIBUTE_HPP__
 #define __ATTRIBUTE_HPP__
 #include <config.h>
+#include <TypeValue.hpp>
 
 class Attribute {
 public:
 	Attribute(string _name);
-	void addValue(SPTypeValue value);
+	~Attribute();
+	
+	void addValue(TypeValue* value);
+	
+	Attribute* addValue(string        _s);
+	Attribute* addValue(unsigned int _ui);
+	Attribute* addValue(int           _i);
+	Attribute* addValue(bool          _b);
 	
 	string getName() { return name; }
 	
-	static SPAttribute
-	newAttribute(string name);
 private:
 	string name;
-	VSPTypeValue values;
+	VTypeValue values;
 };
 
-#endif 
+#endif

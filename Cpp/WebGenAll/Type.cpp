@@ -5,16 +5,29 @@ Type::Type(string _name) {
 	name = _name;
 }
 
+Type::~Type() {
+	foreach(PAttribute a, attributes) {
+		delete a.second;
+	}
+}
+
 void 
-Type::addAttribute(SPAttribute attr) {
+Type::addAttribute(Attribute* attr) {
 	attributes[attr->getName()] = attr;
 }
 
-SPAttribute 
+Attribute*
 Type::getAttribute(string key) {
 	if (attributes.find(key) == attributes.end()) {
 		pdie("Attribute does not exist");
 	}
 	
 	return attributes[key];
+}
+
+Attribute*
+Type::addAttribute(string name) {
+	Attribute* ret = new Attribute(name);
+	addAttribute(ret);
+	return ret;
 }

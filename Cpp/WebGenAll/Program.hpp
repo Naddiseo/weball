@@ -10,16 +10,19 @@ class Program {
 public:
 	Program();
 	void addConfig(string key, string value);
+	
 	void newType (string name);
 	void setType (string name);
 	void copyType(string original, string name);
 	
 	void addTypeValue(TypeValue* value);
+	void addAttribute(string name);
+	void setAttribute(string name);
 private:
-	SPType currentType;
-	SPAttribute currentAttribute;
+	Type* currentType;
+	Attribute* currentAttribute;
 	Config conf;
-	MSPType types;
+	MType types;
 };
 
 #endif
