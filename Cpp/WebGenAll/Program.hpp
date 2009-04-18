@@ -9,10 +9,10 @@
 class Program {
 public:
 	Program();
-	void addConfig(SPString key, SPString value);
-	void newType (SPString name);
-	void setType (SPString name);
-	void copyType(SPString original, SPString name);
+	void addConfig(string key, string value);
+	void newType (string name);
+	void setType (string name);
+	void copyType(string original, string name);
 	
 	void addTypeValue(TypeValue* value);
 private:

@@ -5,14 +5,14 @@
 
 class TypeValue {
 public:
-	TypeValue (SPString _s)     : stringval(_s), type(STR) {}
+	TypeValue (string _s)       : stringval(_s), type(STR) {}
 	TypeValue (unsigned int _u) : uintval(_u), type(UINT) {}
 	TypeValue (int _i)          : intval(_i), type(INT) {}
 	TypeValue (bool _b)         : boolval(_b), type(B) {}
 	
 	void print();
 private:
-	SPString stringval;
+	string stringval;
 	union {
 		unsigned int uintval;
 		int intval;

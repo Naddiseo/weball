@@ -8,7 +8,7 @@
 
 extern "C" int yywrap();
 extern "C" int yyget_lineno();
-std::string baseDirectory;
+string baseDirectory;
 
 /*
 static void yy_warn (yyconst char* msg ) {
@@ -43,7 +43,7 @@ char err_buf[100];
 }
 
 #[^\r\n]* {
-	yylval.comment = new std::string(yytext);
+	yylval.comment = new string(yytext);
 	return t_comment;
 }
 
@@ -77,19 +77,19 @@ bool   { return t_bool;   }
 }
 
 :[a-zA-Z][a-zA-Z0-9_]* {
-	yylval.identval = new std::string(yytext);
+	yylval.identval = new string(yytext);
 	// remove the initial :
 	yylval.identval->erase(0, 1);
 	return t_attribute;
 }
 
 [a-zA-Z][a-zA-Z0-9_]* {
-	yylval.identval = new std::string(yytext);
+	yylval.identval = new string(yytext);
 	return t_ident;
 }
 
 <incl>["'] {
-	std::string path = "";
+	string path = "";
 	
 	register char c;
 	char end = *yytext;
@@ -181,7 +181,7 @@ bool   { return t_bool;   }
 }
 
 ["'] {
-	std::string* buf = new std::string;
+	string* buf = new string;
 	
 	register char c;
 	char end = *yytext;

@@ -27,10 +27,10 @@ void checkIndent (int x, int y) {
 %}
 
 %union {
-	std::string* identval;
-	std::string* stringval;
-//	std::string* rxval;
-	std::string* comment;
+	string* identval;
+	string* stringval;
+//	string* rxval;
+	string* comment;
 	unsigned int uintval;
 	int intval;
 	int indent;
@@ -55,7 +55,7 @@ void checkIndent (int x, int y) {
 %type <indent> t_bol
 //%type <TypeValue*> type_val
 
-//%destructor { delete ($$); } t_ident t_attribute t_stringval t_comment
+%destructor { delete ($$); } t_ident t_attribute t_stringval t_comment
 
 %left ','
 
@@ -88,26 +88,26 @@ config_section
 config_parts
 	: config_parts t_bol t_ident '(' t_stringval ')' t_eol { 
 		checkIndent(1, $2);
-		p.addConfig(mkstr($3), mkstr($5)); 
+		p.addConfig(*$3, *$5); 
 	}
 	| 
 	;
 
 typedef_line
-	: t_bool t_ident   { p.newType(mkstr($2)); p.setType(mkstr($2)); } member_attributes {
-		p.copyType(mkstr("bool"), mkstr($2));				
+	: t_bool t_ident   { p.newType(*$2); p.setType(*$2); } member_attributes {
+		p.copyType(string("bool"), *$2);				
 	}
-	| t_int t_ident    { p.newType(mkstr($2)); }  member_attributes {
-		p.copyType(mkstr("int"), mkstr($2));
+	| t_int t_ident    { p.newType(*$2); }  member_attributes {
+		p.copyType(string("int"), *$2);
 	}
-	| t_uint t_ident   { p.newType(mkstr($2)); } member_attributes {
-		p.copyType(mkstr("uint"), mkstr($2));
+	| t_uint t_ident   { p.newType(*$2); } member_attributes {
+		p.copyType(string("uint"), *$2);
 	}
-	| t_string t_ident { p.newType(mkstr($2)); }member_attributes {
-		p.copyType(mkstr("string"), mkstr($2));
+	| t_string t_ident { p.newType(*$2); }member_attributes {
+		p.copyType(string("string"), *$2);
 	}
-	| t_ident t_ident  { p.newType(mkstr($2)); } member_attributes {
-		p.copyType(mkstr($1), mkstr($2));
+	| t_ident t_ident  { p.newType(*$2); } member_attributes {
+		p.copyType(*$1, *$2);
 	}
 	;
 	
@@ -133,7 +133,7 @@ type_val
 	: t_boolval   { p.addTypeValue(new TypeValue ( $1));  }
 	| t_intval    { p.addTypeValue(new TypeValue ( $1));  }
 	| t_uintval   { p.addTypeValue(new TypeValue ( $1));  }
-	| t_stringval { p.addTypeValue(new TypeValue (mkstr($1))); }
+	| t_stringval { p.addTypeValue(new TypeValue (*$1)); }
 	;
 %%
 

@@ -6,11 +6,11 @@
 
 class Config {
 public:
-	void addConfig(SPString key, SPString value);
-	SPString getValue(SPString key);
+	void addConfig(string key, string value);
+	string getValue(string key);
 
 private:
-	MSPString configuration;
+	MString configuration;
 };
 
 #endif

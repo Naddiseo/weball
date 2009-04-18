@@ -11,12 +11,13 @@ extern "C" {
 }
 
 extern int yydebug;
-using namespace std;
 
 Program p;
-extern "C" std::string baseDirectory;
+extern "C" string baseDirectory;
 
 int main (int argc, char* argv[]) {
+	using namespace std;
+	
 	FILE* in;
 	FILE* out;
 

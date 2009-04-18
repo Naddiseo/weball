@@ -6,7 +6,7 @@ void
 TypeValue::print() {
 	switch (type) {
 		case STR:
-			std::cout << *stringval;
+			std::cout << stringval;
 			break;
 		case INT:
 			std::cout << intval;

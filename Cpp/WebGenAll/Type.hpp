@@ -10,13 +10,13 @@
 
 class Type {
 public:
-	Type(SPString _name);
+	Type(string _name);
 	void addAttribute(SPAttribute attr);
-	SPAttribute getAttribute(SPString key);
+	SPAttribute getAttribute(string key);
 	
-	SPString getName() { return name; }
+	string getName() { return name; }
 private:
-	SPString name;
+	string name;
 	MSPAttribute attributes;
 };
 

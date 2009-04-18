@@ -1,7 +1,7 @@
 #include <Attribute.hpp>
 #include <error.hpp>
 
-Attribute::Attribute(SPString _name) {
+Attribute::Attribute(string _name) {
 	name = _name;
 
 }
@@ -12,9 +12,9 @@ Attribute::addValue(SPTypeValue value) {
 }
 
 SPAttribute
-newAttribute(std::string name) {
+Attribute::newAttribute(string name) {
 
-	SPAttribute ret(new Attribute(mkstr(name)));
+	SPAttribute ret(new Attribute(name));
 	
 	return ret;
 }

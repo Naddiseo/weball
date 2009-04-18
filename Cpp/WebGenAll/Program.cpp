@@ -3,8 +3,8 @@
 
 Program::Program() {
 	
-	//SPString boolAttrName("range");
-	SPAttribute boolAttr = Attribute::newAttribute(std::string("range"));//(new Attribute(boolAttrName));
+	string boolAttrName("range");
+	SPAttribute boolAttr = Attribute::newAttribute(boolAttrName);//(new Attribute(boolAttrName));
 	
 	SPTypeValue min(new TypeValue(0));
 	SPTypeValue max(new TypeValue(1));
@@ -12,19 +12,19 @@ Program::Program() {
 	boolAttr->addValue(min);
 	boolAttr->addValue(max);
 	
-	SPString boolName = mkstr("bool");
+	string boolName = "bool";
 	SPType boolType(new Type(boolName));
 	
 	types[boolName] = boolType;
 }
 
 void 
-Program::addConfig(SPString key, SPString value) {
-	conf.addConfig(key,value);
+Program::addConfig(string key, string value) {
+	conf.addConfig(key, value);
 }
 
 void 
-Program::setType(SPString name) {
+Program::setType(string name) {
 	if (types.find(name) != types.end()) {
 		pdie("Type already exists");
 	}
@@ -32,7 +32,7 @@ Program::setType(SPString name) {
 }
 
 void 
-Program::copyType(SPString original, SPString name) {
+Program::copyType(string original, string name) {
 	if (types.find(original) == types.end()) {
 		pdie("No type of that name found");
 	}
@@ -42,7 +42,7 @@ Program::copyType(SPString original, SPString name) {
 }
 
 void 
-Program::newType (SPString name) {
+Program::newType (string name) {
 	if (types.find(name) != types.end()) {
 		pdie("That type exists already");
 	}

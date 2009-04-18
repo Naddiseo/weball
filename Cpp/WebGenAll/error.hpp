@@ -3,7 +3,7 @@
 #include <config.h>
 #include <cstdlib>
 
-void parserError(std::string, int line);
+void parserError(string, int line);
 
 #define pdie(msg) parserError(#msg, __LINE__)
 

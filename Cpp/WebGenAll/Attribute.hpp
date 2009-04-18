@@ -4,15 +4,15 @@
 
 class Attribute {
 public:
-	Attribute(SPString _name);
+	Attribute(string _name);
 	void addValue(SPTypeValue value);
 	
-	SPString getName() { return name; }
+	string getName() { return name; }
 	
 	static SPAttribute
-	newAttribute(std::string name);
+	newAttribute(string name);
 private:
-	SPString name;
+	string name;
 	VSPTypeValue values;
 };
 

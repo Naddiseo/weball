@@ -11,24 +11,20 @@
 #include <boost/foreach.hpp>
 #define foreach BOOST_FOREACH
 
-typedef boost::shared_ptr<std::string>          SPString;
-typedef std::map<SPString, SPString>           MSPString;
-typedef std::map<SPString, SPString>::iterator MSPString_it;
-
-SPString mkstr(const char* s);
-SPString mkstr(std::string s);
-SPString mkstr(std::string* s);
+typedef std::string string;
+typedef std::map<string, string>           MString;
+typedef std::map<string, string>::iterator MString_it;
 
 class Config;
 typedef boost::shared_ptr<class Config> SPConfig;
 
 class Type;
 typedef boost::shared_ptr<class Type>  SPType;
-typedef std::map<SPString, SPType>     MSPType;
+typedef std::map<string, SPType>      MSPType;
 
 class Attribute;
 typedef boost::shared_ptr<class Attribute>  SPAttribute;
-typedef std::map<SPString, SPAttribute>     MSPAttribute;
+typedef std::map<string, SPAttribute>      MSPAttribute;
 
 class TypeValue;
 typedef boost::shared_ptr<class TypeValue>  SPTypeValue;

@@ -1,7 +1,7 @@
 #include <Type.hpp>
 #include <error.hpp>
 
-Type::Type(SPString _name) {
+Type::Type(string _name) {
 	name = _name;
 }
 
@@ -11,7 +11,7 @@ Type::addAttribute(SPAttribute attr) {
 }
 
 SPAttribute 
-Type::getAttribute(SPString key) {
+Type::getAttribute(string key) {
 	if (attributes.find(key) == attributes.end()) {
 		pdie("Attribute does not exist");
 	}
