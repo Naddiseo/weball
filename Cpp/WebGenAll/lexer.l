@@ -19,6 +19,11 @@ static void yy_warn (yyconst char* msg ) {
 
 char err_buf[100];
 
+extern VPString strings_ptr;
+// add a string pointer to the list.
+inline PString addStr(PString p) { 
+	strings_ptr.push_back(p); return p;
+}
 
 %}
 %option debug
@@ -43,7 +48,7 @@ char err_buf[100];
 }
 
 #[^\r\n]* {
-	yylval.comment = new string(yytext);
+	yylval.comment = addStr(new string(yytext));
 	return t_comment;
 }
 
@@ -77,14 +82,14 @@ bool   { return t_bool;   }
 }
 
 :[a-zA-Z][a-zA-Z0-9_]* {
-	yylval.identval = new string(yytext);
+	yylval.identval = addStr(new string(yytext));
 	// remove the initial :
 	yylval.identval->erase(0, 1);
 	return t_attribute;
 }
 
 [a-zA-Z][a-zA-Z0-9_]* {
-	yylval.identval = new string(yytext);
+	yylval.identval = addStr(new string(yytext));
 	return t_ident;
 }
 
@@ -181,7 +186,7 @@ bool   { return t_bool;   }
 }
 
 ["'] {
-	string* buf = new string;
+	string* buf = addStr(new string);
 	
 	register char c;
 	char end = *yytext;

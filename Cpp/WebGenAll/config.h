@@ -10,7 +10,9 @@
 #include <boost/foreach.hpp>
 #define foreach BOOST_FOREACH
 
-typedef std::string string;
+typedef std::string                         string;
+typedef string*                            PString;
+typedef std::vector<PString>              VPString;
 typedef std::map<string, string>           MString;
 typedef std::map<string, string>::iterator MString_it;
 

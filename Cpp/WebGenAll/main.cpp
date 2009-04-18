@@ -1,6 +1,5 @@
 #include <config.h>
 #include <iostream>
-#include <string>
 #include <cstring>
 #include <libgen.h> // for dirname()
 #include <lexer.h>
@@ -14,12 +13,14 @@ extern int yydebug;
 
 Program p;
 extern "C" string baseDirectory;
+// because bison doesn't free them properly, I'll do it manually
+VPString strings_ptr;
 
 int main (int argc, char* argv[]) {
 	using namespace std;
 	
-	FILE* in;
-	FILE* out;
+	FILE* in = NULL;
+	FILE* out = NULL;
 
 #ifdef NDEBUG 
 	cerr << "Setting debug\n";
@@ -56,10 +57,16 @@ int main (int argc, char* argv[]) {
 	p.print();
 
 
-	if (in && in != stdin) {
+	foreach (PString s, strings_ptr) {
+		if (s) {
+			delete s;
+		}
+	}
+
+	if (in != NULL && in != stdin) {
 		fclose (in);
 	}
-	if (out && out != stdout) {
+	if (out != NULL && out != stdout) {
 		fclose (out);
 	}
 

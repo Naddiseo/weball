@@ -27,7 +27,7 @@ bison:
 	bison --report=state,lookahead,itemset -vtd parser.y
 
 clean:
-	-rm lexer.[ch] parser.tab.[ch] parser.output ./bin/*.o
+	-rm lexer.[ch] parser.tab.[ch] parser.output ./bin/*.o valgrind.out
 
 
 run_debug:
