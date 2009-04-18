@@ -9,6 +9,7 @@
 class Program {
 public:
 	Program();
+	~Program();
 	void addConfig(string key, string value);
 	
 	void newType (string name);

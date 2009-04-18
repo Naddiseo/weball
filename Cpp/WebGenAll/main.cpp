@@ -23,7 +23,7 @@ int main (int argc, char* argv[]) {
 
 #ifdef NDEBUG 
 	cerr << "Setting debug\n";
-	yyset_debug (0);
+	yyset_debug (1);
 	//yydebug = 1;
 #endif
 
@@ -34,7 +34,7 @@ int main (int argc, char* argv[]) {
 			if (strncmp (argv[x], "-d", 2) == 0) {
 				cerr << "Setting debug\n";
 				//yyset_debug (1);
-				yydebug = 1;
+				//yydebug = 1;
 			} else {
 				in = fopen (argv[x], "r");
 				if (in == NULL) {

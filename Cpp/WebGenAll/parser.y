@@ -55,7 +55,7 @@ void checkIndent (int x, int y) {
 %type <indent> t_bol
 //%type <TypeValue*> type_val
 
-%destructor { delete ($$); } t_ident t_attribute t_stringval t_comment
+%destructor { std::cout << "Deleting '" << *$$ << "'\n'"; delete ($$); } t_ident t_attribute t_stringval t_comment
 
 %left ','
 

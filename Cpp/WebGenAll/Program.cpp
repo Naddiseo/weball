@@ -18,7 +18,11 @@ Program::Program() {
 			->addValue(0);
 }
 
-
+Program::~Program() {
+	foreach (PType t, types) {
+		delete t.second;
+	}
+}
 
 void 
 Program::addConfig(string key, string value) {
