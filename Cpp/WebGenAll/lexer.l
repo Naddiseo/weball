@@ -8,7 +8,8 @@
 
 extern "C" int yywrap();
 extern "C" int yyget_lineno();
-extern std::string base_dir;
+std::string baseDirectory;
+
 /*
 static void yy_warn (yyconst char* msg ) {
 	(void) fprintf( stderr, "Lexer Warning:(%d) %s\n", yyget_lineno(), msg );

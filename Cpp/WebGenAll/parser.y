@@ -75,8 +75,8 @@ lines
 
 line
 	: config_section
-	//| t_typedef typedef_line t_eol
-	//| t_comment
+	| t_typedef typedef_line t_eol
+	| t_comment
 	//| class_block
 	;
 
@@ -95,6 +95,54 @@ config_parts
 	| 
 	;
 
+typedef_line
+	: t_bool t_ident   { p.newType(*$2); } member_attributes {
+		copyType(std::string("bool"), *$2);
+		currentType->copyAttributes(currentAttributes);
+				
+	}
+	| t_int t_ident    { p.newType(*$2); }  member_attributes {
+		copyType(std::string("int"), currentType);
+		currentType->copyAttributes(currentAttributes);
+	}
+	| t_uint t_ident   { p.newType(*$2); } member_attributes {
+		copyType(std::string("uint"), currentType);
+		currentType->copyAttributes(currentAttributes);
+	}
+	| t_string t_ident { p.newType(*$2); }member_attributes {
+		copyType(std::string("string"), currentType);
+		currentType->copyAttributes(currentAttributes);
+	}
+	| t_ident t_ident  { p.newType(*$2); } member_attributes {
+		copyType(*$1, currentType);
+		currentType->copyAttributes(currentAttributes);
+	}
+	;
+	
+member_attributes
+	: /* no attributes */
+	| member_attributes t_attribute { NEWVLIST(); } attribute_values {
+		SETATTR(*$2);
+	}
+	;
+
+attribute_values
+	: /* none */
+	| '(' value_list ')'
+	| '(' ')'
+	;
+
+value_list	
+	: type_val                { ADDVAL(currentTV); }
+	| value_list ',' type_val { ADDVAL(currentTV); }
+	;
+
+type_val
+	: t_boolval   { currentTV = new TypeValue ( $1);  }
+	| t_intval    { currentTV = new TypeValue ( $1);  }
+	| t_uintval   { currentTV = new TypeValue ( $1);  }
+	| t_stringval { currentTV = new TypeValue (*$1); }
+	;
 %%
 
 void

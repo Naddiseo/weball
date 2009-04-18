@@ -14,6 +14,7 @@ extern int yydebug;
 using namespace std;
 
 Program p;
+extern "C" std::string baseDirectory;
 
 int main (int argc, char* argv[]) {
 	FILE* in;

@@ -10,7 +10,7 @@ public:
 	SPString getValue(SPString key);
 
 private:
-	strMap_t configuration;
+	MSPString configuration;
 };
 
 #endif
