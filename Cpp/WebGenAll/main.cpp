@@ -52,6 +52,8 @@ int main (int argc, char* argv[]) {
 	}
 
 	yyparse();
+	std::cout << std::endl;
+	p.print();
 
 
 	if (in && in != stdin) {

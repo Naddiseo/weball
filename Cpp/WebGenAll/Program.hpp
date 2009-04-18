@@ -18,6 +18,8 @@ public:
 	void addTypeValue(TypeValue* value);
 	void addAttribute(string name);
 	void setAttribute(string name);
+	
+	void print();
 private:
 	Type* currentType;
 	Attribute* currentAttribute;

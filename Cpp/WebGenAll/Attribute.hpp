@@ -19,6 +19,7 @@ public:
 	
 	void copy(Attribute* original);
 	
+	void print();
 private:
 	string name;
 	VTypeValue values;

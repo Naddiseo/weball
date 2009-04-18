@@ -41,6 +41,7 @@ Program::copyType(string original, string name) {
 	
 	Type* ori  = types[original];
 	Type* diff = types[name];
+	diff->copy(ori);
 }
 
 void 
@@ -75,4 +76,11 @@ Program::setAttribute(string name) {
 		pdie("Current type not set..");
 	}
 	currentAttribute = currentType->getAttribute(name);
+}
+
+void
+Program::print() {
+	foreach (PType t, types) {
+		t.second->print();
+	}
 }

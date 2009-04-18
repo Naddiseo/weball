@@ -1,5 +1,6 @@
 #include <Attribute.hpp>
 #include <error.hpp>
+#include <iostream>
 
 Attribute::Attribute(string _name) {
 	name = _name;
@@ -49,4 +50,14 @@ Attribute::copy(Attribute* original) {
 	foreach (TypeValue* v, original->values) {
 		addValue(v->copy());
 	}
+}
+
+void 
+Attribute::print() {
+	std::cout << getName() << ": ";
+	foreach (TypeValue* v, values) {
+		v->print();
+		std::cout << ",";
+	}
+	std::cout << std::endl;
 }

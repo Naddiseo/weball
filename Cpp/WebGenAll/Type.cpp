@@ -38,3 +38,12 @@ Type::copy(Type* original) {
 		addAttribute(a.second->getName())->copy(a.second);
 	}
 }
+
+void 
+Type::print() {
+	std::cout << "Type " << getName() << std::endl;
+	foreach (PAttribute a, attributes) {
+		std::cout <<"\t";
+		a.second->print();
+	}
+}
