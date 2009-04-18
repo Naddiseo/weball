@@ -11,6 +11,8 @@ public:
 	TypeValue (bool _b)         : boolval(_b), type(B) {}
 	
 	void print();
+	
+	TypeValue* copy();
 private:
 	string stringval;
 	union {

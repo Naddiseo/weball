@@ -31,3 +31,10 @@ Type::addAttribute(string name) {
 	addAttribute(ret);
 	return ret;
 }
+
+void
+Type::copy(Type* original) {
+	foreach (PAttribute a, original->attributes) {
+		addAttribute(a.second->getName())->copy(a.second);
+	}
+}

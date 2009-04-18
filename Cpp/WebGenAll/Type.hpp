@@ -17,6 +17,8 @@ public:
 	Attribute* addAttribute(string name);
 	Attribute* getAttribute(string key);
 	
+	void copy(Type* original);
+	
 	string getName() { return name; }
 private:
 	string name;

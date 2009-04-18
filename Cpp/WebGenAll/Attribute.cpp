@@ -44,3 +44,9 @@ Attribute::addValue(bool          _b) {
 	return this;
 }
 
+void 
+Attribute::copy(Attribute* original) {
+	foreach (TypeValue* v, original->values) {
+		addValue(v->copy());
+	}
+}

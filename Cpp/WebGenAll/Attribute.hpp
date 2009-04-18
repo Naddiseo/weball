@@ -17,6 +17,8 @@ public:
 	
 	string getName() { return name; }
 	
+	void copy(Attribute* original);
+	
 private:
 	string name;
 	VTypeValue values;
