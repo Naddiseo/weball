@@ -15,19 +15,23 @@ typedef boost::shared_ptr<std::string>          SPString;
 typedef std::map<SPString, SPString>           MSPString;
 typedef std::map<SPString, SPString>::iterator MSPString_it;
 
+SPString mkstr(const char* s);
+SPString mkstr(std::string s);
+SPString mkstr(std::string* s);
+
 class Config;
-typedef boost::shared_ptr<class Config*> SPConfig;
+typedef boost::shared_ptr<class Config> SPConfig;
 
 class Type;
-typedef boost::shared_ptr<class Type*>  SPType;
+typedef boost::shared_ptr<class Type>  SPType;
 typedef std::map<SPString, SPType>     MSPType;
 
 class Attribute;
-typedef boost::shared_ptr<class Attribute*>  SPAttribute;
+typedef boost::shared_ptr<class Attribute>  SPAttribute;
 typedef std::map<SPString, SPAttribute>     MSPAttribute;
 
 class TypeValue;
-typedef boost::shared_ptr<class TypeValue*>  SPTypeValue;
+typedef boost::shared_ptr<class TypeValue>  SPTypeValue;
 typedef std::vector<SPTypeValue>            VSPTypeValue;
 
 #endif

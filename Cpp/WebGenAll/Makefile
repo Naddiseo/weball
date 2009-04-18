@@ -13,8 +13,10 @@ all: bison lex
 	#g++ $(OPTIONSD) -o ./bin/Class.o -c Class.cpp
 	g++ $(OPTIONSD) -o ./bin/Type.o -c Type.cpp
 	g++ $(OPTIONSD) -o ./bin/TypeValue.o -c TypeValue.cpp
-	g++ $(OPTIONSD) -o ./bin/Attributes.o -c Attributes.cpp
+	g++ $(OPTIONSD) -o ./bin/Attribute.o -c Attribute.cpp
 	g++ $(OPTIONSD) -o ./bin/Program.o -c Program.cpp
+	g++ $(OPTIONSD) -o ./bin/error.o   -c error.cpp
+	g++ $(OPTIONSD) -o ./bin/misc.o   -c misc.cpp
 	g++ $(OPTIONSD) -o ./bin/main.o -c main.cpp
 	g++ ./bin/*.o -o ./bin/WebGenAll
 

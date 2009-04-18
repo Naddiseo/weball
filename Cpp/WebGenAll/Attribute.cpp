@@ -1,18 +1,20 @@
 #include <Attribute.hpp>
+#include <error.hpp>
 
-Attribute(SPString _name) {
+Attribute::Attribute(SPString _name) {
 	name = _name;
 
 }
 
-void addValue(SPTypeValue value) {
+void 
+Attribute::addValue(SPTypeValue value) {
 	values.push_back(value);
 }
 
 SPAttribute
 newAttribute(std::string name) {
-	SPString n(name);
-	SPAttribute ret(new Attribute(n));
+
+	SPAttribute ret(new Attribute(mkstr(name)));
 	
 	return ret;
 }

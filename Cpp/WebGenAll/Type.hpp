@@ -6,6 +6,7 @@
 */
 
 #include <config.h>
+#include <Attribute.hpp>
 
 class Type {
 public:
@@ -13,7 +14,7 @@ public:
 	void addAttribute(SPAttribute attr);
 	SPAttribute getAttribute(SPString key);
 	
-	SPString getName { return name; }
+	SPString getName() { return name; }
 private:
 	SPString name;
 	MSPAttribute attributes;

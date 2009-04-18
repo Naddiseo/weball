@@ -88,41 +88,33 @@ config_section
 config_parts
 	: config_parts t_bol t_ident '(' t_stringval ')' t_eol { 
 		checkIndent(1, $2);
-		SPString key($3);
-		SPString value($5);
-		p.addConfig(key, value); 
+		p.addConfig(mkstr($3), mkstr($5)); 
 	}
 	| 
 	;
 
 typedef_line
-	: t_bool t_ident   { p.newType(*$2); } member_attributes {
-		copyType(std::string("bool"), *$2);
-		currentType->copyAttributes(currentAttributes);
-				
+	: t_bool t_ident   { p.newType(mkstr($2)); p.setType(mkstr($2)); } member_attributes {
+		p.copyType(mkstr("bool"), mkstr($2));				
 	}
-	| t_int t_ident    { p.newType(*$2); }  member_attributes {
-		copyType(std::string("int"), currentType);
-		currentType->copyAttributes(currentAttributes);
+	| t_int t_ident    { p.newType(mkstr($2)); }  member_attributes {
+		p.copyType(mkstr("int"), mkstr($2));
 	}
-	| t_uint t_ident   { p.newType(*$2); } member_attributes {
-		copyType(std::string("uint"), currentType);
-		currentType->copyAttributes(currentAttributes);
+	| t_uint t_ident   { p.newType(mkstr($2)); } member_attributes {
+		p.copyType(mkstr("uint"), mkstr($2));
 	}
-	| t_string t_ident { p.newType(*$2); }member_attributes {
-		copyType(std::string("string"), currentType);
-		currentType->copyAttributes(currentAttributes);
+	| t_string t_ident { p.newType(mkstr($2)); }member_attributes {
+		p.copyType(mkstr("string"), mkstr($2));
 	}
-	| t_ident t_ident  { p.newType(*$2); } member_attributes {
-		copyType(*$1, currentType);
-		currentType->copyAttributes(currentAttributes);
+	| t_ident t_ident  { p.newType(mkstr($2)); } member_attributes {
+		p.copyType(mkstr($1), mkstr($2));
 	}
 	;
 	
 member_attributes
 	: /* no attributes */
-	| member_attributes t_attribute { NEWVLIST(); } attribute_values {
-		SETATTR(*$2);
+	| member_attributes t_attribute {/* NEWVLIST();*/ } attribute_values {
+		//SETATTR(*$2);
 	}
 	;
 
@@ -133,15 +125,15 @@ attribute_values
 	;
 
 value_list	
-	: type_val                { ADDVAL(currentTV); }
-	| value_list ',' type_val { ADDVAL(currentTV); }
+	: type_val                { /*ADDVAL(currentTV); */}
+	| value_list ',' type_val { /*ADDVAL(currentTV);*/ }
 	;
 
 type_val
-	: t_boolval   { currentTV = new TypeValue ( $1);  }
-	| t_intval    { currentTV = new TypeValue ( $1);  }
-	| t_uintval   { currentTV = new TypeValue ( $1);  }
-	| t_stringval { currentTV = new TypeValue (*$1); }
+	: t_boolval   { p.addTypeValue(new TypeValue ( $1));  }
+	| t_intval    { p.addTypeValue(new TypeValue ( $1));  }
+	| t_uintval   { p.addTypeValue(new TypeValue ( $1));  }
+	| t_stringval { p.addTypeValue(new TypeValue (mkstr($1))); }
 	;
 %%
 

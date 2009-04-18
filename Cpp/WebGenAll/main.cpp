@@ -50,7 +50,6 @@ int main (int argc, char* argv[]) {
 		}
 	}
 
-	//while (yyparse() == 0) {}
 	yyparse();
 
 
