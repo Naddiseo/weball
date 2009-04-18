@@ -10,7 +10,7 @@ all: bison lex
 	g++ -I. -I/usr/include -g -W -c parser.tab.c -o ./bin/parser.o
 	g++ -I. -I/usr/include -g -W -c lexer.c -o ./bin/lexer.o
 	g++ $(OPTIONSD) -o ./bin/Config.o -c Config.cpp
-	#g++ $(OPTIONSD) -o ./bin/Class.o -c Class.cpp
+	g++ $(OPTIONSD) -o ./bin/Class.o -c Class.cpp
 	g++ $(OPTIONSD) -o ./bin/Type.o -c Type.cpp
 	g++ $(OPTIONSD) -o ./bin/TypeValue.o -c TypeValue.cpp
 	g++ $(OPTIONSD) -o ./bin/Attribute.o -c Attribute.cpp

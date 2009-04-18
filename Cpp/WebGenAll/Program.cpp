@@ -22,6 +22,10 @@ Program::~Program() {
 	foreach (PType t, types) {
 		delete t.second;
 	}
+	
+	foreach (PClass c, classes) {
+		delete c.second;
+	}
 }
 
 void 
@@ -49,16 +53,20 @@ Program::copyType(string original, string name) {
 }
 
 void 
-Program::newType (string name) {
+Program::newType (string name, bool set = false) {
 	if (types.find(name) != types.end()) {
 		pdie("That type exists already");
 	}
 	
 	Type* newT = new Type(name);
 	if (!newT) {
-		pdie("Could not allocate Type" + name);
+		pdie("Could not allocate Type " + name);
 	}
 	types[name] = newT;
+	
+	if (set) {
+		currentType = newT;
+	}
 }
 
 void 
@@ -67,11 +75,19 @@ Program::addTypeValue(TypeValue* value) {
 }
 
 void 
-Program::addAttribute(string name) {
+Program::addAttribute(string name, bool set = false) {
 	if (!currentType) {
 		pdie("Cannot set attribute on null type");
 	}
-	currentType->addAttribute(new Attribute(name));
+	Attribute* newAttr = new Attribute(name);
+	if (!newAttr) {
+		pdie("Could not allocate enough memory for Attribute");
+	}
+	currentType->addAttribute(newAttr);
+	
+	if (set) {
+		currentAttribute = newAttr;
+	}
 }
 
 void 
@@ -87,4 +103,34 @@ Program::print() {
 	foreach (PType t, types) {
 		t.second->print();
 	}
+	
+	foreach (PClass c, classes) {
+		t.second->print();
+	}
+}
+
+
+void 
+Program::newClass(string name, bool set = false) {
+	if (classes.find(name) != classes.end()) {
+		pdie("That class exists already");
+	}
+	
+	Class* newC = new Class(name);
+	if (!newC) {
+		pdie("Could not allocate Class " + name);
+	}
+	classes[name] = newC;
+	
+	if (set) {
+		currentClass = newC;
+	}
+}
+
+void 
+Program::setClass(string name) {
+	if (classes.find(name) == classes.end()) {
+		pdie("Class does not exist");
+	}
+	currentClass = classes[name];
 }

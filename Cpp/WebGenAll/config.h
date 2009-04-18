@@ -14,18 +14,25 @@ typedef std::string                         string;
 typedef string*                            PString;
 typedef std::vector<PString>              VPString;
 typedef std::map<string, string>           MString;
-typedef std::map<string, string>::iterator MString_it;
 
 class Type;
-typedef std::map<string, Type*>      MType;
-typedef std::pair<string, Type*>     PType;
+typedef std::map <string, Type*>      MType;
+typedef std::pair<string, Type*>      PType;
 
 class Attribute;
-typedef std::map<string, Attribute*>  MAttribute;
+typedef std::map <string, Attribute*>  MAttribute;
 typedef std::pair<string, Attribute*> PAttribute;
 
 class TypeValue;
 typedef std::vector<TypeValue*> VTypeValue;
+
+class Class;
+typedef std::map <string, Class*> MClass;
+typedef std::pair<string, Class*> PClass;
+
+class ClassMember;
+typedef std::map <string, ClassMember*> MClassMember;
+typedef std::pair<string, ClassMember*> PClassMember;
 
 #endif
 
