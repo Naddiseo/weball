@@ -11,7 +11,7 @@
 class Type {
 public:
 	Type(string _name);
-	~Type();
+	virtual ~Type();
 	
 	void addAttribute(Attribute* attr);
 	Attribute* addAttribute(string name);

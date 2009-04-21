@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cstring>
 #include <libgen.h> // for dirname()
-#include <lexer.h>
+#include <lexer.hpp>
 #include <Program.hpp>
 
 extern "C" {
@@ -12,46 +12,47 @@ extern "C" {
 extern int yydebug;
 
 Program p;
-extern "C" string baseDirectory;
 // because bison doesn't free them properly, I'll do it manually
 VPString strings_ptr;
 
 int main (int argc, char* argv[]) {
-	using namespace std;
 	
 	FILE* in = NULL;
 	FILE* out = NULL;
 
 #ifdef NDEBUG 
-	cerr << "Setting debug\n";
+	std::cerr << "Setting debug\n";
 	yyset_debug (1);
 	//yydebug = 1;
 #endif
 
+	string basedir = "";
+
 	if (argc >= 2) {
 		int x;
 		 for (x = 1; x < argc; x++) {
-			cerr << "processing " << argv[x] << endl;
+			std::cerr << "processing " << argv[x] << std::endl;
 			if (strncmp (argv[x], "-d", 2) == 0) {
-				cerr << "Setting debug\n";
+				std::cerr << "Setting debug\n";
 				//yyset_debug (1);
 				//yydebug = 1;
 			} else {
 				in = fopen (argv[x], "r");
 				if (in == NULL) {
-					cerr << "Could not use file " << argv[x] << " for input, using stdin" << endl;
+					std::cerr << "Could not use file " << argv[x] << " for input, using stdin" << std::endl;
 				} else {
-					cerr << "Using file " << argv[x] << " for input" << endl;
-					baseDirectory.assign(dirname(argv[x]));
-					baseDirectory.append("/");
-					cerr << "basedir = " << baseDirectory <<endl;
+					std::cerr << "Using file " << argv[x] << " for input" << std::endl;
+					basedir.assign(dirname(argv[x]));
+					basedir.append("/");
+					std::cerr << "basedir = " << basedir << std::endl;
+					yyset_baseDirectory(basedir);
 					yyset_in (in);
 					break;
 				}
 			}
 		}
 	}
-
+	lex_init();
 	yyparse();
 	std::cout << std::endl;
 	p.print();
@@ -70,5 +71,5 @@ int main (int argc, char* argv[]) {
 		fclose (out);
 	}
 
-    return 0;
+	return 0;
 }

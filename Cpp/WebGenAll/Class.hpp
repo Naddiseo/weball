@@ -7,10 +7,14 @@ class Class {
 public:
 	Class(string _name);
 	~Class();
+	
+	void print();
+	
+	string getName() const { return name; }
 private:
 	string name;
 	
 	MClassMember members;
-}
+};
 
 #endif

@@ -105,7 +105,7 @@ Program::print() {
 	}
 	
 	foreach (PClass c, classes) {
-		t.second->print();
+		c.second->print();
 	}
 }
 
@@ -133,4 +133,9 @@ Program::setClass(string name) {
 		pdie("Class does not exist");
 	}
 	currentClass = classes[name];
+}
+
+void
+Program::addClassMember(string name) {
+
 }

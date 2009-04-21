@@ -1,3 +1,6 @@
+			  
+typedef string mystr :range(0,2)
+
 class Foo
 	pk(id)
 	index(b, name)

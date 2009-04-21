@@ -28,9 +28,10 @@ public:
 	
 	void print();
 private:
-	Type*      currentType;
-	Attribute* currentAttribute;
-	Class*     currentClass;
+	Type*         currentType;
+	Attribute*    currentAttribute;
+	Class*        currentClass;
+	ClassMember*  currentClassMember;
 	Config   conf;
 	MType   types;
 	MClass  classes;

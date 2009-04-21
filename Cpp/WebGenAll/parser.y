@@ -4,7 +4,8 @@
 #	define YYDEBUG 1
 #endif
 #include <config.h> 
-#include <lexer.h>
+//#include <lexer.h>
+#include <lexer.hpp>
 #include <Program.hpp>
 
 extern Program p;
@@ -15,7 +16,7 @@ extern "C" {
 	int yywrap();
 }
 
-extern int yylineno;
+int yyget_lineno();
 
 void checkIndent (int x, int y) {
 	if (x != y) {
@@ -180,7 +181,7 @@ dbfunction_member
 
 void
 yyerror (const char *str) {
-	fprintf (stderr, "Praser Error on line %d: %s\n", yylineno, str);
+	fprintf (stderr, "Parser Error on line %d: %s\n", yyget_lineno(), str);
 }
 
 int

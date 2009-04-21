@@ -10,11 +10,11 @@ extern "C" int yywrap();
 extern "C" int yyget_lineno();
 string baseDirectory;
 
-/*
+
 static void yy_warn (yyconst char* msg ) {
 	(void) fprintf( stderr, "Lexer Warning:(%d) %s\n", yyget_lineno(), msg );
 }
-*/
+
 
 
 char err_buf[100];
@@ -25,6 +25,15 @@ inline PString addStr(PString p) {
 	strings_ptr.push_back(p); return p;
 }
 
+#define processEOF() { \
+	yypop_buffer_state(); \
+	\
+	if (!YY_CURRENT_BUFFER) { \
+		yyterminate(); \
+		return t_eof; \
+	} \
+} \
+
 %}
 %option debug
 %option outfile="lexer.c" header-file="lexer.h"
@@ -33,14 +42,52 @@ inline PString addStr(PString p) {
 
 %%
 
-^\s+$ { /* do nothing for empty lines */ }
+^\s {
 
-^\r|\r\n|\n { /* skip empty lines */ }
+	register char c = *yytext;
+	bool isEmptyLine = true;
+	unsigned int bol = 0;
+	// if the line starts with a tab, it's a t_bol
+	if (c == '\t') {
+		// see how many we have.
+		while (c == '\t') {
+			bol++;
+			c = yyinput();
+		}
+		// if there's whitespace, eat it
+		if (c == ' ') {
+			while (c && c == ' ') {
+				c = yyinput();
+			}
+		}
+		
+		// end of file, and blank line.
+		if (c == EOF) {
+			processEOF();
+		}
+		// end of line, so discard
+		else if (c == '\r' || c == '\n') {
+			// do nothing
+		}
+		else {
+			unput(c);
+			isEmptyLine = false;
+		}
+	}
+	
+	if (!isEmptyLine) {
+		yylval.indent = bol;
+		return t_bol;
+	}
+}
 
-^\t+ {
+
+
+
+ /*^\t+ {
 	yylval.indent = yyleng;
 	return t_bol;
-}
+}*/
 
 
 \r|\r\n|\n {
@@ -229,6 +276,11 @@ bool   { return t_bool;   }
 
 [,()] { return *yytext; }
 
+[\t ]+ {/* discard white space */}
+
+. { /* discard anything else, change to an error later! */
+	yy_warn(yytext);
+ }
 
 <<EOF>> {
 	yypop_buffer_state();

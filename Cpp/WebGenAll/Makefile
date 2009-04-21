@@ -4,11 +4,9 @@ OPTIONSR=-I. -I/usr/include -O3 -ansi -Wall -W -Wfatal-errors -pedantic -pedanti
 
 TESTFILE=../../../ww2_trunk/ww2_trunk.all
 TESTFILE=./test_td.all
-#TESTFILE=./test_class.all
+TESTFILE=./test_class.all
 
 all: bison lex
-	g++ -I. -I/usr/include -g -W -c parser.tab.c -o ./bin/parser.o
-	g++ -I. -I/usr/include -g -W -c lexer.c -o ./bin/lexer.o
 	g++ $(OPTIONSD) -o ./bin/Config.o -c Config.cpp
 	g++ $(OPTIONSD) -o ./bin/Class.o -c Class.cpp
 	g++ $(OPTIONSD) -o ./bin/Type.o -c Type.cpp
@@ -21,10 +19,13 @@ all: bison lex
 	g++ ./bin/*.o -o ./bin/WebGenAll
 
 lex:
-	flex -B lexer.l
+	#flex -B lexer.l
+	#g++ -I. -I/usr/include -g -W -c lexer.c -o ./bin/lexer.o
+	g++ $(OPTIONSD) -o ./bin/lexer.o -c lexer.cpp
 	
 bison:
 	bison --report=state,lookahead,itemset -vtd parser.y
+	g++ -I. -I/usr/include -g -W -c parser.tab.c -o ./bin/parser.o
 
 clean:
 	-rm lexer.[ch] parser.tab.[ch] parser.output ./bin/*.o valgrind.out
