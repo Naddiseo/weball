@@ -20,11 +20,13 @@ files_t buffer;
 
 // sets the base directory for including files.
 void yyset_baseDirectory(string bd) { baseDirectory = bd; }
+
 // set the debug flag
 void yyset_debug(int d = 0) { debug = d; } 
 
 int yyget_lineno() { return lineno; }
 int yyget_charno() { return charno; }
+
 // Generic error function
 void error (string err) {
 	std::cerr << "Lexer error line [" << lineno << ":" << charno << "]: " << err << std::endl;
@@ -65,6 +67,7 @@ void closeBuffer() {
 		}
 	}
 }
+
 bool isLineEnd() {
 	return (
 		look == '\n' or                      // *nix
