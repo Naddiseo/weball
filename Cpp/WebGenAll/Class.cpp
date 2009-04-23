@@ -16,3 +16,8 @@ void
 Class::print() {
 	std::cout << "Class(" << getName() << ")" << std::endl; 
 }
+
+void
+Class::addMember(string name) {
+	members[name] = new ClassMember(name);
+}

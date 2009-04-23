@@ -15,8 +15,7 @@ Program p;
 
 int main (int argc, char* argv[]) {
 	
-	FILE* in = NULL;
-	FILE* out = NULL;
+	FILE* out = stdout;
 
 #ifdef NDEBUG 
 	std::cerr << "Setting debug\n";
@@ -33,20 +32,16 @@ int main (int argc, char* argv[]) {
 			if (strncmp (argv[x], "-d", 2) == 0) {
 				std::cerr << "Setting debug\n";
 				//yyset_debug (1);
-				//yydebug = 1;
+				yydebug = 1;
 			} else {
-				in = fopen (argv[x], "r");
-				if (in == NULL) {
-					std::cerr << "Could not use file " << argv[x] << " for input, using stdin" << std::endl;
-				} else {
-					std::cerr << "Using file " << argv[x] << " for input" << std::endl;
-					basedir.assign(dirname(argv[x]));
-					basedir.append("/");
-					std::cerr << "basedir = " << basedir << std::endl;
-					yyset_baseDirectory(basedir);
-					yyset_in (in);
-					break;
-				}
+				string input = argv[x];
+				basedir.assign(dirname(argv[x]));
+				basedir.append("/");
+				std::cerr << "basedir = " << basedir << std::endl;
+				yyset_baseDirectory(basedir);
+				std::cerr << "found input file " << input <<std::endl;
+				includeFile(input);
+				
 			}
 		}
 	}
@@ -58,9 +53,6 @@ int main (int argc, char* argv[]) {
 	// clean up
 	killStrings();
 
-	if (in != NULL && in != stdin) {
-		fclose (in);
-	}
 	if (out != NULL && out != stdout) {
 		fclose (out);
 	}

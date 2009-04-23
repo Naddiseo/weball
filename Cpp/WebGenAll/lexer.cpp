@@ -3,6 +3,12 @@
 #include <stack>
 
 
+#define TOK(t, v) { tmap[t] = #t; keywords[v] = t; }
+
+typedef std::map<int, string> STok;
+
+STok tmap;
+
 string baseDirectory = "";
 
 int debug  = 0;
@@ -65,12 +71,16 @@ void includeFile(string path) {
 	if (!fp) {
 		error("Could not include file: " + path);
 	}
+	if (debug) {
+		std::cerr << "Using include " << path << std::endl;
+	}
 	yyset_in(fp);
 }
 
 void closeBuffer() {
 	if (in != NULL && in != stdin) {
 		fclose(in);
+		in = NULL;
 		if (buffer.size()) {
 			popBuffer();
 		}
@@ -116,17 +126,25 @@ void lex_init() {
 	next();
 	// it *is* the beginning.
 	bol = true;
-	keywords["bool"      ] = t_bool;
-	keywords["class"     ] = t_class;
-	keywords["config"    ] = t_config;
-	keywords["dbfunction"] = t_dbfunction;
-	keywords["index"     ] = t_index;
-	keywords["int"       ] = t_int;
-	keywords["pk"        ] = t_pk;
-	keywords["return"    ] = t_return;
-	keywords["string"    ] = t_string;
-	keywords["typedef"   ] = t_typedef;
-	keywords["uint"      ] = t_uint;
+	TOK(t_attribute,  "t_attribute");
+	TOK(t_bol,        "t_bol"      );
+	TOK(t_bool,       "bool"       );
+	TOK(t_class,      "class"      );
+	TOK(t_config,     "config"     );
+	TOK(t_dbfunction, "dbfunction" );
+	TOK(t_eol,        "t_eol"      );
+	TOK(t_eof,        "t_eof"      );
+	TOK(t_ident,      "t_ident"    );
+	TOK(t_index,      "index"      );
+	TOK(t_int,        "int"        );
+	TOK(t_intval,     "intval"     );
+	TOK(t_pk,         "pk"         );
+	TOK(t_return,     "return"     );
+	TOK(t_string,     "string"     );
+	TOK(t_stringval,  "stringval"  );
+	TOK(t_typedef,    "typedef"    );
+	TOK(t_uint,       "uint"       );
+	TOK(t_uintval,    "uintval"    );
 }
 
 void eatWhite() {
@@ -300,14 +318,18 @@ top:
 	else {
 		std::cerr << "emitting: " << (char)look << std::endl;
 	}
+	closeBuffer();
 	return t_eof;
 }
 
 int yylex() {
 	int ret = yylexwrap();
 	if (debug) {
-		char c = isAlNum() ? (char)ret : 0;
-		std::cerr << "got token: " << ret << " '" << c << "'" << std::endl;
+		char c = (char)ret;
+		string s;
+		s.append(1,c);
+		string tname = tmap.find(ret) != tmap.end() ? tmap[ret] : s;
+		std::cerr << "got token: " << tname << std::endl;
 	}
 	return ret;
 }

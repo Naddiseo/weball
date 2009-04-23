@@ -9,7 +9,7 @@ void lex_init();
 int yylex();
 
 void yyset_debug(int);
-void yyset_in(FILE*);
+void includeFile(string path);
 void yyset_baseDirectory(string bd);
 
 int yyget_lineno();

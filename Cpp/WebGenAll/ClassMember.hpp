@@ -5,6 +5,7 @@
 
 class ClassMember : public Type {
 public:
+	ClassMember(string name) : Type(name) {}
 	~ClassMember() {}
 private:
 };

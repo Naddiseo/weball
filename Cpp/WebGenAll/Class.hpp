@@ -11,6 +11,7 @@ public:
 	void print();
 	
 	string getName() const { return name; }
+	void addMember(string name);
 private:
 	string name;
 	
