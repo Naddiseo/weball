@@ -34,5 +34,7 @@ class ClassMember;
 typedef std::map <string, ClassMember*> MClassMember;
 typedef std::pair<string, ClassMember*> PClassMember;
 
+PString addString(PString);
+void    killStrings();
 #endif
 

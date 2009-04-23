@@ -12,8 +12,6 @@ extern "C" {
 extern int yydebug;
 
 Program p;
-// because bison doesn't free them properly, I'll do it manually
-VPString strings_ptr;
 
 int main (int argc, char* argv[]) {
 	
@@ -57,12 +55,8 @@ int main (int argc, char* argv[]) {
 	std::cout << std::endl;
 	p.print();
 
-
-	foreach (PString s, strings_ptr) {
-		if (s) {
-			delete s;
-		}
-	}
+	// clean up
+	killStrings();
 
 	if (in != NULL && in != stdin) {
 		fclose (in);
