@@ -3,6 +3,8 @@
 #include <config.h>
 #include <ClassMember.hpp>
 
+typedef std::vector<VClassMember> VVClassMember;
+
 class Class {
 public:
 	Class(string _name);
@@ -11,11 +13,17 @@ public:
 	void print();
 	
 	string getName() const { return name; }
-	void addMember(string name);
+	ClassMember* addMember(string name);
+	
+	
+	
 private:
 	string name;
 	
 	MClassMember members;
+	
+	VClassMember pk;
+	VVClassMember indexes;
 };
 
 #endif

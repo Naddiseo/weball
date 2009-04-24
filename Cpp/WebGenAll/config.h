@@ -33,6 +33,7 @@ typedef std::pair<string, Class*>       PClass;
 class ClassMember;
 typedef std::map <string, ClassMember*> MClassMember;
 typedef std::pair<string, ClassMember*> PClassMember;
+typedef std::vector<ClassMember*>       VClassMember;
 
 PString addString(PString);
 void    killStrings();

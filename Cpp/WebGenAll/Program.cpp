@@ -137,5 +137,5 @@ Program::setClass(string name) {
 
 void
 Program::addClassMember(string name) {
-	currentClass->addMember(name);
+	currentType = currentClass->addMember(name);
 }

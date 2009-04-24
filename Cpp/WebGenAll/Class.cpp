@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <error.hpp>
+
 Class::Class(string _name) {
 	name = _name;
 }
@@ -14,10 +16,18 @@ Class::~Class() {
 
 void
 Class::print() {
-	std::cout << "Class(" << getName() << ")" << std::endl; 
+	std::cout << "Class(" << getName() << ")" << std::endl;
+	foreach (PClassMember cm, members) {
+		std::cout << "\t Member "; cm.second->print();
+	}
 }
 
-void
+ClassMember*
 Class::addMember(string name) {
-	members[name] = new ClassMember(name);
+	if (members.find(name) != members.end()) {
+		pdie("Member " + name + " already exists");
+	}
+	ClassMember* cm = new ClassMember(name);
+	members[name] = cm;
+	return cm;
 }
