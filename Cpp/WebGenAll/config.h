@@ -35,7 +35,11 @@ typedef std::map <string, ClassMember*> MClassMember;
 typedef std::pair<string, ClassMember*> PClassMember;
 typedef std::vector<ClassMember*>       VClassMember;
 
+class IVal;
+typedef std::vector<IVal*>              VIVal;
+
 PString addString(PString);
 void    killStrings();
+
 #endif
 

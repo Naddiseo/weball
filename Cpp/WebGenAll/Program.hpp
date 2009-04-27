@@ -6,6 +6,7 @@
 #include <Attribute.hpp>
 #include <TypeValue.hpp>
 #include <Class.hpp>
+#include <IVal.hpp>
 
 class Program {
 public:
@@ -25,8 +26,17 @@ public:
 	void setClass(string name);
 	
 	void addClassMember(string name);
+	void addPK();
+	void addIndex();
+	void addIValToClass(IVal*);
+	void endPK();
+	void endIndex();
 	
 	void print();
+	
+	void resolveAllIVals();	
+	void resolveIVal(IVal* v);
+	
 private:
 	Type*         currentType;
 	Attribute*    currentAttribute;

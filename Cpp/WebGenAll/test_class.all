@@ -2,13 +2,14 @@
 typedef string mystr :range(0,2)
 
 class Foo
-	pk(id)
+	pk(id, Bar.foo)
 	index(b, name)
+	index(id, foo.foo)
 	uint id :auto_increment
 	int b
 	string name :range(0,5)
 	mystr foo
-	dbfunction foo(id)
-		return(name)
+#	dbfunction foo(id)
+#		return(name)
 		
 		

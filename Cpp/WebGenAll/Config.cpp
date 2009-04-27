@@ -12,3 +12,5 @@ string
 Config::getValue(string key) {
 	return configuration[key];
 }
+
+

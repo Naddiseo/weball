@@ -139,3 +139,68 @@ void
 Program::addClassMember(string name) {
 	currentType = currentClass->addMember(name);
 }
+
+void 
+Program::addPK() {
+	currentClass->addPK();
+}
+
+void
+Program::addIndex() {
+	currentClass->addIndex();
+}
+
+void
+Program::addIValToClass(IVal* v) {	
+	currentClass->addIVal(v);
+}
+
+void 
+Program::endPK() {
+	currentClass->endPK();
+}
+
+void 
+Program::endIndex() {
+	currentClass->endIndex();
+}
+
+void
+Program::resolveAllIVals() {}
+
+void
+Program::resolveIVal(IVal* v) {
+	// resolve what the IVal is pointing to
+	
+	string _class  = v->getClassName();
+	string _member = v->getMemberName();
+	
+	Class*       c  = NULL;
+	ClassMember* cm = NULL;
+	
+	
+	if (_class == "" and !currentClass) {
+		pdie("No class set");
+	}
+	else if (_class != "") {
+		c = classes[_class];
+	}
+	else {
+		c = currentClass;
+	}
+	
+	v->setClass(c);
+	
+	if (_member == "") {
+		pdie("Class pointers not supported yet");
+	}
+	
+	cm = c->getMemberByName(_member);
+	
+	if (!cm) {
+		pdie("Class member (" + _member + ") not found");
+	}
+	
+	v->setMember(cm);	
+	
+}

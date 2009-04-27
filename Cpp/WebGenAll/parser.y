@@ -36,6 +36,8 @@ void checkIndent (int x, int y) {
 	int intval;
 	int indent;
 	bool boolval;
+	
+	IVal* iv;
 }
 
 %token t_typedef t_attribute t_config t_class t_dbfunction t_return
@@ -54,6 +56,7 @@ void checkIndent (int x, int y) {
 %type <stringval> t_stringval
 %type <boolval> t_boolval
 %type <indent> t_bol
+%type <iv> ival 
 
 %left ','
 
@@ -63,7 +66,7 @@ start
 	: /* empty */
 	| t_eol { YYACCEPT; }
 	| t_eof { YYABORT;  }
-	| lines
+	| lines t_eof
 	;
 
 lines
@@ -149,8 +152,8 @@ class_member
 	| t_int    t_ident { p.addClassMember(*$2); } member_attributes
 	| t_string t_ident { p.addClassMember(*$2); } member_attributes
 	| t_ident  t_ident { p.addClassMember(*$2); } member_attributes
-	| t_pk    { /*NEWILIST();*/ } ident_list_container //{ ADDPK();    }
-	| t_index { /*NEWILIST();*/ } ident_list_container //{ ADDINDEX(); }
+	| t_pk    { p.addPK();    } ident_list_container { p.endPK();    }
+	| t_index { p.addIndex(); } ident_list_container { p.endIndex(); }
 	| dbfunction
 	;
 
@@ -160,9 +163,13 @@ ident_list_container
 	;
 
 ident_list
-	: ident_list ',' t_ident //{ ADDI(*$3); }
-	| t_ident                //{ ADDI(*$1); }
+	: ident_list ',' ival { p.addIValToClass($3); }
+	| ival                { p.addIValToClass($1); }
 	;
+
+ival
+	: t_ident '.' t_ident { $$ = new IVal(*$1, *$3); }
+	| t_ident             { $$ = new IVal("", *$1) ; }
 
 dbfunction
 	: t_dbfunction t_ident ident_list_container t_eol dbfunction_members

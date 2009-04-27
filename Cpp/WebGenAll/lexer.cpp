@@ -11,9 +11,12 @@ STok tmap;
 
 string baseDirectory = "";
 
+// true when EOF
+bool hasEnded = false;
+
 int debug  = 0;
-int lineno = 0;
-int charno = 0;
+int lineno = 1;
+int charno = 1;
 int look   = 0;
 int peek   = 0;
 // the file starts at the beginning of a line!!
@@ -234,8 +237,15 @@ unsigned int getUInt() {
 int yylexwrap() {
 top:
 	if (look == EOF) {
-		closeBuffer();
-		return t_eof;
+		if (hasEnded) {
+			closeBuffer();
+			return t_eof;
+		}
+		else {
+			// emit the last eol
+			hasEnded = true;
+			return t_eol;
+		}
 	}
 	else if (look == '\t') {
 		if (bol) {
@@ -310,7 +320,7 @@ top:
 		yylval.stringval = getStringVal(look);
 		return t_stringval;
 	}
-	else if (look == '(' or look == ')' or look == ',') {
+	else if (look == '(' or look == ')' or look == ',' or look == '.') {
 		int ret = look;
 		next();
 		return ret;

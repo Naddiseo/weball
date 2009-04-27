@@ -2,8 +2,9 @@
 #define __CLASS_HPP__
 #include <config.h>
 #include <ClassMember.hpp>
+#include <IVal.hpp>
 
-typedef std::vector<VClassMember> VVClassMember;
+typedef std::vector<VIVal*> VVIVal;
 
 class Class {
 public:
@@ -15,15 +16,24 @@ public:
 	string getName() const { return name; }
 	ClassMember* addMember(string name);
 	
+	ClassMember* getMemberByName(string _name) { return members[_name]; }
 	
+	void addPK();
+	void addIndex();
+	void addIVal(IVal* iv);
+	
+	void endPK();
+	void endIndex();
 	
 private:
 	string name;
 	
 	MClassMember members;
 	
-	VClassMember pk;
-	VVClassMember indexes;
+	VIVal* cmList;
+	
+	VIVal pk;
+	VVIVal indexes;
 };
 
 #endif
