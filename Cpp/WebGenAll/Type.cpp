@@ -40,10 +40,10 @@ Type::copy(Type* original) {
 }
 
 void 
-Type::print() {
-	std::cout << "Type " << getName() << std::endl;
+Type::print(unsigned int i = 1) {
+	//std::cout << getIndent(i) << "Type " << getName() << std::endl;
 	foreach (PAttribute a, attributes) {
-		std::cout <<"\t";
+		std::cout << getIndent(i);
 		a.second->print();
 	}
 }

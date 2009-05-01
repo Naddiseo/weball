@@ -18,7 +18,7 @@ public:
 	Attribute* getAttribute(string key);
 	
 	void copy(Type* original);
-	void print();
+	void print(unsigned int);
 	
 	string getName() { return name; }
 private:

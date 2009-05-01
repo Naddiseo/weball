@@ -25,7 +25,7 @@ public:
 	void newClass(string name, bool set);
 	void setClass(string name);
 	
-	void addClassMember(string name);
+	void addClassMember(string type, string name);
 	void addPK();
 	void addIndex();
 	void addIValToClass(IVal*);

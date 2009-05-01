@@ -14,3 +14,10 @@ void    killStrings() {
 		}
 	}
 }
+
+string getIndent(unsigned int i = 0) {
+	string ret = "";
+	ret.append(i, '\t');
+	
+	return ret;
+}

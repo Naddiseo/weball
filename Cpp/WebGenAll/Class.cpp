@@ -22,20 +22,21 @@ Class::~Class() {
 }
 
 void
-Class::print() {
-	std::cout << "Class(" << getName() << ")" << std::endl;
+Class::print(unsigned int i = 0) {
+	std::cout << getIndent(i) << "Class(" << getName() << ")" << std::endl;
 	foreach (PClassMember cm, members) {
-		std::cout << "\tMember " << cm.second->getName() << std::endl;
+		std::cout << getIndent(i + 1) << "Member " << cm.second->getName() << std::endl;
+		cm.second->print(i + 2);
 	}
 	
-	std::cout << "\tPK (";
+	std::cout << getIndent(i + 1) << "PK (";
 	foreach (IVal* iv, pk) {
 		std::cout << iv->getResolvedName() << ",";
 	}
 	std::cout << ")" << std::endl;
 	
 	foreach (VIVal* index, indexes) {
-		std::cout << "\tINDEX (";
+		std::cout << getIndent(i + 1) << "INDEX (";
 		foreach (IVal* value, *index) {
 			std::cout << value->getResolvedName() << ",";
 		}
@@ -44,11 +45,11 @@ Class::print() {
 }
 
 ClassMember*
-Class::addMember(string name) {
+Class::addMember(string name, Type* _basetype) {
 	if (members.find(name) != members.end()) {
 		pdie("Member " + name + " already exists");
 	}
-	ClassMember* cm = new ClassMember(name);
+	ClassMember* cm = new ClassMember(name,  _basetype);
 	members[name] = cm;
 	return cm;
 }

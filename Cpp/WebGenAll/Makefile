@@ -9,6 +9,7 @@ TESTFILE=./test_class.all
 all: bison lex
 	g++ $(OPTIONSD) -o ./bin/Config.o -c Config.cpp
 	g++ $(OPTIONSD) -o ./bin/Class.o -c Class.cpp
+	g++ $(OPTIONSD) -o ./bin/ClassMember.o -c ClassMember.cpp
 	g++ $(OPTIONSD) -o ./bin/Type.o -c Type.cpp
 	g++ $(OPTIONSD) -o ./bin/TypeValue.o -c TypeValue.cpp
 	g++ $(OPTIONSD) -o ./bin/Attribute.o -c Attribute.cpp

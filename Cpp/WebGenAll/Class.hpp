@@ -11,10 +11,10 @@ public:
 	Class(string _name);
 	~Class();
 	
-	void print();
+	void print(unsigned int);
 	
 	string getName() const { return name; }
-	ClassMember* addMember(string name);
+	ClassMember* addMember(string name, Type* _basetype);
 	
 	ClassMember* getMemberByName(string _name) { return members[_name]; }
 	

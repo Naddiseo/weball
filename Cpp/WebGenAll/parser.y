@@ -147,11 +147,11 @@ class_members
 	;
 
 class_member
-	: t_bool   t_ident { p.addClassMember(*$2); } member_attributes
-	| t_uint   t_ident { p.addClassMember(*$2); } member_attributes
-	| t_int    t_ident { p.addClassMember(*$2); } member_attributes
-	| t_string t_ident { p.addClassMember(*$2); } member_attributes
-	| t_ident  t_ident { p.addClassMember(*$2); } member_attributes
+	: t_bool   t_ident { p.addClassMember(string("bool"  ), *$2); } member_attributes
+	| t_uint   t_ident { p.addClassMember(string("uint"  ), *$2); } member_attributes
+	| t_int    t_ident { p.addClassMember(string("int"   ),  *$2); } member_attributes
+	| t_string t_ident { p.addClassMember(string("string"), *$2); } member_attributes
+	| t_ident  t_ident { p.addClassMember(*$1,              *$2); } member_attributes
 	| t_pk    { p.addPK();    } ident_list_container { p.endPK();    }
 	| t_index { p.addIndex(); } ident_list_container { p.endIndex(); }
 	| dbfunction

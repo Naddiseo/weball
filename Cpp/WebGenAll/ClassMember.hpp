@@ -5,9 +5,13 @@
 
 class ClassMember : public Type {
 public:
-	ClassMember(string name) : Type(name) {}
+	ClassMember(string _name, Type* _basetype) : Type(_name) { copy(_basetype); }
 	~ClassMember() {}
+	
+	
+	//void print(unsigned int);
 private:
+	string name;
 };
 
 #endif

@@ -101,11 +101,12 @@ Program::setAttribute(string name) {
 void
 Program::print() {
 	foreach (PType t, types) {
-		t.second->print();
+		std::cout << "Type " << t.second->getName() << std::endl;
+		t.second->print(1);
 	}
 	
 	foreach (PClass c, classes) {
-		c.second->print();
+		c.second->print(0);
 	}
 }
 
@@ -136,8 +137,13 @@ Program::setClass(string name) {
 }
 
 void
-Program::addClassMember(string name) {
-	currentType = currentClass->addMember(name);
+Program::addClassMember(string type, string name) {
+	Type* basetype = types[type];
+	if (!basetype) {
+		pdie("Type " + type + " does not exist");
+	}
+	
+	currentType = currentClass->addMember(name, basetype);
 }
 
 void 

@@ -40,6 +40,7 @@ typedef std::vector<IVal*>              VIVal;
 
 PString addString(PString);
 void    killStrings();
+string getIndent(unsigned int i);
 
 #endif
 
