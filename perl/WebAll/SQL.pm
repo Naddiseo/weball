@@ -74,7 +74,7 @@ sub processClasses {
 		
 		say $tblFH join(",\n", @members);
 		
-		say $tblFH ");";
+		say $tblFH ") Engine=InnoDb;//";
 		
 		close $tblFH;
 	}
@@ -84,14 +84,53 @@ sub processClasses {
 sub getMemberSQL {
 	my ($name, $member) = @_;
 	
-	my $ret = "\t`$name` ";
+	my $ret = "\t`$name` " . getSQLType($member);
 	
 	given ($member->{type}) {
 		when ('bool') {
-			$ret .= 'TINYINT UNSIGNED';
 			if (defined $member->{default}) {
 				$ret .= ' NOT NULL DEFAULT ' . $member->{defualt}
 			}
+		}
+		when ('uint') {
+			unless ($member->{auto_increment} and defined $member->{default}) {
+				$ret .= ' NOT NULL DEFAULT ' . $member->{default}
+			}
+			
+			if ($member->{auto_increment}) {
+				$ret .= ' auto_increment '
+			}
+		}
+		
+		when ('int') {
+			unless ($member->{auto_increment} and defined $member->{default}) {
+				$ret .= ' NOT NULL DEFAULT ' . $member->{default}
+			}
+			
+			if ($member->{auto_increment}) {
+				$ret .= ' auto_increment '
+			}
+		}
+		
+		when ('string') {
+			
+			if (defined $member->{default}) {
+				$ret .= ' NOT NULL DEFAULT "' . $member->{default} . '"'
+			}
+		}
+	}
+
+	return $ret;
+}
+
+sub getSQLType {
+	my $member = shift;
+	
+	my $ret = '';
+	
+		given ($member->{type}) {
+		when ('bool') {
+			$ret .= 'TINYINT UNSIGNED';
 		}
 		when ('uint') {
 			my $max = undef;
@@ -119,14 +158,7 @@ sub getMemberSQL {
 			else {
 				$ret .= 'INT UNSIGNED'
 			}
-		
-			unless ($member->{auto_increment} and defined $member->{default}) {
-				$ret .= ' NOT NULL DEFAULT ' . $member->{default}
-			}
-			
-			if ($member->{auto_increment}) {
-				$ret .= ' auto_increment '
-			}
+
 		}
 		
 		when ('int') {
@@ -154,14 +186,6 @@ sub getMemberSQL {
 			else {
 				$ret .= 'INT'
 			}
-		
-			unless ($member->{auto_increment} and defined $member->{default}) {
-				$ret .= ' NOT NULL DEFAULT ' . $member->{default}
-			}
-			
-			if ($member->{auto_increment}) {
-				$ret .= ' auto_increment '
-			}
 		}
 		
 		when ('string') {
@@ -185,16 +209,11 @@ sub getMemberSQL {
 				$ret .= 'VARCHAR(' . ($max || 1) . ')'
 			}
 			
-			if (defined $member->{default}) {
-				$ret .= ' NOT NULL DEFAULT "' . $member->{default} . '"'
-			}
 		}
 	}
-
+	
 	return $ret;
 }
-
-
 
 
 1;
