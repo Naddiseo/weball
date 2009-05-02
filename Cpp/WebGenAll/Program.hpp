@@ -31,6 +31,7 @@ public:
 	void addIValToClass(IVal*);
 	void endPK();
 	void endIndex();
+	void addClassDBFunction();
 	
 	void print();
 	
