@@ -33,31 +33,46 @@ sub processClassMembers {
 	for my $classN (keys %$classes) {
 		my $class = $classes->{$classN};
 		
-		for my $memberName (keys %{$class->{members}}) {
-			my $member = $class->{members}{$memberName};
-			my $type = $member->{type};
+		my %pk = ();
+		
+		if ($class->{pk}) {
+			for my $ival (@{$class->{pk}}) {
+				if ($ival->[0] eq $classN) {
+					$pk{$ival->[1]} = 1;
+				}
+			}
+		}
+		
+		for my $member (@{$class->{members}}) {
+			my ($memberName, $attrs) = @$member;
+			
+			my $type = $attrs->{type};
 			
 			if ($types{$type}) {
 				for my $attrName (keys %{$types{$type}}) {
 					my $attrCopy = thaw(freeze($types{$type}));
 					
-					unless (exists $member->{$attrName}) {
-						$classes->{$classN}{members}{$memberName}{$attrName} = $attrCopy->{$attrName}
+					unless (exists $attrs->{$attrName}) {
+						$member->[1]{$attrName} = $attrCopy->{$attrName}
 					}
-					$classes->{$classN}{members}{$memberName}{type} = $attrCopy->{type}
+					$member->[1]{type} = $attrCopy->{type}
 				}
 			}
 			
-			unless ($member->{default}) {
-				given ($member->{type}) {
+			if ($pk{$memberName}) {
+				$attrs->{pk} = 1;
+			}
+			
+			unless ($attrs->{default}) {
+				given ($attrs->{type}) {
 					when (/bool|uint|int/) {
-						$member->{default} = 0;
+						$attrs->{default} = 0;
 					}
 					when ('string') {
-						$member->{default} = '';
+						$attrs->{default} = '';
 					}
 					when (/float|double/) {
-						$member->{default} = 0.0;
+						$attrs->{default} = 0.0;
 					}
 				}
 			}

@@ -15,37 +15,40 @@
 	"classes": {
 		"Foo" : {
 			"pk"   : [
-				["Foo" , "id"],
+				["Bar", "b"],
+				["Foo", "id"],
 				["Bar", "foo"]
 			],
 			"indexes" : [
 				[["Foo" , "b"]],
 				[
-					["Foo" , "id"],
-					["Foo" , "foo"]
-				]
+					["Foo", "id"],
+					["Bar", "foo"],
+					["Foo", "foo"]
+				],
+				[["Bar", "b"]]
 			],
-			"members" : {
-				"id" : {
+			"members" : [
+				["id", {
 					"type" : "uint",
-					"autoincrement" : 1
-				},
-				"b" : {
+					"auto_increment" : 1
+				}],
+				["b", {
 					"type" : "int"
-				},
-				"name" : {
+				}],
+				["name", {
 					"type" : "string",
 					"range" : [0, 5]
-				},
-				"foo" : {
+				}],
+				["foo", {
 					"type" : "mystr"
-				},
-				"c" : {
+				}],
+				["c", {
 					"type" : "mystr",
 					"myattr" :"2",
 					"default": "hello world"
-				}
-			},
+				}]
+			],
 			"dbfunctions" : {
 				"foo" : {
 					"args" : [

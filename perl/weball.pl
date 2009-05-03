@@ -13,7 +13,7 @@ use File::Basename;
 use Getopt::Long;
 
 # takes care of the lexing and parsing for now.
-use JSON;
+use JSON -support_by_pp;
 
 use WebAll::Semantic;
 
@@ -51,7 +51,12 @@ open FILE, $input or die $!;
 my $json = do { local $/; <FILE> };
 close FILE;
 
-my $perl = from_json($json);
+my $j = new JSON;
+$j->relaxed(1);
+$j->allow_singlequote(1);
+$j->allow_barekey(1);
+
+my $perl = $j->decode($json);
 
 WebAll::Semantic::process($perl);
 print Dumper($perl);

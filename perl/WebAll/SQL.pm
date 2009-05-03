@@ -48,8 +48,8 @@ sub processClasses {
 		
 		my @members = ();
 		
-		for my $memberN (keys %{$class->{members}}) {
-			push @members, getMemberSQL($memberN, $class->{members}{$memberN});
+		for my $member (@{$class->{members}}) {
+			push @members, getMemberSQL(@$member);
 		}
 		
 		if ($class->{pk}) {
@@ -69,7 +69,9 @@ sub processClasses {
 					push @idxList, $ival->[1]
 				}
 			}
-			push @members, "\tINDEX (" . join(', ', @idxList) . ')'
+			if (scalar @idxList) {
+				push @members, "\tINDEX (" . join(', ', @idxList) . ')'
+			}
 		}
 		
 		say $tblFH join(",\n", @members);
@@ -77,6 +79,110 @@ sub processClasses {
 		say $tblFH ") Engine=InnoDb;//";
 		
 		close $tblFH;
+		
+		open my $crudFH, ">$procPath/$classN.sql" or die $!;
+		
+		my @args = ();
+		my @set = ();
+		my @where = ();
+		
+		# create
+		say $crudFH "DROP PROCEDURE IF EXISTS #db#.create$classN//";
+		say $crudFH "CREATE PROCEDURE IF EXISTS #db#.create$classN (";
+		@args = ();
+		for my $arg (@{$class->{members}}) {
+			unless ($arg->[1]{pk}) {
+				push @args, "\ta_$arg->[0] " . getSQLType($arg->[1])
+			}
+		}
+		say $crudFH join(",\n", @args);
+		say $crudFH ") BEGIN";
+		say $crudFH "\tINSERT INTO #db#.$classN SET";
+		@set = ();
+		for my $arg (@{$class->{members}}) {
+			unless ($arg->[1]{pk}) {
+				push @set, "\t\t`$arg->[0]` = a_$arg->[0]" 
+			}
+		}
+		say $crudFH join (",\n", @set) . ';';
+		say $crudFH "\tSELECT last_insert_id() as retCode;";
+		say $crudFH "END;//\n";
+		
+		# read
+		say $crudFH "DROP PROCEDURE IF EXISTS #db#.get$classN//";
+		say $crudFH "CREATE PROCEDURE IF EXISTS #db#.get$classN (";
+		@args = ();
+		for my $arg (@{$class->{members}}) {
+			if ($arg->[1]{pk}) {
+				push @args, "\ta_$arg->[0] " . getSQLType($arg->[1])
+			}
+		}
+		say $crudFH join(",\n", @args);
+		say $crudFH ") BEGIN";
+		say $crudFH "\tSELECT * FROM #db#.$classN WHERE";
+		@where = ();
+		for my $arg (@{$class->{members}}) {
+			if ($arg->[1]{pk}) {
+				push @where, "\t\t$classN.$arg->[0] = a_$arg->[0]" 
+			}
+		}
+		say $crudFH join (" AND\n", @where) . ';';
+		say $crudFH "END;//\n";
+		
+		# update
+		say $crudFH "DROP PROCEDURE IF EXISTS #db#.update$classN//";
+		say $crudFH "CREATE PROCEDURE IF EXISTS #db#.update$classN (";
+		@args = ();
+		for my $arg (@{$class->{members}}) {
+			push @args, "\ta_$arg->[0] " . getSQLType($arg->[1])
+		}
+		say $crudFH join(",\n", @args);
+		say $crudFH ") BEGIN";
+		say $crudFH "\tUPDATE #db#.$classN SET";
+		
+		@set = ();
+		for my $arg (@{$class->{members}}) {
+			unless ($arg->[1]{pk}) {
+				push @set, "\t\t$classN.`$arg->[0]` = a_$arg->[0]" 
+			}
+		}
+		say $crudFH join (",\n", @set);
+		say $crudFH "\tWHERE";
+		
+		@where = ();
+		for my $arg (@{$class->{members}}) {
+			if ($arg->[1]{pk}) {
+				push @where, "\t\t$classN.$arg->[0] = a_$arg->[0]" 
+			}
+		}
+		say $crudFH join (" AND\n", @where) . ';';
+		say $crudFH "\tSELECT ROW_COUNT() as retCode;";
+		say $crudFH "END;//\n";
+		
+		# update
+		say $crudFH "DROP PROCEDURE IF EXISTS #db#.delete$classN//";
+		say $crudFH "CREATE PROCEDURE IF EXISTS #db#.delete$classN (";
+		@args = ();
+		for my $arg (@{$class->{members}}) {
+			if ($arg->[1]{pk}) {
+				push @args, "\ta_$arg->[0] " . getSQLType($arg->[1])
+			}
+		}
+		say $crudFH join(",\n", @args);
+		say $crudFH ") BEGIN";
+		say $crudFH "\tDELETE FROM #db#.$classN WHERE";
+
+		@where = ();
+		for my $arg (@{$class->{members}}) {
+			if ($arg->[1]{pk}) {
+				push @where, "\t\t$classN.$arg->[0] = a_$arg->[0]" 
+			}
+		}
+		say $crudFH join (" AND\n", @where) . ';';
+		say $crudFH "\tSELECT ROW_COUNT() as retCode;";
+		say $crudFH "END;//\n";
+		
+		close $crudFH;
 	}
 	
 }
@@ -214,6 +320,5 @@ sub getSQLType {
 	
 	return $ret;
 }
-
 
 1;
