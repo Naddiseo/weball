@@ -9,6 +9,8 @@ use WA;
 my $class = undef;
 my $member = undef;
 
+my %foreign = ();
+
 
 open TBL,  ">table.sql" or die $!;
 open CRUD, ">crud.sql" or die $!;
@@ -66,6 +68,11 @@ sub password_t {
 	$member->{password} = 1
 }
 
+sub foreign {
+	$member->{type} = 'foreign';
+	$member->{foreign} = shift;
+}
+
 sub class {
 	my $name = shift;
 	
@@ -78,18 +85,34 @@ sub class {
 		pk => [],
 		indexes => []
 	};
+	
+	for my $f (@{$foreign{$name}}) {
+		member("${f}Id");
+		uint();
+		end('member');
+	}
 }
 
 sub member {
 	my $name = shift;
 	$member = {
-		name =>	$name
+		name =>	$name,
+		dbhide => 0,
 	};
 
 	print TBL "\t`$name` ";
 	push @{$class->{members}}, $member
 }
 
+sub foreign_member {
+	my $name = shift;
+	$member = {
+		name => $name,
+		dbhide => 1
+	};
+	
+	push @{$class->{members}}, $member
+}
 
 
 sub end {
@@ -125,6 +148,10 @@ sub end {
 			print TBL sql_getType($member) . sql_getDBAttrs($member);
 			say TBL ',';
 		}
+		when ('foreign_member') {
+			# do nothing?
+			push @{$foreign{$member->{foreign}}}, $class->{name};
+		}
 	}
 }
 
@@ -138,7 +165,7 @@ sub sql_c {
 	say CRUD "CREATE PROCEDURE IF EXISTS #db#.create$class->{name} (";
 	@args = ();
 	for my $arg (@{$class->{members}}) {
-		unless ($arg->{pk}) {
+		unless ($arg->{pk} or $arg->{dbhide}) {
 			push @args, "\ta_$arg->{name} " . sql_getType($arg)
 		}
 	}
@@ -147,7 +174,7 @@ sub sql_c {
 	say CRUD "\tINSERT INTO #db#.$class->{name} SET";
 	@set = ();
 	for my $arg (@{$class->{members}}) {
-		unless ($arg->{pk}) {
+		unless ($arg->{pk} or $arg->{dbhide}) {
 			push @set, "\t\t`$arg->{name}` = a_$arg->{name}" 
 		}
 	}
@@ -162,7 +189,7 @@ sub sql_r() {
 	
 	@args = ();
 	for my $arg (@{$class->{members}}) {
-		if ($arg->{pk}) {
+		if ($arg->{pk} and !$arg->{dbhide}) {
 			push @args, "\ta_$arg->{name} " . sql_getType($arg)
 		}
 	}
@@ -171,7 +198,7 @@ sub sql_r() {
 	say CRUD "\tSELECT * FROM #db#.$class->{name} WHERE";
 	@where = ();
 	for my $arg (@{$class->{members}}) {
-		if ($arg->{pk}) {
+		if ($arg->{pk} and !$arg->{dbhide}) {
 			push @where, "\t\t$class->{name}.$arg->{name} = a_$arg->{name}" 
 		}
 	}
@@ -185,7 +212,9 @@ sub sql_u() {
 	say CRUD "CREATE PROCEDURE IF EXISTS #db#.update$class->{name} (";
 	@args = ();
 	for my $arg (@{$class->{members}}) {
-		push @args, "\ta_$arg->{name} " . sql_getType($arg)
+		unless ($arg->{dbhide}) {
+			push @args, "\ta_$arg->{name} " . sql_getType($arg)
+		}
 	}
 	say CRUD join(",\n", @args);
 	say CRUD ") BEGIN";
@@ -193,7 +222,7 @@ sub sql_u() {
 	
 	@set = ();
 	for my $arg (@{$class->{members}}) {
-		unless ($arg->{pk}) {
+		unless ($arg->{pk} or $arg->{dbhide}) {
 			push @set, "\t\t$class->{name}.`$arg->{name}` = a_$arg->{name}" 
 		}
 	}
@@ -202,7 +231,7 @@ sub sql_u() {
 	
 	@where = ();
 	for my $arg (@{$class->{members}}) {
-		if ($arg->{pk}) {
+		if ($arg->{pk} and !$arg->{dbhide}) {
 			push @where, "\t\t$class->{name}.$arg->{name} = a_$arg->{name}" 
 		}
 	}
@@ -216,7 +245,7 @@ sub sql_d() {
 	say CRUD "CREATE PROCEDURE IF EXISTS #db#.delete$class->{name} (";
 	@args = ();
 	for my $arg (@{$class->{members}}) {
-		if ($arg->{pk}) {
+		if ($arg->{pk} and !$arg->{dbhide}) {
 			push @args, "\ta_$arg->{name} " . sql_getType($arg)
 		}
 	}
@@ -226,7 +255,7 @@ sub sql_d() {
 
 	@where = ();
 	for my $arg (@{$class->{members}}) {
-		if ($arg->{pk}) {
+		if ($arg->{pk} and !$arg->{dbhide}) {
 			push @where, "\t\t$class->{name}.$arg->{name} = a_$arg->{name}" 
 		}
 	}
@@ -334,7 +363,7 @@ sub sql_getDBAttrs {
 	given ($member->{type}) {
 		when ('bool') {
 			if (defined $member->{default}) {
-				$ret = ' NOT NULL DEFAULT ' . $member->{defualt}
+				$ret = ' NOT NULL DEFAULT ' . $member->{default}
 			}
 		}
 		when ('uint') {
@@ -369,16 +398,6 @@ sub sql_getDBAttrs {
 	return $ret;
 }
 
-sub foo {
-	my @args = @_;
-	
-	my $i = 1;
-	for my $a (@args) {
-		say STDERR "arg($i) = $a";
-		$i++;
-	}
-}
-
 my @context = ();
 
 while (<>) {
@@ -389,7 +408,7 @@ while (<>) {
 		$_ = "\&$1(@args);";
 	};
 	
-	/^&(class|member)\s*\(/ and do {
+	/^&(class|member|foreign_member)\s*\(/ and do {
 		push @context, $1
 	};
 	/^&end/ and do {
