@@ -7,16 +7,16 @@ TESTFILE=./test_td.all
 TESTFILE=./test_class.all
 
 all: bison lex
-	g++ $(OPTIONSD) -o ./bin/Config.o -c Config.cpp
-	g++ $(OPTIONSD) -o ./bin/Class.o -c Class.cpp
-	g++ $(OPTIONSD) -o ./bin/ClassMember.o -c ClassMember.cpp
-	g++ $(OPTIONSD) -o ./bin/Type.o -c Type.cpp
-	g++ $(OPTIONSD) -o ./bin/TypeValue.o -c TypeValue.cpp
-	g++ $(OPTIONSD) -o ./bin/Attribute.o -c Attribute.cpp
-	g++ $(OPTIONSD) -o ./bin/Program.o -c Program.cpp
-	g++ $(OPTIONSD) -o ./bin/IVal.o -c IVal.cpp
-	g++ $(OPTIONSD) -o ./bin/error.o   -c error.cpp
-	g++ $(OPTIONSD) -o ./bin/misc.o   -c misc.cpp
+	#g++ $(OPTIONSD) -o ./bin/Config.o -c Config.cpp
+	#g++ $(OPTIONSD) -o ./bin/Class.o -c Class.cpp
+	#g++ $(OPTIONSD) -o ./bin/ClassMember.o -c ClassMember.cpp
+	#g++ $(OPTIONSD) -o ./bin/Type.o -c Type.cpp
+	#g++ $(OPTIONSD) -o ./bin/TypeValue.o -c TypeValue.cpp
+	#g++ $(OPTIONSD) -o ./bin/Attribute.o -c Attribute.cpp
+	#g++ $(OPTIONSD) -o ./bin/Program.o -c Program.cpp
+	#g++ $(OPTIONSD) -o ./bin/IVal.o -c IVal.cpp
+	#g++ $(OPTIONSD) -o ./bin/error.o   -c error.cpp
+	#g++ $(OPTIONSD) -o ./bin/misc.o   -c misc.cpp
 	g++ $(OPTIONSD) -o ./bin/main.o -c main.cpp
 	g++ ./bin/*.o -o ./bin/WebGenAll
 

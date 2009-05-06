@@ -159,7 +159,7 @@ sub processClasses {
 		say $crudFH "\tSELECT ROW_COUNT() as retCode;";
 		say $crudFH "END;//\n";
 		
-		# update
+		# delete
 		say $crudFH "DROP PROCEDURE IF EXISTS #db#.delete$classN//";
 		say $crudFH "CREATE PROCEDURE IF EXISTS #db#.delete$classN (";
 		@args = ();

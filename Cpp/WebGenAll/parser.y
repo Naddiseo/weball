@@ -159,7 +159,7 @@ class_member
 	| t_ident  t_ident { p.addClassMember(*$1,              *$2); } member_attributes
 	| t_pk    { p.addPK();    } ident_list_container { p.endPK();    }
 	| t_index { p.addIndex(); } ident_list_container { p.endIndex(); }
-	| dbfunction { p.addClassDBFunction($1); }
+	| dbfunction { $$->push }
 	;
 
 ident_list_container
@@ -168,8 +168,8 @@ ident_list_container
 	;
 
 ident_list
-	: ident_list ',' ival { $$ = $1->push_back($3); /* p.addIValToClass($3);*/ }
-	| ival                { $$->push_back($1); /*p.addIValToClass($1);*/ }
+	: ident_list ',' ival { $$ = $1->push_back($3);}
+	| ival                { $$->push_back($1);     }
 	;
 
 ival
@@ -178,7 +178,7 @@ ival
 
 dbfunction
 	: t_dbfunction t_ident ident_list_container t_eol dbfunction_members {
-		$$ = new DBFunction(*$2, 
+		$$ = new DBFunction(*$2, $3, $5);
 	}
 	;
 
