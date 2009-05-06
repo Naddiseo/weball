@@ -74,7 +74,7 @@ sub foreign {
 }
 
 sub local {
-	$member->{'local'} = shift
+	$member->{'local'} = [@_]
 }
 
 sub class {
@@ -119,9 +119,11 @@ sub end {
 	given ($what) {
 		when ('class') {
 			for my $f (@{$foreign{$class->{name}}}) {
-				member("$f->{class}_$f->{member}");
-				uint();
-				end('member');
+				for my $m (@{$f->{member}}) {
+					member("$f->{class}_$m");
+					uint();
+					end('member');
+				}
 			}
 		
 			my @indexes = ();
