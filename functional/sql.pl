@@ -73,6 +73,10 @@ sub foreign {
 	$member->{foreign} = shift;
 }
 
+sub local {
+	$member->{'local'} = shift
+}
+
 sub class {
 	my $name = shift;
 	
@@ -85,12 +89,6 @@ sub class {
 		pk => [],
 		indexes => []
 	};
-	
-	for my $f (@{$foreign{$name}}) {
-		member("${f}Id");
-		uint();
-		end('member');
-	}
 }
 
 sub member {
@@ -120,6 +118,12 @@ sub end {
 	
 	given ($what) {
 		when ('class') {
+			for my $f (@{$foreign{$class->{name}}}) {
+				member("$f->{class}_$f->{member}");
+				uint();
+				end('member');
+			}
+		
 			my @indexes = ();
 			# the indexes, and primary keys
 			for my $idx (@{$class->{indexes}}) {
@@ -138,7 +142,7 @@ sub end {
 			
 			}
 			
-			say TBL ') Engine=InnoDb;//';
+			say TBL ") Engine=InnoDb;//\n";
 			sql_c();
 			sql_r();
 			sql_u();
@@ -150,7 +154,10 @@ sub end {
 		}
 		when ('foreign_member') {
 			# do nothing?
-			push @{$foreign{$member->{foreign}}}, $class->{name};
+			push @{$foreign{$member->{foreign}}}, {
+				class => $class->{name},
+				member => $member->{'local'}
+			}
 		}
 	}
 }
