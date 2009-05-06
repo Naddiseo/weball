@@ -79,6 +79,7 @@ sub class {
 		indexes => []
 	};
 }
+
 sub member {
 	my $name = shift;
 	$member = {
@@ -96,6 +97,24 @@ sub end {
 	
 	given ($what) {
 		when ('class') {
+			my @indexes = ();
+			# the indexes, and primary keys
+			for my $idx (@{$class->{indexes}}) {
+				local $" = ',';
+				push @indexes, "\tINDEX(@$idx)"
+			}
+			
+			if (@{$class->{pk}}) {
+				local $" = ', ';
+				push @indexes, "\tPRIMARY KEY(@{$class->{pk}})"
+			}
+			
+			{
+				local $, = ",\n";
+				say TBL @indexes
+			
+			}
+			
 			say TBL ') Engine=InnoDb;//';
 			sql_c();
 			sql_r();
