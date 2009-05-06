@@ -364,7 +364,12 @@ my @context = ();
 
 while (<>) {
 	chomp;
-	s/^\s*(\w+)\s*(.*)$/\&$1(WA::parseArgs(sprintf($2)}));/;
+	/^\s*(\w+)\s*(.*)$/ and do {
+		my @args = WA::parseArgs($2);
+		local $" = ', ';
+		$_ = "\&$1(@args);";
+	};
+	
 	/^&(class|member)\s*\(/ and do {
 		push @context, $1
 	};

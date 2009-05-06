@@ -1,0 +1,43 @@
+class User
+	member id
+		uint
+		auto_increment
+		pk
+	end
+	member role
+		uint
+	end
+	member username
+		string 3 30
+	end 
+	member email
+		string 5 255
+		email_t
+	end
+	member password
+		string 32 32
+		password_t
+	end
+	member timezone
+		int
+		default 0.0
+	end
+	member lastturntime
+		uint
+	end
+	member datecreated
+		uint
+	end
+	member active
+		uint 0 5
+	end
+	member nation
+		uint
+	end
+	member commander
+		uint
+		default 0
+	end
+	index username
+	foo "hello andy" "how are you" "I'm fine, thanks"
+end 
