@@ -5,47 +5,28 @@ use warnings;
 
 use 5.010;
 use WA;
+use Class;
+use Member;
 
 my $class = undef;
 my $member = undef;
+my $function = undef;
 
 my %foreign = ();
 
 
 open TBL,  ">table.sql" or die $!;
 open CRUD, ">crud.sql" or die $!;
+open FN, ">functions.sql" or die $!;
 
 
-sub bool {
+sub range {
 	my ($min, $max) = @_;
-	$member->{type} = 'bool'
-}
-
-sub uint {
-	my ($min, $max) = @_;
-	
-	$member->{range} = [@_];
-	$member->{type} = 'uint'
-}
-
-sub int {
-	my ($min, $max) = @_;
-	$member->{range} = [@_];
-	$member->{type} = 'int'
-}
-
-sub string {	
-	$member->{range} = [@_];
-	$member->{type} = 'string'
-}
-
-sub float {	
-	$member->{range} = [@_];
-	$member->{type} = 'float'
+	$member->range($min, $max);
 }
 
 sub pk {
-	$member->{pk} = 1;
+	$member->{pk} = shift() ? 2 : 1;
 	push @{$class->{pk}}, $member->{name}
 }
 
@@ -83,35 +64,60 @@ sub class {
 	say TBL "DROP TABLE IF EXISTS #db#.$name//";
 	say TBL "CREATE TABLE #db#.$name (";
 	
-	$class = {
-		name => $name,
-		members => [],
-		pk => [],
-		indexes => []
-	};
+	$class = new Class($name);
 }
 
 sub member {
-	my $name = shift;
-	$member = {
-		name =>	$name,
-		dbhide => 0,
-	};
+	my ($type, $name, $default) = @_;
+	$member = new Member($type, $name, $default);
 
 	print TBL "\t`$name` ";
-	push @{$class->{members}}, $member
+	$class->addMember($member);
 }
 
 sub foreign_member {
-	my $name = shift;
-	$member = {
-		name => $name,
-		dbhide => 1
-	};
+	my ($type, $name, $default) = @_;
+	$member = new Member($name);
+	$member->{dbhide} = 1;
 	
-	push @{$class->{members}}, $member
+	$class->addMember($member);
 }
 
+sub dbfunction {
+	my ($name, @args) = @_;
+	my $c = defined $class;
+	$name = $c ? "$class->{name}_$name" : $name;
+	
+	$function = {
+		name => $name,
+		args => [@args],
+		lines => [],
+		vars => {},
+	};
+	
+	say FN "DROP PROCEDURE #db#.$name//";
+	say FN "CREATE PROCEDURE #db#.$name (";
+	
+	
+}
+
+sub var {
+	my ($type, $name, $default) = @_;
+	
+	member($name);
+	eval "&$type();";
+	&default($default);
+	$function->{vars}{$name} = $member;
+	
+	say FN "\tDECLARE $name " . sql_getType($member) . sql_getDBAttrs($member) . ';';
+}
+
+sub select_into {}
+sub return {}
+
+sub sql {
+	say FN "\t$_[0];";
+}
 
 sub end {
 	my $what = shift;
@@ -149,17 +155,24 @@ sub end {
 			sql_r();
 			sql_u();
 			sql_d();
+			$class = undef;
 		}
 		when ('member') {
 			print TBL sql_getType($member) . sql_getDBAttrs($member);
 			say TBL ',';
+			$member = undef;
 		}
 		when ('foreign_member') {
 			# do nothing?
 			push @{$foreign{$member->{foreign}}}, {
 				class => $class->{name},
 				member => $member->{'local'}
-			}
+			};
+			$member = undef;
+		}
+		when ('dbfunction') {
+			say FN "END;//\n";
+			$function = undef;
 		}
 	}
 }
@@ -174,7 +187,7 @@ sub sql_c {
 	say CRUD "CREATE PROCEDURE IF EXISTS #db#.create$class->{name} (";
 	@args = ();
 	for my $arg (@{$class->{members}}) {
-		unless ($arg->{pk} or $arg->{dbhide}) {
+		unless ($arg->{pk} == 1 or $arg->{dbhide}) {
 			push @args, "\ta_$arg->{name} " . sql_getType($arg)
 		}
 	}
@@ -183,7 +196,7 @@ sub sql_c {
 	say CRUD "\tINSERT INTO #db#.$class->{name} SET";
 	@set = ();
 	for my $arg (@{$class->{members}}) {
-		unless ($arg->{pk} or $arg->{dbhide}) {
+		unless ($arg->{pk} == 1 or $arg->{dbhide}) {
 			push @set, "\t\t`$arg->{name}` = a_$arg->{name}" 
 		}
 	}
@@ -359,6 +372,10 @@ sub sql_getType {
 			}
 			
 		}
+		
+		when ('float') {
+			$ret = 'FLOAT'
+		}
 	}
 	
 	return $ret;
@@ -371,36 +388,21 @@ sub sql_getDBAttrs {
 	
 	given ($member->{type}) {
 		when ('bool') {
-			if (defined $member->{default}) {
-				$ret = ' NOT NULL DEFAULT ' . $member->{default}
-			}
+			$ret = ' NOT NULL DEFAULT ' . ($member->{default} || 0)
 		}
-		when ('uint') {
-			if (!$member->{auto_increment} and defined $member->{default}) {
-				$ret = ' NOT NULL DEFAULT ' . $member->{default}
-			}
-			
-			if ($member->{auto_increment}) {
+		when (/uint|int/) {
+			if (!$member->{auto_increment}) {
+				$ret = ' NOT NULL DEFAULT ' . ($member->{default} || 0)
+			} else  {
 				$ret .= ' auto_increment '
 			}
 		}
-		
-		when ('int') {
-			if (!$member->{auto_increment} and defined $member->{default}) {
-				$ret = ' NOT NULL DEFAULT ' . $member->{default}
-			}
-			
-			if ($member->{auto_increment}) {
-				$ret .= ' auto_increment '
-			}
-		}
-		
 		when ('string') {
 			$ret = ' NOT NULL DEFAULT "' . ($member->{default} || '') . '"'
 		}
 		
 		when ('float') {
-			$ret = 'NOT NULL DEFAULT ' . ($member->{default} || 0.0)
+			$ret = ' NOT NULL DEFAULT ' . ($member->{default} || '0.0')
 		}
 	}
 
@@ -417,7 +419,7 @@ while (<>) {
 		$_ = "\&$1(@args);";
 	};
 	
-	/^&(class|member|foreign_member)\s*\(/ and do {
+	/^&(class|member|foreign_member|dbfunction)\s*\(/ and do {
 		push @context, $1
 	};
 	/^&end/ and do {

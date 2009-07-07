@@ -43,6 +43,7 @@
 					<keyword>class</keyword>
 					<keyword>member</keyword>
 					<keyword>foreign_member</keyword>
+					<keyword>dbfunction</keyword>
 					<keyword>end</keyword>
 				</context>
 
@@ -60,6 +61,7 @@
 					<keyword>password_t</keyword>
 					<keyword>foreign</keyword>
 					<keyword>local</keyword>
+					<keyword>return</keyword>
 				</context>
 				<context id="boolean" style-ref="boolean">
 					<keyword>false</keyword>
