@@ -1,0 +1,21 @@
+# depslib dependency file v1.0
+1241655897 source:/home/richard/Projects/weball/Cpp/WebAll/main.cpp
+	<iostream>
+	<Lexer.hpp>
+
+1241656416 source:/home/richard/Projects/weball/Cpp/WebAll/Lexer.cpp
+	<Lexer.hpp>
+	<iostream>
+
+1241656426 /home/richard/Projects/weball/Cpp/WebAll//Lexer.hpp
+	<config.hpp>
+	<fstream>
+
+1241655379 /home/richard/Projects/weball/Cpp/WebAll//config.hpp
+	<string>
+	<cstdlib>
+
+1241655533 source:/home/richard/Projects/weball/Cpp/WebAll/error.cpp
+	<config.hpp>
+	<iostream>
+

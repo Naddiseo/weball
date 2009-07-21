@@ -1,0 +1,329 @@
+class User
+	member id
+		uint
+		auto_increment
+		pk
+	end
+	member role
+		uint
+	end
+	member username
+		string 3 30
+	end 
+	member email
+		string 5 255
+		email_t
+	end
+	member password
+		string 32 32
+		password_t
+	end
+	member timezone
+		float
+	end
+	member active
+		uint 0 5
+	end
+	member lastturntime
+		uint
+	end
+	member datecreated
+		uint
+	end
+	member datebanned
+		uint
+	end
+	member reason
+		string 0 1024
+	end
+	member nation
+		uint
+	end
+	member commander
+		uint
+		default 0
+	end
+	member clicks
+		uint
+	end
+	member food
+		uint
+		default 50000
+	end
+	member steel
+		uint
+		default 50000
+	end
+	member oil
+		uint
+		default 50000
+	end
+	member exp
+		uint
+	end
+	member gold
+		uint
+		default 50000
+	end
+	member morale
+		uint
+		default 5000
+	end
+	member rank
+		uint
+	end
+	member civilains
+		uint
+		default 50000
+	end
+	member airforce
+		uint
+	end
+	member army
+		uint
+	end
+	member naval
+		uint
+	end
+	member spies
+		uint
+	end
+	member newmessage
+		uint
+	end
+	member totalmessages
+		uint
+	end
+	index username
+
+	dbfunction login email password
+		
+	end
+end
+
+class UserSignup
+	member activationkey
+		string 40 40
+		pk true
+	end
+	member username
+		string 3 30
+	end
+	member email
+		string 5 50
+	end
+	member timezone
+		float
+	end
+	member datecreated
+		uint
+	end
+	member nation
+		uint 0 5
+	end
+end
+
+class Stats
+	member id
+		uint
+		auto_increment
+		pk
+	end
+	member aerial
+		uint
+	end
+	member terrestrial
+		uint
+	end
+	member marine
+		uint
+	end
+	member covert
+		uint
+	end
+	member retaliation
+		uint
+	end
+end
+
+class Ranks
+	member id
+		uint
+		auto_increment
+		pk
+	end
+	member aerial
+		uint
+	end
+	member terrestrial
+		uint
+	end
+	member marine
+		uint
+	end
+	member covert
+		uint
+	end
+	member retaliation
+		uint
+	end
+end
+
+class Infrastructure
+	member id
+		uint
+		auto_increment
+		pk
+	end
+	member houses
+		uint
+		default 500
+	end
+	member hospitals
+		uint
+	end
+	member laboratories
+		uint
+	end
+	member farms
+		uint
+	end
+	member mines
+		uint
+	end
+	member barracks
+		uint
+	end
+	member airfields
+		uint
+	end
+end
+
+class DivisionArtillery
+	member userid
+		uint
+		pk 1
+	end
+	member divisionid
+		uint
+		pk 1
+	end
+	member what
+		uint
+	end
+	member count
+		uint
+	end
+	member damage
+		uint
+	end
+	member strength
+		uint
+	end
+end
+
+class Division
+	member id
+		uint
+		auto_increment
+		pk
+	end
+	member userid
+		uint
+	end
+	member active
+		bool
+	end
+	member name
+		string 3 30
+	end
+	index userid
+end
+
+class BuyQueue
+	member id
+		uint
+		auto_increment
+		pk
+	end
+	member userid
+		uint
+	end
+	member what
+		uint
+	end
+	member ticks
+		uint
+	end
+	member quantity
+		uint
+	end
+	member civilians
+		uint
+	end
+	index userid
+end
+
+class Attack
+	member id
+		uint
+		auto_increment
+		pk
+	end
+	member time
+		uint
+	end
+	member attackerid
+		uint
+	end
+	member defenderid
+		uint
+	end
+	member ticks
+		uint
+	end
+	member attackerdivisionid
+		uint
+	end
+	member defenderdivisionid
+		uint
+	end
+	member food
+		uint
+	end
+	member steel
+		uint
+	end
+	member oil
+		uint
+	end
+	member gold
+		uint
+	end
+end
+
+class Arsenal
+	member id
+		uint
+		auto_increment
+		pk
+	end
+	member planes
+		uint
+	end
+	member bombers
+		uint
+	end
+	member weapons
+		uint
+	end
+	member tanks
+		uint
+	end
+	member battleships
+		uint
+	end
+	member submarines
+		uint
+	end
+end
