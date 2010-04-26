@@ -1,0 +1,12 @@
+
+class FOO :CRUD {
+	int    id;
+	string name :match(/[a-f]+/i);
+	
+}
+
+class Bar :db(CRUD) :code(CRUD) : {
+	int FOOID;
+}
+
+

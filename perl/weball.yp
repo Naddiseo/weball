@@ -1,0 +1,69 @@
+%{
+use v5.10;
+
+my $current_class = {};
+my $focus = {};
+%}
+
+%right '='
+%left '-' '+'
+%left '*' '/'
+%left NEG
+%right '^'
+
+
+%%
+
+start
+	: lines
+	|
+	;
+
+lines
+	: lines line {
+		push(@{$_[1]}, $_[2]);
+		$_[1];
+	}
+	| line
+	;
+
+line
+	: class_def
+	;
+
+class_def
+	: class_t ident_t {
+		$current_class = {};
+		$current_class->{name} = $_[2];
+		$focus = $current_class;
+	} attribute_list_o {}
+	;
+
+attribute_list_o
+	: # null
+	| ':' ident_t {
+		$focus->{attr}{$_[2]} = [];
+		$focus = $focus->{attr}{$_[2]};
+	} attribute_arg_list_o {
+	}
+	;
+
+attribute_arg_list_o 
+	: #null
+	| '(' ')'
+	| '(' arg_list ')'
+	;
+
+arg_list
+	: arg_list ',' arg
+	| arg
+	;
+	
+arg
+	: ident_t { push @{$focus}, $_[1] }
+	| NUM    { push @{$focus}, $_[1] }
+	| STRING { push @{$focus}, $_[1] }
+	;
+	
+
+%%
