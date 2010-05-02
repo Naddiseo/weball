@@ -1,12 +1,8 @@
 
-class FOO :CRUD {
-	int    id;
-	string name :match(/[a-f]+/i);
-	
+class FOO :asdf(1,2,3) :BAR{
+	int foo;
+	int bar;
+	string quax;
 }
 
-class Bar :db(CRUD) :code(CRUD) : {
-	int FOOID;
-}
-
-
+class BAR :BAR{}

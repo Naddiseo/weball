@@ -1,219 +1,313 @@
 package Lexer;
+
 use strict;
 use warnings;
+
 use feature ':5.10';
-use Carp;
 
-our $VERSION = 2010.04.25;
+our $VERSION = 2010.05.01;
 
-our $PUNCT_TREE = {
-	'!' => {
-		'='       => 1,
-		'default' => 1
-	},
-	'%' => {
-		'='       => 1,
-		'default' => 1,
-	},
-	'^' => {
-		'='       => 1,
-		'default' => 1,
-	},
-	'&' => {
-		'&'       => 1,
-		'='       => 1,
-		'default' => 1,
-	}, 
-	'*' => {
-		'='       => 1,
-		'default' => 1,
-	},
-	'-' => {
-		'-'       => 1,
-		'='       => 1,
-		'default' => 1,
-	},
-	'+' => {
-		'+'       => 1,
-		'='       => 1,
-		'default' => 1,
-	},
-	'=' => {
-		'='       => 1,
-		'default' => 1,
-	},
-	'|' => {
-		'|'       => 1,
-		'='       => 1,
-		'default' => 1,
-	},
-	'/' => {
-		'='       => 1,
-		'default' => 1,
-	},
-	'<' => {
-		'<'       => {
-			'='       => 1,
-			'default' => 1
-		},
-		'='       => 1,
-		'default' => 1,
-	},
-	'>' => {
-		'>'       => {
-			'='       => 1,
-			'default' => 1
-		},
-		'='       => 1,
-		'default' => 1,
-	},
-	'~'  => 1,
-	'('  => 1,
-	')'  => 1,
-	'['  => 1,
-	']'  => 1,
-	'{'  => 1,
-	'}'  => 1,
-	','  => 1,
-	'.'  => 1,
-	'?'  => 1,
-	';'  => 1,
-	':'  => 1,
-	'\'' => 1,
-	'"'  => 1,
-};
+use Data::Dumper;
+
+#use SymbolTable;
+
+our $punct_rx = qr/[\$~!%^&\*\-\+\=\/\\\|:;\.,?:\(\)\{\}\[\]<>@]/;
 
 sub new {
-	my ($c, $str) = @_;
+	my ($c, $fp, $stable) = @_;
 	
 	my $self = {
-		str => $str,
-		tokens => [],
+#		sym  => $stable,
+		fp   => $fp,
+		line => 1,
+		char => 0,
+		
+		pushback => undef
 	};
 	
-	bless $self => $c;
+#	open $self->{fp}, $file or die $!;
+	
+	return bless $self => $c;
+}
+
+sub getChar {
+	my $self = shift;
+	
+	my $c = undef;
+	
+	if (defined $self->{pushback}) {
+		$c = $self->{pushback};
+		$self->{pushback} = undef;
+		if ($c eq "\n") { $self->{line}-- }
+		
+	}
+	else {
+		if (eof($self->{fp})) {
+			return undef;
+		}
+
+		# $c = getc($self->{fp}) or warn $! && return undef; # doesn't work for some reason
+		read ($self->{fp}, $c, 1) or warn $! && return undef;
+		$self->{char}++;
+	}
+	
+	given ($c) {
+		when ("\r") {
+#			return $self->getChar();
+		}
+		when ("\n") {
+			$self->{line}++;
+			$self->{char} = 0;
+			#say "got NL"
+#			return $self->getChar();
+		}
+		when (/[\s\0]/) {
+			#say "got WS '$c' " .  ord($c);
+			#$self->{char}++;
+#			return $self->getChar();
+		}
+	}
+	#say "C: $c";
+	return $c;
 }
 
 sub tokenize {
-	my ($self) = @_;
-	my $tok     = '';
-	my @chars   = split //, $self->{str};
-	my @tokens  = ();
-
-	while (my $c = shift @chars) {
+	my $self = shift;
+	my @ret = ();
+	my $c;
+	
+	until (eof($self->{fp})) {
+		 $c = $self->getChar();
 		last unless defined $c;
+	#	say "given($c)";
 		given ($c) {
-			when (/\s/) {
-				# No nothing
-			}
-			when (/[a-z]/i) {
-				while (defined $c and $c =~ /[[:alnum:]]/) {
-					$tok .= $c;
-					$c = shift @chars;
+			when (/[a-z_]/i) {
+				$self->{pushback} = $c;
+				my $ident = $self->getIdent();
+				if ($self->isKW($ident)) {
+					push @ret, Token->new($self, $ident . '_t', $ident);
 				}
-
-				# TODO: check if token
-				
-				push @tokens, $tok;
-				#say "token : $tok";
-				$tok = '';
-
-				redo;
-			}
-			when (/[0-9]/i) {
-				# TODO: allow hex
-				while (defined $c and $c =~ /[[:digit:]]/) {
-					$tok .= $c;
-					$c = shift @chars;
+				else {
+					push @ret, Token->new($self,'ident_t', $ident);
 				}
-				push @tokens, $tok;
-				$tok = '';
-				redo;
 			}
-			when (/[~!%^&*\(\)\-\+=\[\]\{\}\|\'\"\;:\?\/<>,\.]/) {
-				my $p = $self->parsePunctTree($_, \@chars);
-				#say "Got punct $p";
-				push @tokens, $p;
+			when (/[0-9]/) {
+				$self->{pushback} = $c;
+
+				my $num = $self->getNum();
+				push @ret, Token->new($self, 'number_t', $num);
+			}
+			when (/['"]/) {
+				my $q    = $c;
+				my $str  = $self->getString($q);
+#				my $strN = $self->{sym}->addString($str, $q);
+				push @ret, Token->new($self, 'string_t', $str);
+			}
+			when (/^$Lexer::punct_rx/) {
+				$self->{pushback} = $c;
+				push @ret, Token->new($self, $self->getPunct(), '');
+			}
+			when (/[\s\0\r\n]/) {
+				# skip the WS
+				#say "WS"
+			}
+			when (/#/) {
+				while (defined $c and $c ne "\n") {
+					$c = $self->getChar();
+				}
 			}
 			default {
-				croak "Unknown char $c";
+				$self->error("Unknown Lookahead '$c'");
 			}
 		}
-		#say "c: '$c'";
 	}
-
-	push @{$self->{tokens}}, @tokens;
-	return @tokens
+	
+	#say "tokenize() exiting with '$c'";
+	
+	push @ret, Token->new($self, '', ''); #['', undef];
+	
+	return @ret;
 }
 
-sub parsePunctTree {
-	my ($self, $char, $char_ref, $tree) = @_;
 
-	my $val = '';
-
-	my $ret = $char;
-
-	$tree = $Lexer::PUNCT_TREE unless defined $tree;
-
-	return $val unless defined $char;
-
-	#use Data::Dumper;
-	#print "testing if '$char' is in tree..";
+sub getString {
+	my ($self, $q) = @_;
 	
-	if (exists $tree->{$char}) {
-		#say "yes";
-		$val = $tree->{$char};
-	}
-	else {
-		#say "no, putting '$char' back";
-		unshift @{$char_ref}, $char;
+	my $ret = '';
+	my $b = 1;
 
-		return '';
-	}
-
-	if (ref $val eq 'HASH') {
-		my $c = shift @{$char_ref};
-		#say "testing '$c'";
-		$ret .= $self->parsePunctTree(
-			$c,
-			$char_ref,
-			$val
-		);
-	}
-	elsif ($val == 1) {
-		# accept
-		#say "accept char '$char'";
-		return $ret;
-	}
-	else {
-		# operator doesn't exist
-		say "opertator $char doesn't exist"
+	LOOP: while ($b) {
+		my $c = $self->getChar();
+		unless (defined $c) {
+			$self->error("End of File reached before end of string");
+		}
+		
+		given ($c) {
+			when (/$q/) {
+				$b = 0; # exit the given and while loop
+			}
+			when (/[^\\$q]/) {
+				$ret .= $c
+			}
+			when (/\\/) {
+				$c = $self->getChar();
+				unless (defined $c) {
+					$self->error("End of File reached before end of string");
+				}
+				$ret .= $c;
+			}
+			default {
+				$self->error("Unknown sequence in string '$c'");
+			}
+		}
 	}
 	
 	return $ret;
 }
 
+sub getNum {
+	my ($self) = @_;
+	#say "pb: $self->{pushback}";
+	my $c     = $self->getChar();
+	my $ret   = '';
+	my $isHex = 0;
+	
+	#say "c: $c";
+	
+	if ($c eq '0') {
+		$c = $self->getChar();
+		return '0' unless (defined $c);
+		$ret = '0';
+		if ($c eq 'x') {
+			$ret = '0x';
+			$isHex = 1;
+			$c = $self->getChar();
+			return '0' unless (defined $c);
+		}
+		
+		#say "$ret $isHex $c";
+	}
+	
+	LOOP: 
+	while (1) {
+		if ($c =~ /[0-9]/ or ($isHex and $c =~ /[a-f]/i)) {
+			$ret .= $c;
+		}
+		else {
+			$self->{pushback} = $c;
+			last LOOP;
+		}
+		
+		$c = $self->getChar();
+		unless (defined $c) {
+			$self->error("Error reading number");
+		}
+	}
+	
+	return $ret
+}
+
+sub getPunct {
+	my $self = shift;
+	my $ret  = '';
+	my $c    = $self->getChar();
+	my %punct = map { $_ => 1 } (
+		'<<=', '>>=',
+		'~=', '^=', '&=', '|=',
+		'*=', '-=', '+=', '/=', '%=',
+		'<<', '>>', '--', '++',
+		'==', '!=',	'<=', '>=',
+		'<', '>', '||', '&&',
+		'+', '-', '*', '/', '%',
+		'~', '^', '&', '|',
+		'!', '?', ':', '.', ';', ',', 
+		'(', ')', '{', '}', '[', ']',
+		'=', '$', '@'
+	);
+	
+	while ($c =~ /$Lexer::punct_rx/ and $punct{$ret . $c}) {
+		$ret .= $c;
+		defined($c = $self->getChar()) or last;
+	}
+	#say "exiting with '$c'";
+	$self->{pushback} = $c;
+	
+	return $ret;
+}
+
+sub getIdent {
+	my ($self) = @_;
+
+	my $c   = $self->getChar();
+	my $ret = $c;
+	#say "ret:$ret";
+	unless ($c =~ /[a-z_]/i) {
+		$self->error("expected ident");
+	}
+	
+	LOOP:
+	while (1) {
+		defined($c = $self->getChar()) or last LOOP;
+		if ($c =~ /[a-z_0-9]/i) {
+			$ret .= $c;
+			#say "ret:$ret";
+		}
+		else {
+			$self->{pushback} = $c;
+			last LOOP;
+		}
+	}
+	
+	return $ret;
+}
+
+sub isKW {
+	my ($self, $ident) = @_;
+	
+	my %kw = map {
+		$_ => 1
+	} (
+		'var', 'const', 'if', 
+		'else', 'elseif', 
+		'and', 'or', 'not', 'xor', 
+		'while', 'sub',
+		'goto', 'return',
+		'class', 'template',
+		'int', 'string', 'double'
+	);
+	
+	return exists($kw{$ident}) and $kw{$ident} == 1
+}
+
+sub error {
+	my ($self, $msg) = @_;
+	
+	die "Lexer error [$self->{line}:$self->{char}]: $msg";
+}
+
 1;
-__END__
+package Token;
+use strict;
+use warnings;
 
-=head1 NAME
+sub new {
+	my ($c, $lexer, $type, $text) = @_;
+	
+	my $self = {
+		line  => $lexer->{line},
+		char  => $lexer->{char},
+		len   => length($text),
+		value => $text,
+		type  => $type,
+	};
+	
+	bless $self => $c;
+}
 
+sub line  { shift->{line } }
+sub char  { shift->{char } }
+sub len   { shift->{len  } }
+sub type  { shift->{type } }
+sub value { shift->{value} }
 
-
-=head1 SYNOPSYS
-
-
-
-=head1 DESCRIPTION
-
-
-
-=head1 EXAMPLE
-
-
-
-=head1 LICENSE
-
-Copyright (C) 2010 Richard Eames.
-This module may be modified, used, copied, and redistributed at your own risk.
-Publicly redistributed modified versions must use a different name.
+1;

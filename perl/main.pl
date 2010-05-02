@@ -40,8 +40,8 @@ sub main {
 	#goto success if $PP_only;
 	#say $text;
 
-	my $text = do {local $/; <$fh> };
-	my $l = Lexer->new($text);
+	#my $text = do {local $/; <$fh> };
+	my $l = Lexer->new($fh);
 
 	@tokens = $l->tokenize();
 	#die "gets here";
@@ -49,10 +49,10 @@ sub main {
 	my $result = $parser->YYParse(
 		yylex => \&yylex,
 		yydebug => $debug_flag,
-		#yyerror => \&yyerror
+		yyerror => \&yyerror
 	);
 
-	
+	say Dumper($result);
 
 success:
 	close $fh;	
@@ -69,7 +69,7 @@ sub yylex {
 	
 	#my ($t, $v) = @{shift(@tokens)};
 	my $tok = shift @tokens;
-	my $t = $tok . '_t';
+	my $t = $tok->{type};
 	my $v = $tok;
 	unless (defined $t) {
 		die "t is undef";

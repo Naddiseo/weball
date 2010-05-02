@@ -1,15 +1,32 @@
 %{
 use v5.10;
+use Data::Dumper;
 
-my $current_class = {};
-my $focus = {};
+use AST::Class;
+
+my %classes = ();
+
+my @focus  = ();
+
+sub fpush {
+	push @focus, @_
+}
+
+sub fpop {
+	pop @focus
+}
+
+sub f :lvalue {
+	$focus[$#focus]
+}
+
 %}
 
-%right '='
-%left '-' '+'
-%left '*' '/'
-%left NEG
-%right '^'
+#%right '='
+#%left '-' '+'
+#%left '*' '/'
+#%left NEG
+#%right '^'
 
 
 %%
@@ -20,31 +37,67 @@ start
 	;
 
 lines
-	: lines line {
-		push(@{$_[1]}, $_[2]);
+	: lines outer_line {
+		push(@{$_[1]}, $_[2][0]);
 		$_[1];
 	}
-	| line
+	| outer_line { $_[1]}
 	;
 
-line
-	: class_def
+outer_line
+	: class_def { [$_[1]]}
 	;
 
 class_def
 	: class_t ident_t {
-		$current_class = {};
-		$current_class->{name} = $_[2];
-		$focus = $current_class;
-	} attribute_list_o {}
+		fpush(AST::Class->new($_[2]->value));
+		
+	} attribute_list_o '{' inner_lines_o '}' {
+		
+		return fpop;
+	}
+	;
+
+inner_lines_o
+	: inner_lines
+	| # empty
+	;
+
+inner_lines
+	: inner_lines inner_line
+	| inner_line
+	;
+
+inner_line
+	: var_decl ';' 
+	;
+
+var_decl 
+	: int_t ident_t {
+		f()->addVar('int', $_[2]->value)
+	}
+	| string_t ident_t {
+		f()->addVar('string', $_[2]->value)
+	}
 	;
 
 attribute_list_o
 	: # null
-	| ':' ident_t {
-		$focus->{attr}{$_[2]} = [];
-		$focus = $focus->{attr}{$_[2]};
-	} attribute_arg_list_o {
+	| attribute_list
+	;
+
+attribute_list
+	: attribute_list attribute
+	| attribute
+	;
+
+attribute
+	: ':' ident_t {
+			fpush(AST::Class::Attr->new($_[2]->value));
+			
+		} attribute_arg_list_o {
+			my $attr = fpop;
+			f()->addAttr($attr);
 	}
 	;
 
@@ -55,14 +108,31 @@ attribute_arg_list_o
 	;
 
 arg_list
-	: arg_list ',' arg
-	| arg
+	: arg_list ',' arg {
+		f()->addArg($_[3]->value);
+		#say(Dumper(f(), $_[1], $_[3]));
+	}
+	| arg {
+		f()->addArg($_[1]->value);
+	}
 	;
 	
 arg
-	: ident_t { push @{$focus}, $_[1] }
-	| NUM    { push @{$focus}, $_[1] }
-	| STRING { push @{$focus}, $_[1] }
+	: ident_t { 
+		#say "arg ident $_[1]->{value}";
+		$_[1];
+	#	push @{$focus}, $_[1] 
+	}
+	| number_t    { 
+		#say "arg NUM $_[1]->{value}";
+		$_[1];
+		#push @{$focus}, $_[1] 
+	}
+	| string_t { 
+		#say "arg string $_[1]->{value}";
+		$_[1];
+	#	push @{$focus}, $_[1] 
+	}
 	;
 	
 
