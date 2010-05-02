@@ -82,11 +82,13 @@ sub yylex {
 
 sub yyerror {
 	my $parser = shift;
+
 	die 'Parser [' . 
 		$parser->YYCurval->line . ':' .
 		$parser->YYCurval->char . ']: Expected ' . 
-		$parser->YYExpect . ' got ' . $parser->YYCurtok;
-	die Dumper $parser->YYCurval;
+		join(', or', $parser->YYExpect) . ' got ' . $parser->YYCurtok;
+
+	die Dumper $parser->YYCurtok, $parser->YYCurval, $parser->YYExpect, $parser->YYSemval(1);
 }
 
 __END__

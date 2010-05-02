@@ -1,8 +1,11 @@
 
-class FOO :asdf(1,2,3) :BAR{
-	int foo;
-	int bar;
-	string quax;
+class User :primary(id){
+	int id :auto_increment;
+	string username;
+	int    nation;
+	int    active;
+	
+	dbfunction getByActive(active) {
+		
+	}
 }
-
-class BAR :BAR{}

@@ -70,15 +70,47 @@ inner_lines
 
 inner_line
 	: var_decl ';' 
+	| dbfunction_decl
 	;
 
+dbfunction_decl
+	: dbfunction_t ident_t {fpush(AST::Class::DBFunction->new($_[2]->value))}
+		'(' fn_arg_list_o ')' attribute_list_o '{' code_inner_lines_o '}'{
+			my $dbf = fpop();
+			f()->addDBF($dbf);
+		}
+	;
+
+code_inner_lines_o
+	: #empty
+	| code_inner_lines
+	;
+
+code_inner_lines
+	:code_inner_lines code_inner_line
+	| code_inner_line
+	;
+
+code_inner_line
+	: var_decl ';'
+	;
+	
 var_decl 
-	: int_t ident_t {
-		f()->addVar('int', $_[2]->value)
+	: var_type ident_t {
+		fpush(AST::Class::Var->new($_[2]->value, $_[1]))
+		} 
+		attribute_list_o {
+		my $var = fpop();
+		f()->addVar($var);
 	}
-	| string_t ident_t {
-		f()->addVar('string', $_[2]->value)
-	}
+	;
+
+var_type
+	: int_t { $_[1]->value }
+	| uint_t { $_[1]->value }
+	| bool_t { $_[1]->value }
+	| string_t { $_[1]->value }
+	| double_t { $_[1]->value }
 	;
 
 attribute_list_o
@@ -101,6 +133,11 @@ attribute
 	}
 	;
 
+fn_arg_list_o
+	: arg_list
+	| # no args
+	;
+
 attribute_arg_list_o 
 	: #null
 	| '(' ')'
@@ -118,21 +155,11 @@ arg_list
 	;
 	
 arg
-	: ident_t { 
-		#say "arg ident $_[1]->{value}";
-		$_[1];
-	#	push @{$focus}, $_[1] 
-	}
-	| number_t    { 
-		#say "arg NUM $_[1]->{value}";
-		$_[1];
-		#push @{$focus}, $_[1] 
-	}
-	| string_t { 
-		#say "arg string $_[1]->{value}";
-		$_[1];
-	#	push @{$focus}, $_[1] 
-	}
+	: ident_t 
+	| number_t
+	| true_t
+	| false_t
+	| string_t
 	;
 	
 

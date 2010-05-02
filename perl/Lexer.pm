@@ -270,10 +270,11 @@ sub isKW {
 		'var', 'const', 'if', 
 		'else', 'elseif', 
 		'and', 'or', 'not', 'xor', 
-		'while', 'sub',
+		'while', 'function', 'dbfunction',
 		'goto', 'return',
 		'class', 'template',
-		'int', 'string', 'double'
+		'true', 'false',
+		'uint', 'int', 'string', 'double', 'bool'
 	);
 	
 	return exists($kw{$ident}) and $kw{$ident} == 1
