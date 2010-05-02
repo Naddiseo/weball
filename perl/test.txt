@@ -5,7 +5,8 @@ class User :primary(id){
 	int    nation;
 	int    active;
 	
-	dbfunction getByActive(active) {
-		
+	dbfunction getByActive(int active :default(0)) {
+		string f :filter(User.active.foo.bar);
+		read('*')->where(f);
 	}
 }

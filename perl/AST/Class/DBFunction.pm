@@ -10,9 +10,11 @@ sub new {
 	my ($c, $name) = @_;
 	
 	my $self = {
-		name => $name,
-		args => [],
-		attr => {}
+		name  => $name,
+		args  => [],
+		attr  => {},
+		vars  => {},
+		stmts => []
 	};
 	
 	bless $self => $c;
@@ -33,6 +35,19 @@ sub addArg {
 
 	push @{$self->{args}}, $arg
 }
+
+sub addVar {
+	my ($self, $var) = @_;
+
+	$self->{vars}{$var->{name}} = $var;
+}
+
+sub addStmt {
+	my ($self, $stmt) = @_;
+
+	push @{$self->{stmts}}, $stmt
+}
+
 
 1;
 __END__

@@ -1,35 +1,29 @@
-package AST::Class::Var;
+package AST::Ident;
 use strict;
 use warnings;
 use feature ':5.10';
 use Carp;
 
-use AST::Class::Attr;
-
-our $VERSION = 2010.05.01;
+our $VERSION = 2010.05.02;
 
 sub new {
-	my ($c, $name, $type) = @_;
+	my ($c, $ident) = @_;
 	
 	my $self = {
-		name  => $name,
-		type  => $type,
-	#	value => undef,
-		attr  => {}
+		fq    => '',
+		parts => [],
+		ident => $ident
 	};
-	
+
 	bless $self => $c;
 }
 
-sub addAttr {
-	my ($self, $a) = @_;
+sub addPart {
+	my ($self, $ident) = @_;
 
-	if ($self->{attr}{$a->{name}}) {
-		carp "Class::Var $self->{name} already has attribute $a->{name}";
-	}
-
-	$self->{attr}{$a->{name}} = $a;
+	push @{$self->{parts}}, $ident
 }
+
 
 1;
 __END__

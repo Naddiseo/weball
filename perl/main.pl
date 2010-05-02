@@ -8,8 +8,11 @@ use Data::Dumper;
 use Getopt::Long;
 use Pod::Usage;
 
+#$Data::Dumper::Indent = 1;
+
 use Lexer;
 use Parser;
+
 
 my $exit_status = 1;
 my $opt_help    = 0;
@@ -86,7 +89,7 @@ sub yyerror {
 	die 'Parser [' . 
 		$parser->YYCurval->line . ':' .
 		$parser->YYCurval->char . ']: Expected ' . 
-		join(', or', $parser->YYExpect) . ' got ' . $parser->YYCurtok;
+		join(', or ', $parser->YYExpect) . ' got "' . $parser->YYCurtok . '"';
 
 	die Dumper $parser->YYCurtok, $parser->YYCurval, $parser->YYExpect, $parser->YYSemval(1);
 }

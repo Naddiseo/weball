@@ -1,34 +1,20 @@
-package AST::Class::Var;
+package AST::GetMember;
 use strict;
 use warnings;
 use feature ':5.10';
 use Carp;
 
-use AST::Class::Attr;
-
-our $VERSION = 2010.05.01;
+our $VERSION = 2010.05.02;
 
 sub new {
-	my ($c, $name, $type) = @_;
+	my ($c, $lhs, $rhs) = @_;
 	
 	my $self = {
-		name  => $name,
-		type  => $type,
-	#	value => undef,
-		attr  => {}
+		lhs => $lhs,
+		rhs => $rhs
 	};
 	
 	bless $self => $c;
-}
-
-sub addAttr {
-	my ($self, $a) = @_;
-
-	if ($self->{attr}{$a->{name}}) {
-		carp "Class::Var $self->{name} already has attribute $a->{name}";
-	}
-
-	$self->{attr}{$a->{name}} = $a;
 }
 
 1;

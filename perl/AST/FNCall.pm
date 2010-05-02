@@ -1,12 +1,8 @@
-package AST::Class;
+package AST::FNCall;
 use strict;
 use warnings;
 use feature ':5.10';
 use Carp;
-
-use AST::Class::Attr;
-use AST::Class::Var;
-use AST::Class::DBFunction;
 
 our $VERSION = 2010.05.02;
 
@@ -15,35 +11,18 @@ sub new {
 	
 	my $self = {
 		name => $name,
-		attr => {},
-		vars => {},
-		dbf  => {},
+		args => []
 	};
 	
 	bless $self => $c;
 }
 
-sub addAttr {
-	my ($self, $a) = @_;
+sub addArg {
+	my ($self, $arg) = @_;
 
-	if ($self->{attr}{$a->{name}}) {
-		carp "Class $self->{name} already has attribute $a->{name}";
-	}
-
-	$self->{attr}{$a->{name}} = $a;
+	push @{$self->{args}}, $arg
 }
 
-sub addVar {
-	my ($self, $var) = @_;
-
-	$self->{vars}{$var->{name}} = $var;
-}
-
-sub addDBF {
-	my ($self, $var) = @_;
-
-	$self->{dbf}{$var->{name}} = $var;
-}
 1;
 __END__
 
