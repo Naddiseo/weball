@@ -25,20 +25,6 @@ sub f :lvalue {
 	$focus[$#focus]
 }
 
-sub unwrap {
-	my @ret = ();
-	for my $arg (@_) {
-		if (ref $arg eq 'ARRAY') {
-			push @ret, unwrap($arg)
-		}
-		else {
-			push @ret, $arg
-		}
-	}
-	
-	@ret
-}
-
 %}
 
 %nonassoc '.'
