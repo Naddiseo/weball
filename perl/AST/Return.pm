@@ -1,4 +1,4 @@
-package AST::Ident;
+package AST::Return;
 use strict;
 use warnings;
 use feature ':5.10';
@@ -7,29 +7,14 @@ use Carp;
 our $VERSION = 2010.05.10;
 
 sub new {
-	my ($c, $ident) = @_;
+	my ($c, $expr) = @_;
 	
 	my $self = {
-		fq    => '',
-		parts => [],
-		ident => $ident
+		expr => $expr
 	};
 	
-	$self->{fq} = $ident->{value};
-
 	bless $self => $c;
 }
-
-
-sub addPart {
-	my ($self, $ident) = @_;
-
-	$self->{fq} .= '::' . $ident->{ident}{value} ;
-
-	push @{$self->{parts}}, $ident;
-	$self;
-}
-
 
 1;
 __END__

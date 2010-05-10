@@ -7,6 +7,6 @@ class User :primary(id){
 	
 	dbfunction getByActive(int active :default(0)) {
 		string f :filter(User.active.foo.bar);
-		read('*')->where(f);
+		return read('*')->where(f);
 	}
 }
