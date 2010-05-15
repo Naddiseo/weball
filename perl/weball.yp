@@ -6,8 +6,15 @@ use AST::Class;
 use AST::FNCall;
 use AST::GetMember;
 use AST::Assign;
+use AST::IsEqual;
 use AST::Ident;
 use AST::Return;
+use AST::Primitive;
+
+use AST::Math::Add;
+use AST::Math::Divide;
+use AST::Math::Multiply;
+use AST::Math::Subtract;
 
 my %classes = ();
 
@@ -27,13 +34,16 @@ sub f :lvalue {
 
 %}
 
-%nonassoc '.'
+%left ','
 %right '->'
 %right '='
-#%left '-' '+'
-#%left '*' '/'
+%nonassoc '=='
+%left '-' '+'
+%left '*' '/'
 #%left NEG
 #%right '^'
+
+%left '.'
 
 
 %%
@@ -105,14 +115,24 @@ code_inner_lines
 code_inner_line
 	: var_decl ';' 
 	| expr ';'
+	| return_t expr ';' { AST::Return->new($_[2]) }
 	;
 
 expr
 	: expr '->' expr { AST::GetMember->new(@_[1, 3]) }
-	| expr '=' expr  { AST::Assign->new(@_[1, 3])    }
+	| binexpr
 	| fncall
 	| '(' expr ')'   { $_[2] }
-	| return_t expr  { AST::Return->new($_[2]) }
+	| arg
+	;
+
+binexpr
+	: expr '='  expr { AST::Assign->new(@_[1, 3])  }
+	| expr '==' expr { AST::IsEqual->new(@_[1, 3]) }
+	| expr '+' expr  { AST::Math::Add->new(@_[1, 3]) }
+	| expr '-' expr  { AST::Math::Subtract->new(@_[1, 3]) }
+	| expr '/' expr  { AST::Math::Divide->new(@_[1, 3]) }
+	| expr '*' expr  { AST::Math::Multiply->new(@_[1, 3]) }
 	;
 
 fncall
@@ -127,16 +147,37 @@ var_decl
 	: var_type ident_t {
 		fpush(AST::Class::Var->new($_[2]->value, $_[1]))
 		} 
-		attribute_list_o {
+		attribute_list_o var_decl_assign_o {
 		my $var = fpop();
 		f()->addVar($var);
+		
+		my $defAttr = AST::Class::Attr->new('default');
+		
+		if ($_[5]) {
+			$defAttr->addArg($_[5]);
+			$var->addAttr($defAttr);
+		}
+	}
+	| var_type  local_ident_t {
+		fpush(AST::Class::Var->new($_[2]->value, $_[1]))
+		} 
+		attribute_list_o  var_decl_assign_o {
+		my $var = fpop();
+		f()->addVar($var);
+		
+		my $defAttr = AST::Class::Attr->new('default');
+		
+		if ($_[5]) {
+			$defAttr->addArg($_[5]);
+			$var->addAttr($defAttr);
+		}
 	}
 	;
 
 var_type
-	: int_t { $_[1]->value }
-	| uint_t { $_[1]->value }
-	| bool_t { $_[1]->value }
+	: int_t    { $_[1]->value }
+	| uint_t   { $_[1]->value }
+	| bool_t   { $_[1]->value }
 	| string_t { $_[1]->value }
 	| double_t { $_[1]->value }
 	;
@@ -196,7 +237,7 @@ fn_call_arg_list
 	;
 
 fn_call_arg
-	: arg
+	: expr
 	;
 
 arg_list
@@ -208,16 +249,26 @@ arg_list
 	}
 	;
 
+var_decl_assign_o 
+	: #null
+	| var_decl_assign
+	;
+
+var_decl_assign
+	: '=' expr { $_[2] }
+	;
+
 fn_decl_arg
 	: var_decl
 	;
 	
 arg
 	: fq_ident
-	| number_t
-	| true_t
-	| false_t
-	| string_t
+	| local_ident_t { AST::Ident->new($_[1], 1) }
+	| number_t      { AST::Primitive->new('number', $_[1]) }
+	| true_t        { AST::Primitive->new('bool', $_[1]) }
+	| false_t       { AST::Primitive->new('bool', $_[1]) }
+	| string_t      { AST::Primitive->new('string', $_[1]) }
 	;
 
 fq_ident

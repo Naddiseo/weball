@@ -5,8 +5,10 @@ class User :primary(id){
 	int    nation;
 	int    active;
 	
-	dbfunction getByActive(int active :default(0)) {
-		string f :filter(User.active.foo.bar);
-		return read('*')->where(f);
+	dbfunction getByActive(int $active =0) {
+		return 
+			from(User)
+			->read(id, username)
+			->where(active == $active);
 	}
 }

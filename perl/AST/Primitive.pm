@@ -1,4 +1,4 @@
-package AST::Ident;
+package AST::Primitive;
 use strict;
 use warnings;
 use feature ':5.10';
@@ -7,30 +7,16 @@ use Carp;
 our $VERSION = 2010.05.15;
 
 sub new {
-	my ($c, $ident, $isLocal) = @_;
+	my ($c, $type, $token) = @_;
 	
 	my $self = {
-		fq      => '',
-		parts   => [],
-		ident   => $ident,
-		isLocal => ($isLocal or 0)
+		type  => $type,
+		token => $token,
+		value => $token->{value},
 	};
 	
-	$self->{fq} = $ident->{value};
-
 	bless $self => $c;
 }
-
-
-sub addPart {
-	my ($self, $ident) = @_;
-
-	$self->{fq} .= '::' . $ident->{ident}{value} ;
-
-	push @{$self->{parts}}, $ident;
-	$self;
-}
-
 
 1;
 __END__

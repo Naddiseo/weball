@@ -81,6 +81,11 @@ sub tokenize {
 		last unless defined $c;
 	#	say "given($c)";
 		given ($c) {
+			when (/^\$/) {
+				# local var?
+				my $ident = $self->getIdent();
+				push @ret, Token->new($self, 'local_ident_t', $ident);
+			}
 			when (/[a-z_]/i) {
 				$self->{pushback} = $c;
 				my $ident = $self->getIdent();

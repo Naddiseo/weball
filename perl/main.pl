@@ -29,7 +29,7 @@ GetOptions(
 	'help|?' => \$opt_help,
 #	'P'      => \$PP_only,
 	'o'      => \$output,
-	'd'      => \$debug_flag
+	'd=i'      => \$debug_flag
 ) or pod2usage();
 $opt_help and pod2usage();
 
