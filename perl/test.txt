@@ -1,14 +1,29 @@
 
-class User :primary(id){
-	int id :auto_increment;
+class User :primary(id) {
+	int    id :auto_increment;
 	string username;
-	int    nation;
-	int    active;
+	string email;
+	int    status;
 	
-	dbfunction getByActive(int $active =0) {
+	dbfunction getByStatus(int $status = 0) {
 		return 
 			from(User)
-			->read(id, username)
-			->where(active == $active);
+				->read(id, username)
+				->where(status == $status);
 	}
+	
+	dbfunction getUserMeta(int $id) {
+		return
+			from(User)
+				->read(id, username, email, status)
+				->where(id == $id)
+			->innerjoin(UserMeta)
+				->read(metadata)
+				->where(id == $id);
+	}
+}
+
+class UserMeta :primary(id) {
+	int id :auto_increment;
+	string metadata :match('/[a-z]+/');
 }
