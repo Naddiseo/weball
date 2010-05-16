@@ -76,11 +76,23 @@ sub tokenize {
 	my @ret = ();
 	my $c;
 	
-	until (eof($self->{fp})) {
+	TOKENIZE: until (eof($self->{fp})) {
 		 $c = $self->getChar();
 		last unless defined $c;
 	#	say "given($c)";
 		given ($c) {
+			when (/_/) {
+				$c = $self->getChar();
+				if (defined $c and $c eq '_') {
+					my $ident = $self->getIdent();
+					if ($ident eq 'END') {
+						last TOKENIZE;
+					}
+				}
+				else {
+					$self->{pushback} = '_';
+				}
+			}
 			when (/^\$/) {
 				# local var?
 				my $ident = $self->getIdent();
