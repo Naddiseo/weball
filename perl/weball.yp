@@ -108,7 +108,7 @@ code_inner_lines
 		f()->addStmt($_[2]);
 	}
 	| code_inner_line {
-		f()->addStmt($_[1]);
+		f()->addStmt($_[1]) if defined $_[1];
 	}
 	;
 
@@ -157,6 +157,7 @@ var_decl
 			$defAttr->addArg($_[5]);
 			$var->addAttr($defAttr);
 		}
+		undef
 	}
 	| var_type  local_ident_t {
 		fpush(AST::Class::Var->new($_[2]->value, $_[1]))
@@ -171,6 +172,7 @@ var_decl
 			$defAttr->addArg($_[5]);
 			$var->addAttr($defAttr);
 		}
+		undef
 	}
 	;
 

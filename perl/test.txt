@@ -1,6 +1,6 @@
 class User {
 	dbfunction foo() {
-		string bar :attrname = "varval";
+		string bar :attrname :attr1name(attrArg) = "varval";
 	}
 }
 __END

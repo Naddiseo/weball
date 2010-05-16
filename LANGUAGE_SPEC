@@ -1,39 +1,45 @@
-# Comment
+# Perl style comments
+# Abstracts database/business layers with a single class
+class TableName {} # Produces a table called `TableName` and the eqivilent class in php/perl
 
-# Pythonic like language, no ; and idents matter
+# Primitive types are
+- uint / int     : 32bit unsigned/ signed integers
+- bool           : boolean type: 'true' or 'false'
+- string         : ASCII string
 
-# Include the file directly into the current processing as though it was
-# copied and pasted.
-include ("path/to/file")
+# Database/class fields are declared like in C: <type> <var_name> (= <value>);
+class TableName {
+	int    id;
+	string username;
+	bool   isActive = true;
+}
 
-# C like typedefs
-typedef <type> <name of new type> <attributes of the new type>
-# attributes are in the form :attrName or :attrName(values)
+# creates a table:
+CREATE TABLE `TableName` (
+	id       integer,
+	username varchar(255),
+	isActive smallint default(1)
+);
 
-# Config to be passed onto the code generation layer.
-config
-	<config name>(<config value>)
+# and a class (in PHP):
+class TableName {
+	public $id;
+	public $username;
+	public $isActive = true;
+}
 
-# Abstraction layer for classes
-# can be used for SQL tables, and the business layer ontop
-class <class Name>
-	<type> <member name> <attributes>
-	# primary key, for databases
-	pk(<member_name_list>)
-	# Index for databases
-	index(<member_name_list>)
-	
-	# db functions:
-	dbfunction <name>(<member_name_list>)
-		join(<classname>.<membername>,<classname>.<membername>,...)
-		return(<membername>)
-		
-	# example:
-	dbfunction getName(id)
-		join(Foo.id, Bar.id)
-		return(Bar.name)	
-	
-	# will give a sql line like:
-	# select Bar.name from Foo inner join Bar on Foo.id = Bar.id where Foo.id = id;
-	
-	
+# Classes and variable can also be tagged with attributes with the following syntax:
+(<var_name>|<class_name>) (:<attribute_name>('(' <argument_list> ')')?)*
+# Attributes must be added in the class/variable declaration, and are only available at compile time
+# Variable Attribute:
+<type> <var_name> <attributes> ('=' <value>) ';'
+int myInt :myAttribute(1, 2, 'foo') :myFlag = 1;
+
+class Foo :primarykey(id) {
+	int id :auto_increment;
+}
+
+# Attributes are mainly used to signal the different translation phases information
+# about that perticular variable or class.
+
+# The default value for a variable using the syntax '= value' is syntactic sugar for :default(value)
