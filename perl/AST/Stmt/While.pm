@@ -1,16 +1,17 @@
-package AST::Expr;
+package AST::Stmt::While;
 use strict;
 use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.16;
+our $VERSION = 2010.05.15;
 
 sub new {
-	my ($c) = @_;
+	my ($c, $cond, $block) = @_;
 	
 	my $self = {
-	
+		cond  => $cond,
+		block => $block,
 	};
 	
 	bless $self => $c;

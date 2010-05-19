@@ -1,4 +1,4 @@
-package AST::Expr;
+package AST::Block;
 use strict;
 use warnings;
 use feature ':5.10';
@@ -10,11 +10,19 @@ sub new {
 	my ($c) = @_;
 	
 	my $self = {
-	
+		stmts => []
 	};
 	
 	bless $self => $c;
 }
+
+sub addStmt {
+	my ($self, $stmt) = @_;
+	
+	push @{$self->{stmts}}, $stmt;
+	$self
+}
+
 
 1;
 __END__

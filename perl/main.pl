@@ -14,6 +14,7 @@ use Pod::Usage;
 use Lexer;
 use Parser;
 
+use Print;
 
 my $exit_status = 1;
 my $opt_help    = 0;
@@ -56,7 +57,9 @@ sub main {
 		yyerror => \&yyerror
 	);
 
-	say Dumper($result);
+	Print::printTree($result);
+
+	#say Dumper($result);
 
 success:
 	close $fh;	

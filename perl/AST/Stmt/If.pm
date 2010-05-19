@@ -1,4 +1,4 @@
-package AST::Expr;
+package AST::Stmt::If;
 use strict;
 use warnings;
 use feature ':5.10';
@@ -6,15 +6,22 @@ use Carp;
 
 our $VERSION = 2010.05.16;
 
+use AST::Block;
+use AST::Expr;
+
 sub new {
 	my ($c) = @_;
 	
 	my $self = {
-	
+		cond    => undef,
+		block   => AST::Block->new(),
+		elseifs => [],
+		'else'  => AST::Block->new()
 	};
 	
 	bless $self => $c;
 }
+
 
 1;
 __END__

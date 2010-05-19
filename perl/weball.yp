@@ -16,15 +16,24 @@ use AST::Math::Divide;
 use AST::Math::Multiply;
 use AST::Math::Subtract;
 
+use AST::Block;
+use AST::Expr;
+
+use AST::Stmt::If;
+use AST::Stmt::ElseIf;
+use AST::Stmt::While;
+
 my %classes = ();
 
 my @focus  = ();
 
 sub fpush {
+	#say sprintf("pushing:%i: %s", (caller())[2], ref $_[0]);
 	push @focus, @_
 }
 
 sub fpop {
+	#say sprintf("pop:%i: %s", (caller())[2], ref $focus[$#focus]);
 	pop @focus
 }
 
@@ -116,6 +125,87 @@ code_inner_line
 	: var_decl ';' 
 	| expr ';'
 	| return_t expr ';' { AST::Return->new($_[2]) }
+	| stmt
+	;
+	
+stmt
+	: if_stmt
+	;
+
+if_stmt
+	: if_t 
+		{ fpush(AST::Stmt::If->new()) } 
+	'(' expr ')' 
+		{ 
+			f()->{cond} = $_[4];
+			fpush(f()->{block});
+		}
+	'{' code_inner_lines_o '}' 
+		{ 
+			#fpop(); 
+			f()->{block} = $_[8];
+			#fpush(f()->{f});
+			f()
+		}
+	elseif_t_o
+	else_t_o 
+		{
+			fpop();
+			#say __LINE__, ref($_[11]);
+			my $ei = (ref($_[11]) eq 'ARRAY' ? $_[11] : [$_[11]]);
+			f()->{elseifs} = $ei;
+			f()->{'else'}  = $_[12] if defined($_[12]);
+			fpop() 
+		}
+	;
+
+elseif_t_o
+	: #null
+	| elseif_list { fpop(); $_[1] }
+	;
+
+elseif_list
+	: elseif_list elseif_stmt { push @{$_[1]}, $_[2] }
+	| elseif_stmt 
+	;
+
+elseif_stmt
+	: elseif_t
+	 	{
+			fpush(AST::Stmt::ElseIf->new());
+		}
+	'(' expr ')'
+		{
+			f()->{cond} = $_[4];
+			#say __LINE__, ref(f());
+			#say("ref:", ref f());
+			fpush(f()->{block});
+		}
+	 '{' code_inner_lines_o '}'
+		{
+			fpop();
+			#say __LINE__, ref(f());
+			f();
+		}
+	;
+
+else_t_o
+	: #null
+	| else_stmt { fpop(); $_[1] }
+	;
+
+else_stmt
+	: else_t 
+		{
+			#die(ref(f()));
+			fpush(f());
+		} 
+	'{' code_inner_lines_o '}' {
+		#say __LINE__, ref(f());
+		#fpop()
+		#$_[3];
+		f();
+	}
 	;
 
 expr
