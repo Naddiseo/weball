@@ -2,7 +2,8 @@ class User {
 	dbfunction foo() {
 		if(1){1;}
 		elseif(2) {2;}
-		else { 3; }
+		elseif(5) {6;}
+		#else { 3; }
 	}
 }
 __END

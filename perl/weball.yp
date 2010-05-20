@@ -114,7 +114,7 @@ code_inner_lines_o
 
 code_inner_lines
 	: code_inner_lines code_inner_line {
-		f()->addStmt($_[2]);
+		f()->addStmt($_[2]) if defined $_[2];
 	}
 	| code_inner_line {
 		f()->addStmt($_[1]) if defined $_[1];
@@ -153,7 +153,7 @@ if_stmt
 			fpop();
 			#say __LINE__, ref($_[11]);
 			my $ei = (ref($_[11]) eq 'ARRAY' ? $_[11] : [$_[11]]);
-			f()->{elseifs} = $ei;
+			f()->{elseifs} = $ei if defined $ei;
 			f()->{'else'}  = $_[12] if defined($_[12]);
 			fpop() 
 		}
@@ -165,7 +165,14 @@ elseif_t_o
 	;
 
 elseif_list
-	: elseif_list elseif_stmt { push @{$_[1]}, $_[2] }
+	: elseif_list elseif_stmt { 
+		if (ref $_[2] eq 'ARRAY') {
+			push @{$_[1]}, @{$_[2]} if defined $_[2]; 
+		}
+		else {
+			die (ref $_[2]);
+		}
+	}
 	| elseif_stmt 
 	;
 
@@ -177,15 +184,20 @@ elseif_stmt
 	'(' expr ')'
 		{
 			f()->{cond} = $_[4];
-			#say __LINE__, ref(f());
-			#say("ref:", ref f());
+			say __LINE__, ref(f());
+			say("ref:", ref f());
 			fpush(f()->{block});
 		}
 	 '{' code_inner_lines_o '}'
 		{
 			fpop();
-			#say __LINE__, ref(f());
-			f();
+			say __LINE__, ref(f());
+			if (ref f() ne 'ARRAY') {
+				[f()];
+			}
+			else {
+				f();
+			}
 		}
 	;
 

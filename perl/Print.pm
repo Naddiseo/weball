@@ -4,7 +4,9 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.16;
+our $VERSION = 2010.05.19;
+
+use Data::Dumper;
 
 sub new {
 	my ($c) = @_;
@@ -20,7 +22,9 @@ sub printTree {
 	my ($tree, $tab) = @_;
 	
 	if (!ref $tree) {
-		die "Not tree ref"
+		say "Called from  line " . (caller())[2];
+		die "tree isn't defined" unless defined $tree;
+		die "$tree Not tree ref"
 	}
 	
 	$tab = '' unless defined $tab;
@@ -31,14 +35,51 @@ sub printTree {
 				printTree($branch, "$tab ");
 			}
 		}
-		when ('AST::Stmt::If') {
-			
+		
+		when ('AST::Block') {
+			say "$tab\{";
+				printTree($tree->{stmts}, $tab);
+			say "$tab}";
 		}
+		
+		when ('AST::Primitive') {
+			say "${tab}Const($tree->{type}:$tree->{value})";
+		}
+		
+		when ('AST::Stmt::ElseIf') {
+			say $tab . "ELSE IF(";
+				printTree($tree->{cond}, "$tab ");
+			say $tab . ") ";
+				printTree($tree->{block}, $tab);
+				#for my $stmt (@{$tree->{stmts}}) {
+				#	printTree($stmt, $tab);
+				#}
+		}
+		
+		when ('AST::Stmt::If') {
+			say $tab . "IF("; 
+				printTree($tree->{cond}, "$tab ");
+			say "$tab) THEN";
+				printTree($tree->{block}, $tab);
+			for my $ei (@{$tree->{elseifs}}) {
+				next unless defined $ei;
+				
+				printTree($ei, $tab);
+			}
+			say "${tab}ELSE";
+			printTree($tree->{'else'}, $tab) if $tree->{'else'};
+			say $tab . "END IF;";
+		}
+		
 		when ('AST::Class::DBFunction') {
-			say "$tab-Args: ";
+			say "$tab Args:  None" unless scalar @{$tree->{args}};
+			
 			for my $arg (@{$tree->{args}}) {
+				print "$tab Arg: ";
 				printTree($arg, "$tab ");
 			}
+			
+			
 			while (my($k, $v) = each %{$tree->{attr}}) {
 				say "$tab-Attr($k) :";
 				printTree($v, "$tab ");
@@ -51,6 +92,7 @@ sub printTree {
 				printTree($stmt, "$tab ");
 			}
 		}
+		
 		when ('AST::Class') {
 			say "$tab-Class($tree->{name}):";
 			$tab .= ' ';
@@ -70,6 +112,7 @@ sub printTree {
 			}
 			
 		}
+		
 		when (/./) {
 			say $tab . ref($tree);
 		}
