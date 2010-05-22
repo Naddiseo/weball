@@ -4,7 +4,7 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.21;
+our $VERSION = 2010.05.22;
 
 use Data::Dumper;
 
@@ -137,7 +137,8 @@ sub printTree {
 			say $tab, '} DONE;';
 		}
 		
-		when ('AST::DBFunction') {
+		when ('AST::Function') {
+			say "$tab-FN(" . $tree->getName() .") :";
 			say "${tab}(";
 			say "$tab Args:  None" unless scalar @{$tree->{args}};
 			
@@ -176,8 +177,7 @@ sub printTree {
 				say "$tab-Var($k) :";
 				printTree($v, "$tab ");
 			}
-			while (my($k, $v) = each %{$tree->{dbf}}) {
-				say "$tab-DBF($k) :";
+			while (my($k, $v) = each %{$tree->{fn}}) {
 				printTree($v, "$tab ");
 			}
 			

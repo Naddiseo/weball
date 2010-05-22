@@ -287,7 +287,7 @@ sub isKW {
 		'for', 'if', 
 		'else', 'elseif', 
 		'and', 'or', 'not', 'xor', 
-		'while', 'function', 'dbfunction',
+		'while', 'function',
 		'goto', 'return',
 		'class', 'template',
 		'true', 'false',

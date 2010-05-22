@@ -4,7 +4,7 @@ use Data::Dumper;
 
 use AST::Class;
 use AST::Var;
-use AST::DBFunction;
+use AST::Function;
 use AST::FNCall;
 use AST::GetMember;
 use AST::Assign;
@@ -63,6 +63,8 @@ lines
 outer_line
 	: class_def 
 		{ ($_[1]) }
+	| function_decl
+		{ ($_[1]) }
 	;
 
 class_def
@@ -88,9 +90,9 @@ inner_line
 	| dbfunction_decl
 	;
 
-dbfunction_decl
-	: dbfunction_t ident_t '(' fn_decl_arg_list_o ')' attribute_list_o '{' code_inner_lines_o '}'
-		{ AST::DBFunction->new(@_[2, 4, 6, 8]); }
+function_decl
+	: function_t ident_t '(' fn_decl_arg_list_o ')' attribute_list_o '{' code_inner_lines_o '}'
+		{ AST::Function->new(@_[2, 4, 6, 8]); }
 	;
 
 code_inner_lines_o

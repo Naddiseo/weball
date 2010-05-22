@@ -1,10 +1,10 @@
-package AST::DBFunction;
+package AST::Function;
 use strict;
 use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.21;
+our $VERSION = 2010.05.22;
 
 sub new {
 	my ($c, $ident, $args, $attrs, $stmts) = @_;

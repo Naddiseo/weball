@@ -1,3 +1,6 @@
+function a(){}
+function b(){ return a(); }
+__END
 class User {
 	dbfunction foo() {
 		for(int i;i;i=i+1) {
@@ -5,6 +8,7 @@ class User {
 		}
 	}
 }
+dbfunction a(){}
 __END
 class User :primary(id) {
 	int    id :auto_increment;

@@ -21,7 +21,7 @@ sub new {
 		name => $ident->value,
 		attr => {},
 		vars => {},
-		dbf  => {},
+		fn  => {},
 	};
 	
 	if (defined $stmts) {
@@ -32,8 +32,8 @@ sub new {
 				# a var declaration
 				$self->{vars}{$stmt->getName()} = $stmt;
 			}
-			elsif ($type eq 'AST::DBFunction') {
-				$self->{dbf}{$stmt->getName()} = $stmt;
+			elsif ($type eq 'AST::Function') {
+				$self->{fn}{$stmt->getName()} = $stmt;
 			}
 			else {
 				say "Class:Stmt: " . ref($stmt);
