@@ -8,7 +8,7 @@ use Data::Dumper;
 
 use AST::Attr;
 use AST::Var;
-use AST::DBFunction;
+use AST::Function;
 
 our $VERSION = 2010.05.21;
 

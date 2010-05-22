@@ -2,7 +2,7 @@ function a(){}
 function b(){ return a(); }
 __END
 class User {
-	dbfunction foo() {
+	function foo() :db {
 		for(int i;i;i=i+1) {
 			4;
 		}
@@ -16,7 +16,7 @@ class User :primary(id) {
 	string email;
 	int    status;
 	
-	dbfunction getByStatus(int $status = 0) {
+	function getByStatus(int $status = 0) :db {
 		string filter :foo = "hi";
 		return 
 			from(User)
@@ -24,7 +24,7 @@ class User :primary(id) {
 				->where(status == $status);
 	}
 	
-	dbfunction getUserMeta(int $id) {
+	function getUserMeta(int $id) :db {
 		return
 			from(User)
 				->read(id, username, email, status)
