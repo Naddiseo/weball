@@ -56,10 +56,9 @@ sub main {
 		yydebug => $debug_flag,
 		yyerror => \&yyerror
 	);
-
-	Print::printTree($result);
-
+	
 	#say Dumper($result);
+	Print::printTree($result);
 
 success:
 	close $fh;	

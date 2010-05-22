@@ -1,26 +1,28 @@
-package AST::Class::Attr;
+package AST::Attr;
 use strict;
 use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.01;
+our $VERSION = 2010.05.21;
 
 sub new {
-	my ($c, $name) = @_;
+	my ($c, $name, $arglist) = @_;
+	
+	$arglist = [] unless defined $arglist;
 	
 	my $self = {
 		name  => $name,
-		args  => []
+		args  => $arglist
 	};
 	
 	bless $self => $c;
 }
 
-sub addArg {
-	my ($self, $arg) = @_;
-
-	push @{$self->{args}}, $arg
+sub getName {
+	my ($self) = @_;
+	
+	return $self->{name}{value};
 }
 
 1;

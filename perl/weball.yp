@@ -3,6 +3,8 @@ use v5.10;
 use Data::Dumper;
 
 use AST::Class;
+use AST::Var;
+use AST::DBFunction;
 use AST::FNCall;
 use AST::GetMember;
 use AST::Assign;
@@ -25,21 +27,10 @@ use AST::Stmt::While;
 
 my %classes = ();
 
-my @focus  = ();
-
-sub fpush {
-	#say sprintf("pushing:%i: %s", (caller())[2], ref $_[0]);
-	push @focus, @_
+sub wrap {
+	ref $_[0] eq 'ARRAY' ? $_[0] : [@_];
 }
 
-sub fpop {
-	#say sprintf("pop:%i: %s", (caller())[2], ref $focus[$#focus]);
-	pop @focus
-}
-
-sub f :lvalue {
-	$focus[$#focus]
-}
 
 %}
 
@@ -63,35 +54,33 @@ start
 	;
 
 lines
-	: lines outer_line {
-		push(@{$_[1]}, $_[2][0]);
-		$_[1];
-	}
-	| outer_line { $_[1]}
+	: lines outer_line 
+		{ push(@{$_[1]}, ($_[2])); $_[1]; }
+	| outer_line 
+		{ wrap($_[1]) }
 	;
 
 outer_line
-	: class_def { [$_[1]] }
+	: class_def 
+		{ ($_[1]) }
 	;
 
 class_def
-	: class_t ident_t {
-		fpush(AST::Class->new($_[2]->value));
-		
-	} attribute_list_o '{' inner_lines_o '}' {
-		
-		return fpop;
-	}
+	: class_t ident_t attribute_list_o '{' inner_lines_o '}' 
+		{ AST::Class->new(@_[2, 3, 5]) }
 	;
 
 inner_lines_o
-	: inner_lines
+	: inner_lines 
+		{ wrap($_[1]) }
 	| # empty
 	;
 
 inner_lines
-	: inner_lines inner_line
+	: inner_lines inner_line 
+		{ push @{$_[1]}, $_[2]; $_[1]; }
 	| inner_line
+		{ wrap($_[1]) }
 	;
 
 inner_line
@@ -100,31 +89,28 @@ inner_line
 	;
 
 dbfunction_decl
-	: dbfunction_t ident_t {fpush(AST::Class::DBFunction->new($_[2]->value))}
-		'(' fn_decl_arg_list_o ')' attribute_list_o '{' code_inner_lines_o '}'{
-			my $dbf = fpop();
-			f()->addDBF($dbf);
-		}
+	: dbfunction_t ident_t '(' fn_decl_arg_list_o ')' attribute_list_o '{' code_inner_lines_o '}'
+		{ AST::DBFunction->new(@_[2, 4, 6, 8]); }
 	;
 
 code_inner_lines_o
 	: #empty
-	| code_inner_lines
+	| code_inner_lines 
+		{ wrap($_[1]) }
 	;
 
 code_inner_lines
-	: code_inner_lines code_inner_line {
-		f()->addStmt($_[2]) if defined $_[2];
-	}
-	| code_inner_line {
-		f()->addStmt($_[1]) if defined $_[1];
-	}
+	: code_inner_lines code_inner_line 
+		{ push @{$_[1]}, ($_[2]); $_[1]; }
+	| code_inner_line 
+		{ wrap($_[1]) }
 	;
 
 code_inner_line
 	: var_decl ';' 
 	| expr ';'
-	| return_t expr ';' { AST::Return->new($_[2]) }
+	| return_t expr ';' 
+		{ AST::Return->new($_[2]) }
 	| stmt
 	;
 	
@@ -133,211 +119,132 @@ stmt
 	;
 
 if_stmt
-	: if_t 
-		{ fpush(AST::Stmt::If->new()) } 
-	'(' expr ')' 
-		{ 
-			f()->{cond} = $_[4];
-			fpush(f()->{block});
-		}
-	'{' code_inner_lines_o '}' 
-		{ 
-			#fpop(); 
-			f()->{block} = $_[8];
-			#fpush(f()->{f});
-			f()
-		}
-	elseif_t_o
-	else_t_o 
-		{
-			fpop();
-			#say __LINE__, ref($_[11]);
-			my $ei = (ref($_[11]) eq 'ARRAY' ? $_[11] : [$_[11]]);
-			f()->{elseifs} = $ei if defined $ei;
-			f()->{'else'}  = $_[12] if defined($_[12]);
-			fpop() 
-		}
+	: if_t '(' expr ')' '{' code_inner_lines_o '}' elseif_t_o else_t_o 
+		{ AST::Stmt::If->new(@_[3, 6, 8, 9]); }
 	;
 
 elseif_t_o
 	: #null
-	| elseif_list { fpop(); $_[1] }
+	| elseif_list { wrap($_[0]) }
 	;
 
 elseif_list
-	: elseif_list elseif_stmt { 
-		if (ref $_[2] eq 'ARRAY') {
-			push @{$_[1]}, @{$_[2]} if defined $_[2]; 
-		}
-		else {
-			die (ref $_[2]);
-		}
-	}
-	| elseif_stmt 
+	: elseif_list elseif_stmt 
+		{ push @{$_[1]}, ($_[2]); $_[1]; }
+	| elseif_stmt { ($_[1]) }
 	;
 
 elseif_stmt
-	: elseif_t
-	 	{
-			fpush(AST::Stmt::ElseIf->new());
-		}
-	'(' expr ')'
-		{
-			f()->{cond} = $_[4];
-			say __LINE__, ref(f());
-			say("ref:", ref f());
-			fpush(f()->{block});
-		}
-	 '{' code_inner_lines_o '}'
-		{
-			fpop();
-			say __LINE__, ref(f());
-			if (ref f() ne 'ARRAY') {
-				[f()];
-			}
-			else {
-				f();
-			}
-		}
+	: elseif_t '(' expr ')' '{' code_inner_lines_o '}' 
+		{ AST::Stmt::ElseIf->new(@_[3, 6]); }
 	;
 
 else_t_o
 	: #null
-	| else_stmt { fpop(); $_[1] }
+	| else_stmt 
+		{ wrap($_[1]) }
 	;
 
 else_stmt
-	: else_t 
-		{
-			#die(ref(f()));
-			fpush(f());
-		} 
-	'{' code_inner_lines_o '}' {
-		#say __LINE__, ref(f());
-		#fpop()
-		#$_[3];
-		f();
-	}
+	: else_t '{' code_inner_lines_o '}' 
+		{ ($_[3]); }
 	;
 
 expr
-	: expr '->' expr { AST::GetMember->new(@_[1, 3]) }
+	: expr '->' expr 
+		{ AST::GetMember->new(@_[1, 3]) }
 	| binexpr
 	| fncall
-	| '(' expr ')'   { $_[2] }
+	| '(' expr ')'   
+		{ $_[2] }
 	| arg
 	;
 
 binexpr
-	: expr '='  expr { AST::Assign->new(@_[1, 3])  }
-	| expr '==' expr { AST::IsEqual->new(@_[1, 3]) }
-	| expr '+' expr  { AST::Math::Add->new(@_[1, 3]) }
-	| expr '-' expr  { AST::Math::Subtract->new(@_[1, 3]) }
-	| expr '/' expr  { AST::Math::Divide->new(@_[1, 3]) }
-	| expr '*' expr  { AST::Math::Multiply->new(@_[1, 3]) }
+	: expr '='  expr 
+		{ AST::Assign->new(@_[1, 3])         }
+	| expr '==' expr 
+		{ AST::IsEqual->new(@_[1, 3])        }
+	| expr '+' expr  
+		{ AST::Math::Add->new(@_[1, 3])      }
+	| expr '-' expr  
+		{ AST::Math::Subtract->new(@_[1, 3]) }
+	| expr '/' expr  
+		{ AST::Math::Divide->new(@_[1, 3])   }
+	| expr '*' expr  
+		{ AST::Math::Multiply->new(@_[1, 3]) }
 	;
 
 fncall
-	: fq_ident {
-		fpush(AST::FNCall->new($_[1]))
-	} '(' fn_call_arg_list_o ')' {
-		fpop
-	}
+	: fq_ident '(' fn_call_arg_list_o ')' 
+		{ AST::FNCall->new(@_[1, 3]); }
 	;
 	
 var_decl 
-	: var_type ident_t {
-		fpush(AST::Class::Var->new($_[2]->value, $_[1]))
-		} 
-		attribute_list_o var_decl_assign_o {
-		my $var = fpop();
-		f()->addVar($var);
-		
-		my $defAttr = AST::Class::Attr->new('default');
-		
-		if ($_[5]) {
-			$defAttr->addArg($_[5]);
-			$var->addAttr($defAttr);
-		}
-		undef
-	}
-	| var_type  local_ident_t {
-		fpush(AST::Class::Var->new($_[2]->value, $_[1]))
-		} 
-		attribute_list_o  var_decl_assign_o {
-		my $var = fpop();
-		f()->addVar($var);
-		
-		my $defAttr = AST::Class::Attr->new('default');
-		
-		if ($_[5]) {
-			$defAttr->addArg($_[5]);
-			$var->addAttr($defAttr);
-		}
-		undef
-	}
+	: var_type ident_t attribute_list_o var_decl_assign_o 
+		{ AST::Var->new(@_[1, 2, 3, 4]); }
+	| var_type  local_ident_t attribute_list_o  var_decl_assign_o 
+		{ AST::Var->new(@_[1, 2, 3, 4]); }
 	;
 
 var_type
-	: int_t    { $_[1]->value }
-	| uint_t   { $_[1]->value }
-	| bool_t   { $_[1]->value }
-	| string_t { $_[1]->value }
-	| double_t { $_[1]->value }
+	: int_t    
+		{ $_[1]->value }
+	| uint_t   
+		{ $_[1]->value }
+	| bool_t   
+		{ $_[1]->value }
+	| string_t 
+		{ $_[1]->value }
+	| double_t 
+		{ $_[1]->value }
 	;
 
 attribute_list_o
 	: # null
-	| attribute_list
+	| attribute_list { wrap($_[1]) }
 	;
 
 attribute_list
-	: attribute_list attribute
-	| attribute
+	: attribute_list attribute { push @{$_[1]}, ($_[2]); $_[1]; }
+	| attribute                { [$_[1]] }
 	;
 
 attribute
-	: ':' ident_t {
-			fpush(AST::Class::Attr->new($_[2]->value));
-			
-		} attribute_arg_list_o {
-			my $attr = fpop;
-			f()->addAttr($attr);
-	}
+	: ':' ident_t attribute_arg_list_o 
+		{ (AST::Attr->new(@_[2, 3])) }
 	;
 
 fn_decl_arg_list_o
-	: fn_decl_arg_list
+	: fn_decl_arg_list { wrap($_[1]) }
 	| # no args
 	;
 
 fn_decl_arg_list
-	: fn_decl_arg_list ',' fn_decl_arg {
-		f()->addArg($_[3]);
-	}
-	| fn_decl_arg {
-		f()->addArg($_[1]);
-	}
+	: fn_decl_arg_list ',' fn_decl_arg 
+		{ push @{$_[1]}, ($_[3]); $_[1] }
+	| fn_decl_arg 
+		{ [$_[1]] }
 	;
 
 attribute_arg_list_o 
 	: #null
-	| '(' ')'
-	| '(' arg_list ')'
+	| '(' ')'          
+		{ () }
+	| '(' arg_list ')' 
+		{ wrap($_[2]) }
 	;
 
 fn_call_arg_list_o
-	: fn_call_arg_list
+	: fn_call_arg_list { wrap($_[0]) }
 	| #no args
 	;
 
 fn_call_arg_list
-	: fn_call_arg_list ',' fn_call_arg {
-		f()->addArg($_[3])
-	}
-	| fn_call_arg {
-		f()->addArg($_[1])
-	}
+	: fn_call_arg_list ',' fn_call_arg 
+		{ push @{$_[1]}, ($_[3]); $_[1] }
+	| fn_call_arg 
+		{ [$_[1]] }
 	;
 
 fn_call_arg
@@ -345,12 +252,10 @@ fn_call_arg
 	;
 
 arg_list
-	: arg_list ',' arg {
-		f()->addArg($_[3]);
-	}
-	| arg {
-		f()->addArg($_[1]);
-	}
+	: arg_list ',' arg 
+		{ push @{$_[1]}, ($_[3]); $_[1] }
+	| arg              
+		{ [$_[1]] }
 	;
 
 var_decl_assign_o 
@@ -359,7 +264,8 @@ var_decl_assign_o
 	;
 
 var_decl_assign
-	: '=' expr { $_[2] }
+	: '=' expr 
+		{ $_[2] }
 	;
 
 fn_decl_arg
@@ -368,11 +274,16 @@ fn_decl_arg
 	
 arg
 	: fq_ident
-	| local_ident_t { AST::Ident->new($_[1], 1) }
-	| number_t      { AST::Primitive->new('number', $_[1]) }
-	| true_t        { AST::Primitive->new('bool', $_[1]) }
-	| false_t       { AST::Primitive->new('bool', $_[1]) }
-	| string_t      { AST::Primitive->new('string', $_[1]) }
+	| local_ident_t 
+		{ AST::Ident->new($_[1], 1) }
+	| number_t      
+		{ AST::Primitive->new('number', $_[1]) }
+	| true_t        
+		{ AST::Primitive->new('bool', $_[1]) }
+	| false_t       
+		{ AST::Primitive->new('bool', $_[1]) }
+	| string_t      
+		{ AST::Primitive->new('string', $_[1]) }
 	;
 
 fq_ident

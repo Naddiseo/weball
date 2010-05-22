@@ -4,7 +4,7 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.15;
+our $VERSION = 2010.05.21;
 
 sub new {
 	my ($c, $ident, $isLocal) = @_;
@@ -17,15 +17,32 @@ sub new {
 	};
 	
 	$self->{fq} = $ident->{value};
+	
+	push @{$self->{parts}}, $self->{fq};
 
 	bless $self => $c;
+}
+
+
+sub fqName {
+	my ($self) = @_;
+	
+	my $fq = $self->{fq};
+	
+	for my $part (@{$self->{parts}}) {
+		if (ref $part eq 'AST::Ident') {
+			$fq .= '.' . $part->{ident}{value};
+		}
+	}
+	
+	return $fq
 }
 
 
 sub addPart {
 	my ($self, $ident) = @_;
 
-	$self->{fq} .= '::' . $ident->{ident}{value} ;
+	#$self->{fq} .= '::' . $ident->{ident}{value} ;
 
 	push @{$self->{parts}}, $ident;
 	$self;

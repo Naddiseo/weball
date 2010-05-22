@@ -1,31 +1,50 @@
-package AST::Class::Var;
+package AST::Var;
 use strict;
 use warnings;
 use feature ':5.10';
 use Carp;
 
-use AST::Class::Attr;
+use AST::Attr;
+use Data::Dumper;
 
-our $VERSION = 2010.05.01;
+our $VERSION = 2010.05.21;
 
 sub new {
-	my ($c, $name, $type) = @_;
+	my ($c, $type, $ident, $attrs, $default) = @_;
 	
+	
+	#die(Dumper(@_));
 	my $self = {
-		name  => $name,
+		name  => $ident,
 		type  => $type,
-	#	value => undef,
 		attr  => {}
 	};
 	
+	if (defined $attrs) {
+		#die (Dumper($type, $ident, $attrs));
+		for my $attr (@{$attrs}) {
+			$self->{attr}{$attr->getName()} = $attr;
+		}
+	}
+	
+	if (defined $default) {
+		$self->{attr}{default} = $default;
+	}
+	
 	bless $self => $c;
+}
+
+sub getName {
+	my ($self) = @_;
+	
+	return $self->{name}{value};
 }
 
 sub addAttr {
 	my ($self, $a) = @_;
 
 	if ($self->{attr}{$a->{name}}) {
-		carp "Class::Var $self->{name} already has attribute $a->{name}";
+		carp "Var $self->{name} already has attribute $a->{name}";
 	}
 
 	$self->{attr}{$a->{name}} = $a;

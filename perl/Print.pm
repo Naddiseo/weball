@@ -4,7 +4,7 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.19;
+our $VERSION = 2010.05.21;
 
 use Data::Dumper;
 
@@ -34,6 +34,20 @@ sub printTree {
 			for my $branch (@{$tree}) {
 				printTree($branch, "$tab ");
 			}
+		}
+		
+		when ('AST::Ident') {
+			say "${tab}Ident(" . $tree->fqName() . ")";
+		}
+		
+		when ('AST::Attr') {
+			say "$tab\[";
+			
+			for my $arg (@{$tree->{args}}) {
+				printTree($arg, "$tab ");
+			}
+			
+			say "$tab\]";
 		}
 		
 		when ('AST::Block') {
@@ -71,7 +85,7 @@ sub printTree {
 			say $tab . "END IF;";
 		}
 		
-		when ('AST::Class::DBFunction') {
+		when ('AST::DBFunction') {
 			say "$tab Args:  None" unless scalar @{$tree->{args}};
 			
 			for my $arg (@{$tree->{args}}) {
@@ -96,7 +110,7 @@ sub printTree {
 		when ('AST::Class') {
 			say "$tab-Class($tree->{name}):";
 			$tab .= ' ';
-			
+			#die(Dumper($tree));
 			while (my($k, $v) = each %{$tree->{attr}}) {
 				say "$tab-Attr($k) :";
 				printTree($v, "$tab ");

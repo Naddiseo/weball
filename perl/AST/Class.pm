@@ -4,46 +4,52 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-use AST::Class::Attr;
-use AST::Class::Var;
-use AST::Class::DBFunction;
+use Data::Dumper;
 
-our $VERSION = 2010.05.02;
+use AST::Attr;
+use AST::Var;
+use AST::DBFunction;
+
+our $VERSION = 2010.05.21;
 
 sub new {
-	my ($c, $name) = @_;
+	my ($c, $ident, $attrs, $stmts) = @_;
+	
+	$attrs = [] unless defined $attrs;
 	
 	my $self = {
-		name => $name,
+		name => $ident->value,
 		attr => {},
 		vars => {},
 		dbf  => {},
 	};
 	
+	if (defined $stmts) {
+		for my $stmt (@{$stmts}) {
+			my $type = ref $stmt;
+			
+			if ($type eq 'AST::Var') {
+				# a var declaration
+				$self->{vars}{$stmt->getName()} = $stmt;
+			}
+			elsif ($type eq 'AST::DBFunction') {
+				$self->{dbf}{$stmt->getName()} = $stmt;
+			}
+			else {
+				say "Class:Stmt: " . ref($stmt);
+			}
+		}
+	}
+	
+	for my $attr (@{$attrs}) {
+		$self->{attr}{$attr->getName()} = $attr;
+	}
+	
+	#die(Dumper(@_));
+	
 	bless $self => $c;
 }
 
-sub addAttr {
-	my ($self, $a) = @_;
-
-	if ($self->{attr}{$a->{name}}) {
-		carp "Class $self->{name} already has attribute $a->{name}";
-	}
-
-	$self->{attr}{$a->{name}} = $a;
-}
-
-sub addVar {
-	my ($self, $var) = @_;
-
-	$self->{vars}{$var->{name}} = $var;
-}
-
-sub addDBF {
-	my ($self, $var) = @_;
-
-	$self->{dbf}{$var->{name}} = $var;
-}
 1;
 __END__
 
