@@ -32,7 +32,36 @@ sub printTree {
 	given (ref $tree) {
 		when ('ARRAY') {
 			for my $branch (@{$tree}) {
-				printTree($branch, "$tab ");
+				printTree($branch, "$tab ") if defined $branch;
+			}
+		}
+		
+		when (/^AST::Math::/) {
+			say "${tab}OP($tree->{op}) : ";
+			say "${tab}(";
+				printTree($tree->{lhs}, "$tab  ");
+				printTree($tree->{rhs}, "$tab  ");
+			say "${tab})";
+		}
+
+		when ('AST::Assign') {
+			say "${tab}ASSIGN : ";
+			say "${tab}(";
+				printTree($tree->{lhs}, "$tab  ");
+				printTree($tree->{rhs}, "$tab  ");
+			say "${tab})";
+		}
+		
+		when ('AST::Return') {
+			say "${tab} RETURN ";
+			printTree($tree->{expr}, "$tab  ");
+		}
+		
+		when ('AST::Var') {
+			say "${tab}Var($tree->{type}) " . $tree->getName();
+			while (my($k, $v) = each %{$tree->{attr}}) {
+				say "$tab -Attr($k) :";
+				printTree($v, "$tab   ");
 			}
 		}
 		
@@ -41,13 +70,16 @@ sub printTree {
 		}
 		
 		when ('AST::Attr') {
-			say "$tab\[";
+			if (scalar @{$tree->{args}}) {
 			
-			for my $arg (@{$tree->{args}}) {
-				printTree($arg, "$tab ");
+				say "$tab\[";
+			
+				for my $arg (@{$tree->{args}}) {
+					printTree($arg, "$tab ");
+				}
+			
+				say "$tab\]";
 			}
-			
-			say "$tab\]";
 		}
 		
 		when ('AST::Block') {
@@ -73,25 +105,28 @@ sub printTree {
 		when ('AST::Stmt::If') {
 			say $tab . "IF("; 
 				printTree($tree->{cond}, "$tab ");
-			say "$tab) THEN";
+			say "$tab) THEN {";
 				printTree($tree->{block}, $tab);
+			say "$tab}";
 			for my $ei (@{$tree->{elseifs}}) {
 				next unless defined $ei;
 				
 				printTree($ei, $tab);
 			}
 			say "${tab}ELSE";
-			printTree($tree->{'else'}, $tab) if $tree->{'else'};
+			printTree($tree->{'else'}, $tab) if defined $tree->{'else'};
 			say $tab . "END IF;";
 		}
 		
 		when ('AST::DBFunction') {
+			say "${tab}(";
 			say "$tab Args:  None" unless scalar @{$tree->{args}};
 			
 			for my $arg (@{$tree->{args}}) {
-				print "$tab Arg: ";
-				printTree($arg, "$tab ");
+				say "$tab Arg: ";
+				printTree($arg, "$tab  ");
 			}
+			say "${tab})";
 			
 			
 			while (my($k, $v) = each %{$tree->{attr}}) {
@@ -102,9 +137,11 @@ sub printTree {
 				say "$tab-Var($k) :";
 				printTree($v, "$tab ");
 			}
+			say "${tab}{";
 			for my $stmt (@{$tree->{stmts}}) {
-				printTree($stmt, "$tab ");
+				printTree($stmt, "$tab "); say ';';
 			}
+			say "${tab}}";
 		}
 		
 		when ('AST::Class') {
@@ -125,6 +162,19 @@ sub printTree {
 				printTree($v, "$tab ");
 			}
 			
+		}
+		
+		when ('AST::FNCall') {
+			#die Dumper($tree);
+			say $tab, 'CALL(', $tree->getName(), ')';
+			say "${tab}(";
+			say "$tab Args:  None" unless scalar @{$tree->{args}};
+			
+			for my $arg (@{$tree->{args}}) {
+				say "$tab Arg: ";
+				printTree($arg, "$tab  ");
+			}
+			say "${tab})";
 		}
 		
 		when (/./) {

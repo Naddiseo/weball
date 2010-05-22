@@ -4,19 +4,24 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.16;
+our $VERSION = 2010.05.21;
 
 use AST::Block;
 use AST::Expr;
 
 sub new {
-	my ($c) = @_;
+	my ($c, $cond, $block, $elseifs, $else) = @_;
+	
+	
+	$block   = AST::Block->new() unless defined $block;
+	$elseifs = []                unless defined $elseifs;
+	$else    = AST::Block->new() unless defined $else;
 	
 	my $self = {
-		cond    => undef,
-		block   => AST::Block->new(),
-		elseifs => [],
-		'else'  => AST::Block->new()
+		cond    => $cond,
+		block   => $block,
+		elseifs => $elseifs,
+		'else'  => $else
 	};
 	
 	bless $self => $c;

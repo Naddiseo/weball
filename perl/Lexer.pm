@@ -5,7 +5,7 @@ use warnings;
 
 use feature ':5.10';
 
-our $VERSION = 2010.05.02;
+our $VERSION = 2010.05.22;
 
 use Data::Dumper;
 
@@ -284,7 +284,7 @@ sub isKW {
 	my %kw = map {
 		$_ => 1
 	} (
-		'var', 'const', 'if', 
+		'var',  'if', 
 		'else', 'elseif', 
 		'and', 'or', 'not', 'xor', 
 		'while', 'function', 'dbfunction',

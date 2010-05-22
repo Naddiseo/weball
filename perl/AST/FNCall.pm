@@ -4,14 +4,16 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.02;
+our $VERSION = 2010.05.22;
 
 sub new {
-	my ($c, $name) = @_;
+	my ($c, $name, $args) = @_;
+	
+	$args = [] unless defined $args;
 	
 	my $self = {
 		name => $name,
-		args => []
+		args => $args,
 	};
 	
 	bless $self => $c;
@@ -21,6 +23,12 @@ sub addArg {
 	my ($self, $arg) = @_;
 
 	push @{$self->{args}}, $arg
+}
+
+sub getName {
+	my ($self) = @_;
+	
+	return $self->{name}->fqName();
 }
 
 1;

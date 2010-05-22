@@ -1,5 +1,14 @@
-class User :foo() {
-	dbfunction foo(int a){}
+class User {
+	dbfunction foo() :const() {
+		if(1+1-2){
+			foo();
+			bar();
+			if(1) {foo();}
+		}
+		elseif(1+2) {4;}
+		elseif(4) {d;a;b();}
+		else { 1 ;}
+	}
 }
 __END
 class User :primary(id) {

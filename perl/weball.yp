@@ -125,13 +125,13 @@ if_stmt
 
 elseif_t_o
 	: #null
-	| elseif_list { wrap($_[0]) }
+	| elseif_list { wrap($_[1]) }
 	;
 
 elseif_list
 	: elseif_list elseif_stmt 
 		{ push @{$_[1]}, ($_[2]); $_[1]; }
-	| elseif_stmt { ($_[1]) }
+	| elseif_stmt { wrap($_[1]) }
 	;
 
 elseif_stmt
@@ -236,7 +236,8 @@ attribute_arg_list_o
 	;
 
 fn_call_arg_list_o
-	: fn_call_arg_list { wrap($_[0]) }
+	: fn_call_arg_list 
+		{ wrap($_[1]) }
 	| #no args
 	;
 
@@ -248,7 +249,7 @@ fn_call_arg_list
 	;
 
 fn_call_arg
-	: expr
+	: expr { ($_[1]) }
 	;
 
 arg_list
