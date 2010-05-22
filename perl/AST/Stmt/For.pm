@@ -1,4 +1,4 @@
-package AST::Stmt::While;
+package AST::Stmt::For;
 use strict;
 use warnings;
 use feature ':5.10';
@@ -7,15 +7,24 @@ use Carp;
 our $VERSION = 2010.05.22;
 
 use AST::Block;
+use AST::Expr;
+use AST::Primitive;
 
 sub new {
-	my ($c, $cond, $block) = @_;
+	my ($c, $var, $cond, $inc, $block) = @_;
 	
-	$block = AST::Block->new() unless defined $block;
+	my $tok = Token->new({},'bool', 'true');
+	
+	$var   = AST::Expr->new()                  unless defined $var;
+	$cond  = AST::Primitive->new('bool', $tok) unless defined $cond;
+	$block = AST::Block->new()                 unless defined $block;
+	$inc   = AST::Block->new()                 unless defined $inc;
 	
 	my $self = {
+		var   => $var,
 		cond  => $cond,
-		block => $block,
+		inc   => $inc,
+		block => $block
 	};
 	
 	bless $self => $c;

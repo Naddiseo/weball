@@ -88,6 +88,10 @@ sub printTree {
 			say "$tab}";
 		}
 		
+		when ('AST::Expr') {
+			printTree($tree->{block}, $tab);
+		}
+		
 		when ('AST::Primitive') {
 			say "${tab}Const($tree->{type}:$tree->{value})";
 		}
@@ -97,9 +101,6 @@ sub printTree {
 				printTree($tree->{cond}, "$tab ");
 			say $tab . ") ";
 				printTree($tree->{block}, $tab);
-				#for my $stmt (@{$tree->{stmts}}) {
-				#	printTree($stmt, $tab);
-				#}
 		}
 		
 		when ('AST::Stmt::If') {
@@ -116,6 +117,24 @@ sub printTree {
 			say "${tab}ELSE";
 			printTree($tree->{'else'}, $tab) if defined $tree->{'else'};
 			say $tab . "END IF;";
+		}
+		
+		when ('AST::Stmt::While') {
+			say $tab, 'WHILE(';
+				printTree($tree->{cond}, "$tab ");
+			say $tab, ') DO {';
+				printTree($tree->{block}, $tab);
+			say $tab, '} DONE;';
+		}
+		
+		when ('AST::Stmt::For') {
+			printTree($tree->{var}, $tab);
+			say $tab, 'WHILE(';
+				printTree($tree->{cond}, "$tab ");
+			say $tab, ') DO {';
+				printTree($tree->{block}, "$tab ");
+				printTree($tree->{inc}, "$tab ");
+			say $tab, '} DONE;';
 		}
 		
 		when ('AST::DBFunction') {

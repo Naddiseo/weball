@@ -24,8 +24,8 @@ use AST::Expr;
 use AST::Stmt::If;
 use AST::Stmt::ElseIf;
 use AST::Stmt::While;
+use AST::Stmt::For;
 
-my %classes = ();
 
 sub wrap {
 	ref $_[0] eq 'ARRAY' ? $_[0] : [@_];
@@ -116,6 +116,27 @@ code_inner_line
 	
 stmt
 	: if_stmt
+	| while_stmt
+	| for_stmt
+	;
+
+for_stmt
+	: for_t '(' for_stmt_var_decl_o ';' for_expr_o ';' for_expr_o ')' '{' code_inner_lines_o '}'
+		{ AST::Stmt::For->new(@_[3, 5, 7, 10]); }
+	;
+
+for_expr_o
+	: #null
+	| expr
+	;
+for_stmt_var_decl_o
+	: #null
+	| var_decl { wrap($_[1]); }
+	;
+
+while_stmt
+	: while_t '(' expr ')' '{' code_inner_lines_o '}'
+		{ AST::Stmt::While->new(@_[3, 6]); }
 	;
 
 if_stmt

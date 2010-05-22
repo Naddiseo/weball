@@ -1,13 +1,8 @@
 class User {
-	dbfunction foo() :const() {
-		if(1+1-2){
-			foo();
-			bar();
-			if(1) {foo();}
+	dbfunction foo() {
+		for(int i;i;i=i+1) {
+			4;
 		}
-		elseif(1+2) {4;}
-		elseif(4) {d;a;b();}
-		else { 1 ;}
 	}
 }
 __END

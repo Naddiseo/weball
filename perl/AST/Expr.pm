@@ -4,13 +4,15 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.16;
+our $VERSION = 2010.05.22;
 
 sub new {
-	my ($c) = @_;
+	my ($c, $block) = @_;
+	
+	$block = AST::Block->new() unless defined $block;
 	
 	my $self = {
-	
+		block => $block
 	};
 	
 	bless $self => $c;

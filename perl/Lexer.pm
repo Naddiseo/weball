@@ -284,7 +284,7 @@ sub isKW {
 	my %kw = map {
 		$_ => 1
 	} (
-		'var',  'if', 
+		'for', 'if', 
 		'else', 'elseif', 
 		'and', 'or', 'not', 'xor', 
 		'while', 'function', 'dbfunction',
