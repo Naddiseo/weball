@@ -1,13 +1,11 @@
-function a(){ --~a;}
-__END
 class User {
 	function foo() :db {
-		for(int i;i;i=i+1) {
+		for(int $i;$i <= 10;$i++) {
 			4;
 		}
 	}
 }
-dbfunction a(){}
+function a(){}
 __END
 class User :primary(id) {
 	int    id :auto_increment;

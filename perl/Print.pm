@@ -37,14 +37,18 @@ sub printTree {
 		}
 		
 		when ('AST::Math::Incr') {
-			printTree($tree->{expr});
+			say $tab, "INC (";
+			printTree($tree->{expr}, "$tab ");
+			say "$tab)";
 		}
 		
 		when ('AST::Math::Decr') {
-			printTree($tree->{expr});
+			say $tab, "DECR (";
+			printTree($tree->{expr}, "$tab ");
+			say "$tab)";
 		}
 		
-		when (/^AST::Math::/) {
+		when (/^AST::(Bool|Math)::/) {
 			say "${tab}OP($tree->{op}) : ";
 			say "${tab}(";
 				if (defined $tree->{expr}) {
@@ -72,7 +76,8 @@ sub printTree {
 		}
 		
 		when ('AST::Var') {
-			say "${tab}Var($tree->{type}) " . $tree->getName();
+			my $l =  ($tree->{type}) ? 'Local' : '';
+			say "${tab}${l}Var($tree->{type}) " . $tree->getName();
 			while (my($k, $v) = each %{$tree->{attr}}) {
 				say "$tab -Attr($k) :";
 				printTree($v, "$tab   ");
@@ -80,7 +85,8 @@ sub printTree {
 		}
 		
 		when ('AST::Ident') {
-			say "${tab}Ident(" . $tree->fqName() . ")";
+			my $l =  ($tree->{isLocal}) ? 'Local' : '';
+			say "${tab}${l}Ident(" . $tree->fqName() . ")";
 		}
 		
 		when ('AST::Attr') {

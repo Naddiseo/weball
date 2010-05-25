@@ -120,7 +120,7 @@ inner_lines
 
 inner_line
 	: var_decl ';' 
-	| dbfunction_decl
+	| function_decl
 	;
 
 function_decl
@@ -223,9 +223,9 @@ expr
 	| '--' expr
 		{ AST::Math::Decr->new(1, $_[2]); }
 	| expr '++'
-		{ AST::Math::Incr->new(0, $_[2]); }
+		{ AST::Math::Incr->new(0, $_[1]); }
 	| expr '--'
-		{ AST::Math::Decr->new(0, $_[2]); }
+		{ AST::Math::Decr->new(0, $_[1]); }
 	| '-' expr %prec NEG
 		{
 			my $tok = Token->new({}, 'int', '0');
