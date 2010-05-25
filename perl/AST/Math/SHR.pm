@@ -1,15 +1,16 @@
-package AST::IsEqual;
+package AST::Math::SHR;
 use strict;
 use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.15;
+our $VERSION = 2010.05.24;
 
 sub new {
 	my ($c, $lhs, $rhs) = @_;
 	
 	my $self = {
+		op  => '>>',
 		lhs => $lhs,
 		rhs => $rhs
 	};

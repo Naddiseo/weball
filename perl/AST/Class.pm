@@ -10,7 +10,7 @@ use AST::Attr;
 use AST::Var;
 use AST::Function;
 
-our $VERSION = 2010.05.21;
+our $VERSION = 2010.05.22;
 
 sub new {
 	my ($c, $ident, $attrs, $stmts) = @_;

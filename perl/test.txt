@@ -1,5 +1,4 @@
-function a(){}
-function b(){ return a(); }
+function a(){ --~a;}
 __END
 class User {
 	function foo() :db {

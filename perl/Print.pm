@@ -36,11 +36,25 @@ sub printTree {
 			}
 		}
 		
+		when ('AST::Math::Incr') {
+			printTree($tree->{expr});
+		}
+		
+		when ('AST::Math::Decr') {
+			printTree($tree->{expr});
+		}
+		
 		when (/^AST::Math::/) {
 			say "${tab}OP($tree->{op}) : ";
 			say "${tab}(";
-				printTree($tree->{lhs}, "$tab  ");
-				printTree($tree->{rhs}, "$tab  ");
+				if (defined $tree->{expr}) {
+					# It's a unary op
+					printTree($tree->{expr}, "$tab  ");
+				}
+				else {
+					printTree($tree->{lhs}, "$tab  ");
+					printTree($tree->{rhs}, "$tab  ");
+				}
 			say "${tab})";
 		}
 
@@ -194,6 +208,12 @@ sub printTree {
 				printTree($arg, "$tab  ");
 			}
 			say "${tab})";
+		}
+		
+		when ('AST::GetMember') {
+			say $tab, 'GETMEMBER:';
+			printTree($tree->{lhs}, $tab);
+			printTree($tree->{rhs}, $tab);
 		}
 		
 		when (/./) {
