@@ -1,38 +1,12 @@
-class User {
-	function foo() :db {
-		for(int $i;$i <= 10;$i++) {
-			4;
+template BaseTPL :html {
+	"<!DOCTYPE html >"
+	html :lang('en') {
+		head {}
+		body {
+			a
+			'hello world' a :target('_blank') :href('google.com') {
+				"click me"
+			}
 		}
 	}
-}
-function a(){}
-__END
-class User :primary(id) {
-	int    id :auto_increment;
-	string username;
-	string email;
-	int    status;
-	
-	function getByStatus(int $status = 0) :db {
-		string filter :foo = "hi";
-		return 
-			from(User)
-				->read(id, username)
-				->where(status == $status);
-	}
-	
-	function getUserMeta(int $id) :db {
-		return
-			from(User)
-				->read(id, username, email, status)
-				->where(id == $id)
-			->innerjoin(UserMeta)
-				->read(metadata)
-				->where(id == $id);
-	}
-}
-
-class UserMeta :primary(id) {
-	int id :auto_increment;
-	string metadata :match('/[a-z]+/');
 }

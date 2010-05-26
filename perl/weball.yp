@@ -3,6 +3,10 @@ use v5.10;
 use Data::Dumper;
 
 use AST::Class;
+use AST::Template;
+
+use AST::Template::Node;
+
 use AST::Var;
 use AST::Function;
 use AST::FNCall;
@@ -33,6 +37,7 @@ use AST::Math::SHR;
 use AST::Math::And;
 use AST::Math::BAnd;
 use AST::Math::BNot;
+use AST::Math::BOr;
 use AST::Math::BXOr;
 use AST::Math::Not;
 use AST::Math::Or;
@@ -98,6 +103,8 @@ outer_line
 		{ ($_[1]) }
 	| function_decl
 		{ ($_[1]) }
+	| template_decl
+		{ ($_[1]) }
 	;
 
 class_def
@@ -123,9 +130,34 @@ inner_line
 	| function_decl
 	;
 
+template_decl
+	: template_t ident_t attribute_list_o '{' template_nodes_o '}'
+		{ AST::Template->new(@_[2, 3, 5]) }
+	;
+
 function_decl
 	: function_t ident_t '(' fn_decl_arg_list_o ')' attribute_list_o '{' code_inner_lines_o '}'
 		{ AST::Function->new(@_[2, 4, 6, 8]); }
+	;
+
+template_nodes_o
+	: # null
+	| template_nodes
+		{ wrap ($_[1]) }
+	;
+	
+template_nodes
+	: template_nodes template_node
+		{ push @{$_[1]}, $_[2]; $_[1]; }
+	| template_node
+		{ wrap($_[1]) }
+	;
+
+template_node
+	: ident_t attribute_list_o '{' template_nodes_o '}'
+		{ AST::Template::Node->new(@_[1, 2, 4]) }
+	| arg 
+		{ wrap($_[1]) }
 	;
 
 code_inner_lines_o

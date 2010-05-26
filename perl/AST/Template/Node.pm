@@ -1,4 +1,4 @@
-package AST::Primitive;
+package AST::Template::Node;
 use strict;
 use warnings;
 use feature ':5.10';
@@ -6,21 +6,27 @@ use Carp;
 
 our $VERSION = 2010.05.25;
 
+use AST::Ident;
+use AST::Attr;
+
 sub new {
-	my ($c, $type, $token) = @_;
+	my ($c, $ident, $attrs, $stmts) = @_;
+	
+	$attrs = [] unless defined $attrs;
+	$stmts = [] unless defined $stmts;
+	
 	
 	my $self = {
-		type  => $type,
-		token => $token,
-		value => $token->{value},
+		name  => $ident->value,
+		attrs => {},
+		stmts => $stmts
 	};
 	
+	for my $attr (@{$attrs}) {
+		$self->{attr}{$attr->getName()} = $attr;
+	}
+	
 	bless $self => $c;
-}
-
-sub value {
-	my ($self) = @_;
-	return $self->{value};
 }
 
 1;

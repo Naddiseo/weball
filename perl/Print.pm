@@ -4,7 +4,7 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.22;
+our $VERSION = 2010.05.25;
 
 use Data::Dumper;
 
@@ -35,7 +35,12 @@ sub printTree {
 				printTree($branch, "$tab ") if defined $branch;
 			}
 		}
-		
+		when ('AST::Template') {
+			if ($tree->{attr}{html}) {
+				require Print::HTML;
+				Print::HTML->print($tree);
+			}
+		}
 		when ('AST::Math::Incr') {
 			say $tab, "INC (";
 			printTree($tree->{expr}, "$tab ");

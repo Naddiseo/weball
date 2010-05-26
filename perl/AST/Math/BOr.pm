@@ -1,4 +1,4 @@
-package AST::Primitive;
+package AST::Math::BOr;
 use strict;
 use warnings;
 use feature ':5.10';
@@ -7,20 +7,15 @@ use Carp;
 our $VERSION = 2010.05.25;
 
 sub new {
-	my ($c, $type, $token) = @_;
+	my ($c, $lhs, $rhs) = @_;
 	
 	my $self = {
-		type  => $type,
-		token => $token,
-		value => $token->{value},
+		op  => '|',
+		lhs => $lhs,
+		rhs => $rhs
 	};
 	
 	bless $self => $c;
-}
-
-sub value {
-	my ($self) = @_;
-	return $self->{value};
 }
 
 1;
