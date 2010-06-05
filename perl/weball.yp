@@ -109,7 +109,7 @@ outer_line
 
 class_def
 	: class_t ident_t attribute_list_o '{' inner_lines_o '}' 
-		{ AST::Class->new(@_[2, 3, 5]) }
+		{ AST::Class->new(AST::Ident->new($_[2]), @_[3, 5]) }
 	;
 
 inner_lines_o
@@ -132,12 +132,12 @@ inner_line
 
 template_decl
 	: template_t ident_t attribute_list_o '{' template_nodes_o '}'
-		{ AST::Template->new(@_[2, 3, 5]) }
+		{ AST::Template->new(AST::Ident->new($_[2]), @_[3, 5]) }
 	;
 
 function_decl
 	: function_t ident_t '(' fn_decl_arg_list_o ')' attribute_list_o '{' code_inner_lines_o '}'
-		{ AST::Function->new(@_[2, 4, 6, 8]); }
+		{ AST::Function->new(AST::Ident->new($_[2]), @_[4, 6, 8]); }
 	;
 
 template_nodes_o
@@ -155,8 +155,10 @@ template_nodes
 
 template_node
 	: ident_t attribute_list_o '{' template_nodes_o '}'
-		{ AST::Template::Node->new(@_[1, 2, 4]) }
+		{ AST::Template::Node->new(AST::Ident->new($_[1]), @_[2, 4]) }
 	| arg 
+		{ wrap($_[1]) }
+	| fncall
 		{ wrap($_[1]) }
 	;
 
@@ -348,9 +350,9 @@ fncall
 	
 var_decl 
 	: var_type ident_t attribute_list_o var_decl_assign_o 
-		{ AST::Var->new(@_[1, 2, 3, 4]); }
-	| var_type  local_ident_t attribute_list_o  var_decl_assign_o 
-		{ AST::Var->new(@_[1, 2, 3, 4]); }
+		{ AST::Var->new($_[1], AST::Ident->new($_[2]), @_[3, 4]); }
+	| var_type local_ident_t attribute_list_o  var_decl_assign_o 
+		{ AST::Var->new($_[1], AST::Ident->new($_[2]), $_[3, 4]); }
 	;
 
 var_type
@@ -378,7 +380,7 @@ attribute_list
 
 attribute
 	: ':' ident_t attribute_arg_list_o 
-		{ (AST::Attr->new(@_[2, 3])) }
+		{ (AST::Attr->new(AST::Ident->new($_[2]), $_[3])) }
 	;
 
 fn_decl_arg_list_o
