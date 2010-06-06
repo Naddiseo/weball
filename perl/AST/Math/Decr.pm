@@ -4,14 +4,15 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.22;
+our $VERSION = 2010.06.06;
 
 sub new {
 	my ($c, $isPre, $expr) = @_;
 	
 	my $self = {
 		pre  => ($isPre ? 1 : 0),
-		expr => $expr
+		expr => $expr,
+		type => 'int',
 	};
 	
 	bless $self => $c;

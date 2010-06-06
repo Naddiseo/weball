@@ -4,14 +4,15 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.02;
+our $VERSION = 2010.06.06;
 
 sub new {
 	my ($c, $lhs, $rhs) = @_;
 	
 	my $self = {
-		lhs => $lhs,
-		rhs => $rhs
+		lhs  => $lhs,
+		rhs  => $rhs,
+		type => 'get_member'
 	};
 	
 	bless $self => $c;

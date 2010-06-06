@@ -1,29 +1,32 @@
-package AST::Template::Node;
+package Analysis::Template;
 use strict;
 use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.25;
+our $VERSION = 2010.05.28;
 
-use AST::Ident;
+use AST::Template;
 use AST::Attr;
 
+use Analysis::Attr;
+use Analysis::SymbolTable;
+
 sub new {
-	my ($c, $ident, $attrs, $stmts) = @_;
-	
-	$attrs = [] unless defined $attrs;
-	$stmts = [] unless defined $stmts;
-	
+	my ($c, $tpl) = @_;
 	
 	my $self = {
-		name  => $ident->value,
-		attrs => {},
-		stmts => $stmts
+		name  => $tpl->getName(),
+		stmts => [],
+		attrs => [],
+		syms  => Analysis::SymbolTable::getInstance(),
 	};
 	
-	for my $attr (@{$attrs}) {
-		$self->{attr}{$attr->getName()} = $attr;
+	if ($tpl->hasAttr('html')) {
+		require Analysis::Template::HTML;
+		my $html = Analysis::Template::HTML->new($self->{syms});
+		my $stmts = $html->analyse($tpl->{stmts});
+		push @{$self->{stmts}}, @$stmts
 	}
 	
 	bless $self => $c;

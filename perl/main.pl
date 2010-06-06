@@ -13,6 +13,7 @@ use Pod::Usage;
 
 use Lexer;
 use Parser;
+use Analysis;
 
 use Print;
 
@@ -51,13 +52,17 @@ sub main {
 	@tokens = $l->tokenize();
 	#die "gets here";
 	my $parser = Parser->new;
-	my $result = $parser->YYParse(
+	my $ast = $parser->YYParse(
 		yylex => \&yylex,
 		yydebug => $debug_flag,
 		yyerror => \&yyerror
 	);
 	
-	#say Dumper($result);
+	my $semTree = Analysis->new($ast);
+	
+	my $result  = $semTree->analyse();
+	
+	say Dumper($result);
 	Print::printTree($result);
 
 success:

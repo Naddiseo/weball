@@ -4,7 +4,7 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.21;
+our $VERSION = 2010.06.05;
 
 sub new {
 	my ($c, $name, $arglist) = @_;
@@ -22,7 +22,7 @@ sub new {
 sub getName {
 	my ($self) = @_;
 	
-	return $self->{name}{value};
+	return $self->{name}->getLocalName();
 }
 
 1;

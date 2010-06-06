@@ -4,47 +4,69 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.21;
+our $VERSION = 2010.06.06;
 
 sub new {
 	my ($c, $ident, $isLocal) = @_;
 	
 	my $self = {
-		fq      => '',
-		parts   => [],
-		ident   => $ident,
-		isLocal => ($isLocal or 0)
+		fq        => '',
+		parts     => [],
+		ident     => $ident,
+		localName => $ident->{value},
+		isLocal   => ($isLocal or 0),
+		# TODO: go lookup in the symbol table what type this is
+		type      => 'variable',
 	};
 	
 	$self->{fq} = $ident->{value};
 	
-	push @{$self->{parts}}, $self->{fq};
+	unshift @{$self->{parts}}, $self->{fq};
 
 	bless $self => $c;
 }
 
+sub getLocalName {
+	my ($self) = @_;
+	return $self->{localName};
+}
 
-sub fqName {
+sub getFqName {
 	my ($self) = @_;
 	
-	my $fq = $self->{fq};
+	my @fq = ($self->getLocalName());	
+	
 	
 	for my $part (@{$self->{parts}}) {
 		if (ref $part eq 'AST::Ident') {
-			$fq .= '.' . $part->{ident}{value};
+			unshift @fq, $part
+			#$fq .= '.' . $part->{ident}{value};
+		}
+		else {
+			
 		}
 	}
 	
-	return $fq
+	return join '.', @{$self->{parts}};
 }
 
 
 sub addPart {
-	my ($self, $ident) = @_;
+	my ($self, @idents) = @_;
 
-	#$self->{fq} .= '::' . $ident->{ident}{value} ;
+	
+	for my $ident (@idents) {
+		if (ref $ident eq 'AST::Ident') {
+			unshift @{$self->{parts}}, $ident->getLocalName();
+		}
+		else {
+			unshift @{$self->{parts}}, $ident;
+		}
+	}
+	
+	
 
-	push @{$self->{parts}}, $ident;
+	#unshift @{$self->{parts}}, $ident;
 	$self;
 }
 

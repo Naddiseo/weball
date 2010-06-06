@@ -1,29 +1,35 @@
-package AST::Block;
+package Analysis::Attr;
 use strict;
 use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.06;
+our $VERSION = 2010.05.26;
 
 sub new {
-	my ($c) = @_;
+	my ($c, $ident, $arglist) = @_;
+	
+	$arglist = [] unless defined $arglist;
 	
 	my $self = {
-		stmts => [],
-		type  => 'code_block'
+		name  => $ident->{value},
+		args  => $arglist
 	};
 	
 	bless $self => $c;
 }
 
-sub addStmt {
-	my ($self, $stmt) = @_;
+sub getName {
+	my ($self) = @_;
 	
-	push @{$self->{stmts}}, $stmt;
-	$self
+	return $self->{name};
 }
 
+sub getArg {
+	my ($self, $n) = @_;
+	$n = 0 unless defined $n;
+	return @{$self->{argList}}[$n];
+}
 
 1;
 __END__

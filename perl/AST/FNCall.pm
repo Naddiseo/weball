@@ -4,7 +4,7 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.22;
+our $VERSION = 2010.06.06;
 
 sub new {
 	my ($c, $name, $args) = @_;
@@ -14,6 +14,8 @@ sub new {
 	my $self = {
 		name => $name,
 		args => $args,
+		# TODO: get type of this
+		type => 'function_call'
 	};
 	
 	bless $self => $c;

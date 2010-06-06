@@ -1,12 +1,4 @@
-template BaseTPL :html {
-	"<!DOCTYPE html >"
-	html :lang('en') {
-		head {}
-		body {
-			a
-			'hello world' a :target('_blank') :href('google.com') {
-				"click me"
-			}
-		}
-	}
+class C {
+	uint   id = 1+2-(3/4)+(2<<1)**2>>1;
+	bool b = true && (true || false);
 }

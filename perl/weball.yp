@@ -352,7 +352,7 @@ var_decl
 	: var_type ident_t attribute_list_o var_decl_assign_o 
 		{ AST::Var->new($_[1], AST::Ident->new($_[2]), @_[3, 4]); }
 	| var_type local_ident_t attribute_list_o  var_decl_assign_o 
-		{ AST::Var->new($_[1], AST::Ident->new($_[2]), $_[3, 4]); }
+		{ AST::Var->new($_[1], AST::Ident->new($_[2]), @_[3, 4]); }
 	;
 
 var_type
@@ -446,7 +446,7 @@ arg
 	| local_ident_t 
 		{ AST::Ident->new($_[1], 1) }
 	| number_t      
-		{ AST::Primitive->new('number', $_[1]) }
+		{ AST::Primitive->new('int', $_[1]) }
 	| true_t        
 		{ AST::Primitive->new('bool', $_[1]) }
 	| false_t       

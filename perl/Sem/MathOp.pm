@@ -1,29 +1,24 @@
-package AST::Block;
+package Sem::MathOp;
 use strict;
 use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.06;
+our $VERSION = 2010.06.05;
+
+use Sem::Temp;
 
 sub new {
-	my ($c) = @_;
+	my ($c, $op, $lhs, $rhs) = @_;
 	
 	my $self = {
-		stmts => [],
-		type  => 'code_block'
+		op  => $op,
+		lhs => $lhs,
+		rhs => $rhs
 	};
 	
 	bless $self => $c;
 }
-
-sub addStmt {
-	my ($self, $stmt) = @_;
-	
-	push @{$self->{stmts}}, $stmt;
-	$self
-}
-
 
 1;
 __END__

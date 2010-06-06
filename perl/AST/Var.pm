@@ -4,16 +4,15 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-use AST::Attr;
 use Data::Dumper;
 
-our $VERSION = 2010.05.21;
+use AST::Attr;
+
+our $VERSION = 2010.06.06;
 
 sub new {
 	my ($c, $type, $ident, $attrs, $default) = @_;
-	
-	
-	#die(Dumper(@_));
+
 	my $self = {
 		name  => $ident,
 		type  => $type,
@@ -34,11 +33,18 @@ sub new {
 	bless $self => $c;
 }
 
-sub getName {
+sub getLocalName {
 	my ($self) = @_;
 	
-	return $self->{name}{value};
+	return $self->{name}->getLocalName();
 }
+
+sub getFqName {
+	my ($self) = @_;
+	
+	return  $self->{name}->getFqName();
+}
+
 
 sub addAttr {
 	my ($self, $a) = @_;

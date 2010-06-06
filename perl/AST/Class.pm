@@ -10,7 +10,7 @@ use AST::Attr;
 use AST::Var;
 use AST::Function;
 
-our $VERSION = 2010.05.22;
+our $VERSION = 2010.06.05;
 
 sub new {
 	my ($c, $ident, $attrs, $stmts) = @_;
@@ -18,7 +18,7 @@ sub new {
 	$attrs = [] unless defined $attrs;
 	
 	my $self = {
-		name => $ident->value,
+		name => $ident,
 		attr => {},
 		vars => {},
 		fn  => {},
@@ -30,10 +30,10 @@ sub new {
 			
 			if ($type eq 'AST::Var') {
 				# a var declaration
-				$self->{vars}{$stmt->getName()} = $stmt;
+				$self->{vars}{$stmt->getLocalName()} = $stmt;
 			}
 			elsif ($type eq 'AST::Function') {
-				$self->{fn}{$stmt->getName()} = $stmt;
+				$self->{fn}{$stmt->getLocalName()} = $stmt;
 			}
 			else {
 				say "Class:Stmt: " . ref($stmt);
@@ -48,6 +48,11 @@ sub new {
 	#die(Dumper(@_));
 	
 	bless $self => $c;
+}
+
+sub getLocalName {
+	my ($self) = @_;
+	return $self->{name}->getLocalName();
 }
 
 1;

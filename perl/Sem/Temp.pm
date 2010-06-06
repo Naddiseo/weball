@@ -1,30 +1,34 @@
-package AST::Block;
+package Sem::Temp;
 use strict;
 use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.06;
+our $VERSION = 2010.06.05;
 
 sub new {
 	my ($c) = @_;
 	
+	state $tmpnum = 0;
+	
 	my $self = {
-		stmts => [],
-		type  => 'code_block'
+		id   => ++$tmpnum,
+		expr => undef,
 	};
 	
 	bless $self => $c;
 }
 
-sub addStmt {
-	my ($self, $stmt) = @_;
-	
-	push @{$self->{stmts}}, $stmt;
-	$self
+sub id {
+	my ($self) = @_;
+	return $self->{id};
 }
 
-
+sub assign {
+	my ($self, $expr) = @_;
+	$self->{expr} = $expr;
+	return $self;
+}
 1;
 __END__
 

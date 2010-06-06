@@ -4,13 +4,15 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.10;
+our $VERSION = 2010.06.06;
 
 sub new {
 	my ($c, $expr) = @_;
 	
 	my $self = {
-		expr => $expr
+		expr => $expr,
+		# TODO: get type of the expr
+		type => 'return',
 	};
 	
 	bless $self => $c;

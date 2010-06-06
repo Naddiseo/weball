@@ -1,30 +1,36 @@
-package AST::Block;
+package Sem::Context;
 use strict;
 use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.06;
+our $VERSION = 2010.06.02;
+
+use Analysis::SymbolTable;
 
 sub new {
-	my ($c) = @_;
+	my ($c, $sym) = @_;
 	
 	my $self = {
-		stmts => [],
-		type  => 'code_block'
+		evalnow => 0,
+		sym     => (ref $sym ? $sym : Analysis::SymbolTable::getInstance())
 	};
 	
 	bless $self => $c;
 }
 
-sub addStmt {
-	my ($self, $stmt) = @_;
-	
-	push @{$self->{stmts}}, $stmt;
-	$self
+sub resolve {
+	my ($self, $fqstr) = @_;
 }
 
+sub addTemplate {
+	my ($self, $name) = @_;
+	$self->{sym}->addSym($name, 'TEMPLATE');
+}
 
+sub addClass {
+	my ($self, $name) = @_;
+}
 1;
 __END__
 
