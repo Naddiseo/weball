@@ -9,6 +9,7 @@ use Data::Dumper;
 our $VERSION = 2010.06.06;
 
 use Sem::Context;
+use Analysis::SymbolTable;
 
 sub new {
 	my ($c, $ctx) = @_;
@@ -47,7 +48,18 @@ sub evalNode {
 	
 	my $ret = undef;
 	
+	my $sym = Analysis::SymbolTable::getInstance();
+	
 	given (ref $node) {
+		when ('AST::FNCall') {
+			my $fn = $sym->getSym($node->getName());
+			
+			croak "couldn't find sym" unless defined $fn;
+		
+			unless ($fn->{attrs}{const}) {
+				croak 'Cannot eval non const function "' . $node->getName() . '"';
+			}
+		}
 		when (/AST::Primitive/) {
 			$ret = $node;
 		}
@@ -67,7 +79,7 @@ sub evalNode {
 			b2i(\$rhs);
 			
 			my $evalStr = "($lhs->{value}) $node->{op} ($rhs->{value})";
-			say "evaling: $evalStr";
+			#say "evaling: $evalStr";
 			
 			$ret = {
 				value => eval($evalStr),
@@ -77,7 +89,7 @@ sub evalNode {
 			i2b(\$ret);
 		}
 		default {
-			carp "Unknown node '$_' to eval";
+			croak "Unknown node '$_' to eval";
 		}
 	}
 	

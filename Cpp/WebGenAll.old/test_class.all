@@ -1,8 +1,0 @@
-class Foo
-	pk(id)
-	index(b, name)
-	uint id :auto_increment
-	int b
-	string name :range(0,5)
-	dbfunction foo(id)
-		return(name)

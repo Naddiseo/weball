@@ -33,7 +33,7 @@ sub badTypeError {
 		};
 	}
 	
-	carp "[$default->{token}{line}:$default->{token}{char}]Trying to assign a '$default->{type}' to a '$self->{type}' variable";
+	croak "[$default->{token}{line}:$default->{token}{char}]Trying to assign a '$default->{type}' to a '$self->{type}' variable";
 }
 
 sub analyse {
@@ -42,7 +42,14 @@ sub analyse {
 	my $ast = $self->{ast};
 	delete $self->{ast};
 	
+	my $eval = Eval::Eval->new;
+	
 	if (my $default = $ast->{attr}{default}) {
+	
+		if ($default->{type} eq 'function_call') {
+			my $ret = $eval->evalNode($default);
+		}
+	
 		# must be the same type as the variable
 		given ($self->{type}) {
 			when (/^int|uint/) {
@@ -70,7 +77,6 @@ sub analyse {
 		}
 		else {
 			# Try to eval it
-			my $eval = Eval::Eval->new();
 			
 			$self->{attrs}{default} = $eval->evalNode($default);
 		}

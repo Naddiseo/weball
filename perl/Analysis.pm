@@ -33,6 +33,8 @@ sub analyse {
 	my $sym = Analysis::SymbolTable::getInstance();
 	
 	for my $stmt (@{$self->{ast}}) {
+	
+		# TODO: circular references
 		
 		given(ref $stmt) {
 			when ('AST::Class') {

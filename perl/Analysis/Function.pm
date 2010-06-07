@@ -4,7 +4,7 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.05;
+our $VERSION = 2010.06.06;
 
 use Analysis::SymbolTable;
 use Analysis::Stmt;
@@ -42,7 +42,7 @@ sub analyse {
 	}
 	
 	for my $stmt (@{$ast->{stmts}}) {
-		say "FN::STmt: " . ref $stmt;
+		say sprintf("%s::analyse(%s)", __PACKAGE__, ref $stmt);
 		push @{$self->{stmts}}, Analysis::Stmt::analyse($stmt);
 		
 	}

@@ -1,4 +1,8 @@
-class C {
-	uint   id = 1+2-(3/4)+(2<<1)**2>>1;
-	bool b = true && (true || false);
+
+function getdefaultid() :const {
+	return 1;
 }
+class C {
+	uint   id = getdefaultid();
+}
+

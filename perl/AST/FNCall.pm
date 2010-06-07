@@ -30,7 +30,7 @@ sub addArg {
 sub getName {
 	my ($self) = @_;
 	
-	return $self->{name}->fqName();
+	return $self->{name}->getFqName();
 }
 
 1;

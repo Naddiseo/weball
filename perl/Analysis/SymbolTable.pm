@@ -143,7 +143,9 @@ sub hasSym {
 sub getSym {
 	my ($self, $name) = @_;
 	
-	return $self->{varNums}[$self->{vars}[$self->{level}]];
+	croak Dumper $self, $name;
+	
+	return $self->{varNums}[$self->{vars}[$self->{level}]{$name}];
 }
 
 sub addSym {
