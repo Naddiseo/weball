@@ -291,7 +291,7 @@ sub isKW {
 		'goto', 'return',
 		'class', 'template',
 		'true', 'false',
-		'uint', 'int', 'string', 'double', 'bool'
+		'uint', 'int', 'string', 'double', 'bool', 'null'
 	);
 	
 	return exists($kw{$ident}) and $kw{$ident} == 1
