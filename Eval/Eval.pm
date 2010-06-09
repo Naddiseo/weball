@@ -6,16 +6,13 @@ use Carp;
 
 use Data::Dumper;
 
-our $VERSION = 2010.06.06;
-
-use Sem::Context;
-use Analysis::SymbolTable;
+our $VERSION = 2010.06.08;
 
 sub new {
 	my ($c, $ctx) = @_;
 	
 	my $self = {
-		ctx => (ref $ctx ? $ctx : Sem::Context->new)
+		ctx => 
 	};
 	
 	bless $self => $c;
@@ -48,7 +45,7 @@ sub evalNode {
 	
 	my $ret = undef;
 	
-	my $sym = Analysis::SymbolTable::getInstance();
+	my $sym = undef;
 	
 	given (ref $node) {
 		when ('AST::FNCall') {

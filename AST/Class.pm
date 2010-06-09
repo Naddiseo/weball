@@ -10,7 +10,7 @@ use AST::Attr;
 use AST::Var;
 use AST::Function;
 
-our $VERSION = 2010.06.05;
+our $VERSION = 2010.06.08;
 
 sub new {
 	my ($c, $ident, $attrs, $stmts) = @_;
@@ -18,10 +18,10 @@ sub new {
 	$attrs = [] unless defined $attrs;
 	
 	my $self = {
-		name => $ident,
-		attr => {},
-		vars => {},
-		fn  => {},
+		name  => $ident,
+		attrs => {},
+		vars  => {},
+		fn    => {},
 	};
 	
 	if (defined $stmts) {
@@ -42,7 +42,7 @@ sub new {
 	}
 	
 	for my $attr (@{$attrs}) {
-		$self->{attr}{$attr->getName()} = $attr;
+		$self->{attrs}{$attr->getName()} = $attr;
 	}
 	
 	#die(Dumper(@_));
@@ -53,6 +53,21 @@ sub new {
 sub getLocalName {
 	my ($self) = @_;
 	return $self->{name}->getLocalName();
+}
+
+sub getVars {
+	my ($self) = @_;
+	return %{$self->{vars}};
+}
+
+sub getAttrs {
+	my ($self) = @_;
+	return %{$self->{attrs}};
+}
+
+sub getFunctions {
+	my ($self) = @_;
+	return %{$self->{fn}};
 }
 
 1;

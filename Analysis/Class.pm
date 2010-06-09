@@ -6,64 +6,37 @@ use Carp;
 
 use Data::Dumper;
 
-our $VERSION = 2010.06.06;
+our $VERSION = 2010.06.08;
 
-use Analysis::Var;
+use Symbol::AttributeSymbol;
+use Symbol::ClassSymbol;
+use Symbol::FunctionSymbol;
+use Symbol::VariableSymbol;
+
+use Analysis::Attribute;
 use Analysis::Function;
-use Analysis::SymbolTable;
+use Analysis::Variable;
 
-sub new {
-	my ($c, $ast) = @_;
-	
-	my $self = {
-		name => $ast->{name}->getLocalName(), 
-		ast  => $ast,
-		fn   => {},
-		attr => {},
-		vars => {}
-	};
-	
-	bless $self => $c;
-}
+sub new { carp __PACKAGE__ . ' does have new()'; }
 
-sub getLocalName {
-	my ($self) = @_;
-	return $self->{name};
-}
 
 sub analyse {
-	my ($self) = @_;
+	my ($classSym) = @_;
 	
-	my $ast = $self->{ast};
-	delete $self->{ast};
-	
-	my $sym = Analysis::SymbolTable::getInstance();
-	
-	$sym->addSym($self->{name}, $self);
+	my $ast = $classSym->{ast};
+	delete $classSym->{ast};
 	
 	while (my ($varname, $var) = each %{$ast->{vars}}) {
-		$var->{name}->addPart($self->getLocalName());
-		
-		my $lvar = Analysis::Var->new($var);
-		$lvar->analyse();
-		
-		$self->{vars}{$var->getLocalName()} = $lvar;
-		
-		$sym->addSym($var->getFqName(), $lvar);
+		my $varSym = Symbol::VariableSymbol->new($var);
+		$classSym->{scope}->define($varSym->getSymbolEntryName(), $varSym);
+		Analysis::Variable::analyse($varSym);
 	}
 	
-	while (my($fnname, $fn) = each %{$ast->{fn}}) {
-		$fn->{name}->addPart($self->getLocalName());
-		
-		my $lfn = Analysis::Function->new($fn);
-		
-		$sym->startScope();
-			$lfn->analyse();
-		$sym->endScope();
-		
-		$sym->addSym($fn->getFqName(), $lfn);
+	while (my ($attrname, $attr) = each %{$ast->{attrs}}) {
+		my $attrSym = Symbol::AttributeSymbol->new($attr);
+		Analysis::Attribute::analyse($attrSym);
+		$classSym->addAttr($attrSym->getSymbolEntryName(), $attrSym);
 	}
-	
 	
 	
 }

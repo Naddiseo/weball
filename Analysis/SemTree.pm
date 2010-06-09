@@ -4,59 +4,41 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.02;
+our $VERSION = 2010.06.08;
 
-use Sem::Context;
+use Symbol::Scope;
 
 sub new {
 	my ($c, $ctx) = @_;
 	
 	my $self = {
-		ctx       => (ref $ctx ? $ctx : Sem::Context->new),
+		scope     => Symbol::Scope->new(),
 		templates => {},
 		classes   => {},
-		functions => {}
+		functions => {},
 	};
 	
 	bless $self => $c;
 }
 
-sub addTemplate {
-	my ($self, $tpl) = @_;
-	
-	my $name = $tpl->getLocalName();
-	
-	if ($self->{templates}{$name}) {
-		carp "Template '$name' already exists";
-	}
-	
-	$self->{ctx}->addTemplate($name);
-	
-	$self->{templates}{$name} = $tpl;
+sub startScope {
+	my ($self) = @_;
+	$self->{scope} = $self->{scope}->startScope();
 }
 
-sub addClass {
-	my ($self, $class) = @_;
-	
-	my $name = $class->getLocalName();
-	
-	if ($self->{classes}{$name}) {
-		carp "Class '$name' already exists";
-	}
-	
-	$self->{classes}{$name} = $class;
+sub endScope {
+	my ($self) = @_;
+	$self->{scope} = $self->{scope}->endScope();
 }
 
-sub addFunction {
-	my ($self, $fn) = @_;
-	
-	my $name = $fn->getLocalName();
-	
-	if ($self->{functions}{$name}) {
-		carp "Function '$name' already exists";
-	}
-	
-	$self->{functions}{$name} = $fn;
+sub getScope {
+	my ($self) = @_;
+	return $self->{scope};
+}
+
+sub define {
+	my ($self, @args) = @_;
+	$self->{scope}->define(@args);
 }
 
 1;

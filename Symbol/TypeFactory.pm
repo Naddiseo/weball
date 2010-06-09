@@ -4,9 +4,16 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.07;
+our $VERSION = 2010.06.08;
 
 use Symbol::Type;
+use Symbol::Type::Bool;
+use Symbol::Type::Double;
+use Symbol::Type::Int;
+use Symbol::Type::String;
+use Symbol::Type::UInt;
+use Symbol::Type::Undef;
+use Symbol::Type::Unresolved;
 
 sub new {
 	carp __PACKAGE__ . " does have new()"
@@ -15,10 +22,33 @@ sub new {
 sub createType {
 	my ($type, @args) = @_;
 
-	my $package = 'Symbol::Type::' . ucfirst($type);
-	require $package;
+	my $ret = undef;
+
+	given ($type) {
+		when ('Bool') {
+			$ret = Symbol::Type::Bool->new(@args);
+		}
+		when ('Double') {
+			$ret = Symbol::Type::Double->new(@args);
+		}
+		when ('Int') {
+			$ret = Symbol::Type::Int->new(@args);
+		}
+		when ('String') {
+			$ret = Symbol::Type::String->new(@args);
+		}
+		when ('UInt') {
+			$ret = Symbol::Type::UInt->new(@args);
+		}
+		when ('Undef') {
+			$ret = Symbol::Type::Undef->new(@args);
+		}
+		when ('Unresolved') {
+			$ret = Symbol::Type::Unresolved->new(@args);
+		}
+	}
 	
-	return $package->new(@args);
+	return $ret;
 }
 
 1;

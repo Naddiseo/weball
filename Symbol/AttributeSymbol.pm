@@ -1,35 +1,38 @@
-package Analysis::Attr;
+package Symbol::AttributeSymbol;
 use strict;
 use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.26;
+use base qw/Symbol::SymbolEntry/;
+
+our $VERSION = 2010.06.08;
 
 sub new {
-	my ($c, $ident, $arglist) = @_;
+	my ($c, $ast) = @_;
 	
-	$arglist = [] unless defined $arglist;
+	my $self = $c->SUPER::new($ast->{name}, undef, $ast);
 	
-	my $self = {
-		name  => $ident->{value},
-		args  => $arglist
-	};
+	$self->{argc} = 0;
+	$self->{argv} = [];
 	
-	bless $self => $c;
+	return $self;
 }
 
-sub getName {
+sub getArgc {
 	my ($self) = @_;
-	
-	return $self->{name};
+	return $self->{argc};
 }
 
 sub getArg {
 	my ($self, $n) = @_;
-	$n = 0 unless defined $n;
-	return @{$self->{argList}}[$n];
+	if ($n < 0 or $n > $self->getArgc()) {
+		croak "Arg Number is too hight"
+	}
+	return $self->{argv}[$n];
 }
+
+
 
 1;
 __END__

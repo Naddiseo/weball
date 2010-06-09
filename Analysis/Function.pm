@@ -4,9 +4,8 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.06;
+our $VERSION = 2010.06.08;
 
-use Analysis::SymbolTable;
 use Analysis::Stmt;
 
 sub new {
@@ -34,8 +33,7 @@ sub analyse {
 	my $ast = $self->{ast};
 	delete $self->{ast};
 	
-	my $sym = Analysis::SymbolTable::getInstance();
-	
+	my $sym = undef;
 	for my $arg (@{$ast->{args}}) {
 		$arg->{name}->addPart(split /\./, $self->{fqname});
 		$sym->addSym($arg->getFqName(), $arg);

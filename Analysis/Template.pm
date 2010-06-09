@@ -4,13 +4,12 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.28;
+our $VERSION = 2010.06.08;
 
 use AST::Template;
 use AST::Attr;
 
-use Analysis::Attr;
-use Analysis::SymbolTable;
+use Analysis::Attribute;
 
 sub new {
 	my ($c, $tpl) = @_;
@@ -19,14 +18,13 @@ sub new {
 		name  => $tpl->getName(),
 		stmts => [],
 		attrs => [],
-		syms  => Analysis::SymbolTable::getInstance(),
 	};
 	
 	if ($tpl->hasAttr('html')) {
 		require Analysis::Template::HTML;
-		my $html = Analysis::Template::HTML->new($self->{syms});
-		my $stmts = $html->analyse($tpl->{stmts});
-		push @{$self->{stmts}}, @$stmts
+		#my $html = Analysis::Template::HTML->new($self->{syms});
+		#my $stmts = $html->analyse($tpl->{stmts});
+		#push @{$self->{stmts}}, @$stmts
 	}
 	
 	bless $self => $c;

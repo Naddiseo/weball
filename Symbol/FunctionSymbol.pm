@@ -1,17 +1,20 @@
-package Symbol::Type::Class;
+package Symbol::FunctionSymbol;
 use strict;
 use warnings;
 use feature ':5.10';
 use Carp;
 
-use base qw/Symbol::Type/;
+use base qw/Symbol::SymbolEntry/;
 
-our $VERSION = 2010.06.07;
+our $VERSION = 2010.06.08;
 
 sub new {
-	my ($c) = @_;
+	my ($c, $ast) = @_;
 	
-	my $self = $c->SUPER::new('class', undef);
+	my $self = $c->SUPER::new($ast->{name}, undef, $ast);
+	
+	$self->{argc} = 0;
+	$self->{argv} = [];
 	
 	return $self;
 }

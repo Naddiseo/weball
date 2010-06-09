@@ -4,10 +4,16 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.04;
+our $VERSION = 2010.06.07;
 
 use Analysis::SemTree;
-use Analysis::SymbolTable;
+
+use Symbol::Scope;
+use Symbol::SymbolTable;
+use Symbol::ClassSymbol;
+use Symbol::FunctionSymbol;
+use Symbol::TemplateSymbol;
+use Symbol::VariableSymbol;
 
 use Analysis::Template;
 use Analysis::Class;
@@ -30,7 +36,7 @@ sub analyse {
 	my $fqname = '';
 	
 	# Instanciate the symboltable
-	my $sym = Analysis::SymbolTable::getInstance();
+	#my $sym = Analysis::SymbolTable::getInstance();
 	
 	for my $stmt (@{$self->{ast}}) {
 	
@@ -38,28 +44,31 @@ sub analyse {
 		
 		given(ref $stmt) {
 			when ('AST::Class') {
-				my $semClass = Analysis::Class->new($stmt);
-				$ret->addClass($semClass);
+				# Put the AST directly into the symbol
+				my $symEntry = Symbol::ClassSymbol->new($stmt);
+				my $sym = $ret->define($symEntry->getSymbolEntryName(), $symEntry);
 				
-				$sym->startScope();
-					$semClass->analyse();
-				$sym->endScope();
+				$ret->startScope();
+					$sym->setScope($ret->getScope());
+					Analysis::Class::analyse($sym);
+				$ret->endScope();
+				
 			}
 			when ('AST::Function') {
-				my $semFn = Analysis::Function->new($stmt);
-				$ret->addFunction($semFn);
+				#my $semFn = Analysis::Function->new($stmt);
+				#$ret->addFunction($semFn);
 
-				$sym->startScope();
-					$semFn->analyse();
-				$sym->endScope();
+				#$sym->startScope();
+				#	$semFn->analyse();
+				#$sym->endScope();
 			}
 			when ('AST::Template') {
-				my $semTPL = Analysis::Template->new($stmt);
-				$ret->addTemplate($semTPL);
+				#my $semTPL = Analysis::Template->new($stmt);
+				#$ret->addTemplate($semTPL);
 				
-				$sym->startScope();
-					$semTPL->analyse();
-				$sym->endScope();
+				#$sym->startScope();
+				#	$semTPL->analyse();
+				#$sym->endScope();
 			}
 			default {
 				carp "Analysis::analyse unknown ref '$_'";

@@ -1,8 +1,4 @@
-
-function getdefaultid() :const {
-	return 1;
-}
-class C {
+class C :foo :bar(1) :quax(1,2) {
 	uint   id = getdefaultid();
 }
 
