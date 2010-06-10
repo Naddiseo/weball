@@ -9,9 +9,9 @@ use base qw/Symbol::Type/;
 our $VERSION = 2010.06.07;
 
 sub new {
-	my ($c) = @_;
+	my ($c, $value) = @_;
 	
-	my $self = $c->SUPER::new('int', 0);
+	my $self = $c->SUPER::new('int', ($value || 0));
 	
 	return $self;
 }

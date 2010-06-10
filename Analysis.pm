@@ -4,7 +4,7 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.07;
+our $VERSION = 2010.06.09;
 
 use Analysis::SemTree;
 
@@ -46,13 +46,7 @@ sub analyse {
 			when ('AST::Class') {
 				# Put the AST directly into the symbol
 				my $symEntry = Symbol::ClassSymbol->new($stmt);
-				my $sym = $ret->define($symEntry->getSymbolEntryName(), $symEntry);
-				
-				$ret->startScope();
-					$sym->setScope($ret->getScope());
-					Analysis::Class::analyse($sym);
-				$ret->endScope();
-				
+				$ret->defineClass($symEntry);
 			}
 			when ('AST::Function') {
 				#my $semFn = Analysis::Function->new($stmt);

@@ -18,10 +18,10 @@ sub new {
 	$attrs = [] unless defined $attrs;
 	
 	my $self = {
-		name  => $ident,
-		attrs => {},
-		vars  => {},
-		fn    => {},
+		name      => $ident,
+		attrs     => {},
+		vars      => {},
+		functions => {},
 	};
 	
 	if (defined $stmts) {
@@ -33,7 +33,7 @@ sub new {
 				$self->{vars}{$stmt->getLocalName()} = $stmt;
 			}
 			elsif ($type eq 'AST::Function') {
-				$self->{fn}{$stmt->getLocalName()} = $stmt;
+				$self->{functions}{$stmt->getLocalName()} = $stmt;
 			}
 			else {
 				say "Class:Stmt: " . ref($stmt);
@@ -67,7 +67,7 @@ sub getAttrs {
 
 sub getFunctions {
 	my ($self) = @_;
-	return %{$self->{fn}};
+	return %{$self->{functions}};
 }
 
 1;

@@ -6,16 +6,53 @@ use Carp;
 
 use base qw/Symbol::SymbolEntry/;
 
-our $VERSION = 2010.06.08;
+our $VERSION = 2010.06.09;
+
+use Analysis::Function;
+
+use Symbol::AttributeSymbol;
+use Symbol::FunctionSymbol;
+use Symbol::VariableSymbol;
 
 sub new {
 	my ($c, $ast) = @_;
 	
 	my $self = $c->SUPER::new($ast->{name}, undef, $ast);
 	
-	$self->{attrs} = {};
+	$self->{attrs}     = {};
+	$self->{vars}      = {};
+	$self->{functions} = {};
+	
+	$self->setType('Ptr', $self);
 	
 	return $self;
+}
+
+sub addVariable {
+	my ($self, $varSym) = @_;
+	
+	my $name = $varSym->getSymbolEntryName();
+	
+	$self->{vars}{$name} = $varSym;
+	$self->{scope}->define($name, $varSym);
+	
+	return $varSym;
+}
+
+sub addFunction {
+	my ($self, $fnSym) = @_;
+	
+	my $name = $fnSym->getSymbolEntryName();
+	
+	$self->{functions}{$name} = $fnSym;
+	$self->{scope}->define($name, $fnSym);
+	
+	$self->{scope}->startScope();
+		$fnSym->setScope($self->getScope());
+		Analysis::Function::analyse($fnSym);
+	$self->{scope}->endScope();
+	
+	return $fnSym;
 }
 
 sub hasAttr {

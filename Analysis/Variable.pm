@@ -4,6 +4,8 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
+use Data::Dumper;
+
 our $VERSION = 2010.06.08;
 
 use Eval::Eval;
@@ -20,6 +22,34 @@ sub analyse {
 	
 	# XXX: check to see if this is a valid assumption
 	$varSym->{scope}{enclosing} = $varSym->{scope}->getParentScope();
+	
+	given ($ast->{type}) {
+		when ('bool') {
+			$varSym->setType('Bool');
+		}
+		when ('double') {
+			$varSym->setType('Double');
+		}
+		when ('int') {
+			$varSym->setType('Int');
+		}
+		when ('string') {
+			$varSym->setType('String');
+		}
+		when ('uint') {
+			$varSym->setType('UInt');
+		}
+		when ('null') {
+			$varSym->setType('Undef');
+		}
+		default {
+			$varSym->setType('Unresolved');
+		}
+		
+	
+	}
+	
+	#die Dumper($varSym, $ast);
 	
 	
 }

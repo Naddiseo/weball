@@ -1,4 +1,4 @@
-package Symbol::Type::String;
+package Symbol::Type::Ptr;
 use strict;
 use warnings;
 use feature ':5.10';
@@ -6,12 +6,12 @@ use Carp;
 
 use base qw/Symbol::Type/;
 
-our $VERSION = 2010.06.10;
+our $VERSION = 2010.06.09;
 
 sub new {
-	my ($c, $value) = @_;
+	my ($c, $ptrToWhat) = @_;
 	
-	my $self = $c->SUPER::new('string', ($value || ''));
+	my $self = $c->SUPER::new('ptr', ($ptrToWhat || 0));
 	
 	return $self;
 }

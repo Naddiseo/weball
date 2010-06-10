@@ -36,6 +36,21 @@ sub getScope {
 	return $self->{scope};
 }
 
+sub defineClass {
+	my ($self, $classSym) = @_;
+	
+	my $name = $classSym->getSymbolEntryName();
+	
+	$self->{classes}{$name} = $classSym;
+	
+	my $sym = $self->define($name, $classSym);
+				
+	$self->startScope();
+		$sym->setScope($self->getScope());
+		Analysis::Class::analyse($sym);
+	$self->endScope();
+}
+
 sub define {
 	my ($self, @args) = @_;
 	$self->{scope}->define(@args);

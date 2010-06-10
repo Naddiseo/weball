@@ -4,16 +4,20 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.08;
+our $VERSION = 2010.06.10;
 
 use Symbol::TypeFactory;
 
 sub new {
-	my ($c, $ident_t, $scope, $ast) = @_;
+	my ($c, $ident_t, $scope, $ast, $type) = @_;
 	
 	my $self = {
 		name  => $ident_t->getLocalName(),
-		type  => Symbol::TypeFactory::createType('Unresolved'),
+		type  => (
+			defined($type) ? 
+				$type      :
+				Symbol::TypeFactory::createType('Unresolved')
+		),
 		scope => ($scope || undef),
 		ast   => ($ast || undef),
 		line  => $ident_t->{ident}->line,
@@ -29,8 +33,8 @@ sub getSymbolEntryName {
 }
 
 sub setType {
-	my ($self, $typename) = @_;
-	$self->{type} = Symbol::TypeFactory::createType($typename);
+	my ($self, $typename, @args) = @_;
+	$self->{type} = Symbol::TypeFactory::createType($typename, @args);
 	return $self->getType();
 }
 

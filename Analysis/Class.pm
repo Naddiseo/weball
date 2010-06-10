@@ -28,14 +28,24 @@ sub analyse {
 	
 	while (my ($varname, $var) = each %{$ast->{vars}}) {
 		my $varSym = Symbol::VariableSymbol->new($var);
-		$classSym->{scope}->define($varSym->getSymbolEntryName(), $varSym);
-		Analysis::Variable::analyse($varSym);
+		
+		Analysis::Variable::analyse(
+			$classSym->addVariable($varSym)
+		);
 	}
 	
 	while (my ($attrname, $attr) = each %{$ast->{attrs}}) {
 		my $attrSym = Symbol::AttributeSymbol->new($attr);
 		Analysis::Attribute::analyse($attrSym);
 		$classSym->addAttr($attrSym->getSymbolEntryName(), $attrSym);
+	}
+	
+	while (my ($fnname, $fn) = each %{$ast->{functions}}) {
+		my $fnSym = Symbol::FunctionSymbol->new($fn);
+		
+		Analysis::Function::analyse(
+			$classSym->addFunction($fnSym)
+		);
 	}
 	
 	

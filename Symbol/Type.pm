@@ -4,7 +4,7 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.07;
+our $VERSION = 2010.06.10;
 
 sub new {
 	my ($c, $name, $value) = @_;
@@ -22,6 +22,45 @@ sub getName {
 	return $self->{name};
 }
 
+
+sub getTypeFromPrimitive {
+	my ($astPrimitive) = @_;
+	
+	my $ret = undef;
+	
+	if (ref $astPrimitive ne 'AST::Primitive') {
+		carp __PACKAGE__, " Needs an AST::Primitive to determine type"
+	}
+	
+	given ($astPrimitive->{type}) {
+		when ('bool') {
+			$ret = 'Bool';
+		}
+		when ('double') {
+			$ret = 'Double';
+		}
+		when ('int') {
+			$ret = 'Int';
+		}
+		when ('ptr') {
+			$ret = 'Ptr';
+		}
+		when ('string') {
+			$ret = 'String';
+		}
+		when ('uint') {
+			$ret = 'UInt';
+		}
+		when (/null|undef/) {
+			$ret = 'Undef';
+		}
+		when ('unresolved') {
+			$ret = 'Unresolved';
+		}
+	}
+	
+	return $ret;
+}
 1;
 __END__
 

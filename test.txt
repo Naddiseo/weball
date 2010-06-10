@@ -1,4 +1,6 @@
 class C :foo :bar(1) :quax(1,2) {
-	uint   id = getdefaultid();
+	uint   id = 0;
+	
+	function myfn() :bar{}
 }
 

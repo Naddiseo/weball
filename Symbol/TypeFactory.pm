@@ -4,12 +4,15 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.08;
+use Data::Dumper;
+
+our $VERSION = 2010.06.10;
 
 use Symbol::Type;
 use Symbol::Type::Bool;
 use Symbol::Type::Double;
 use Symbol::Type::Int;
+use Symbol::Type::Ptr;
 use Symbol::Type::String;
 use Symbol::Type::UInt;
 use Symbol::Type::Undef;
@@ -21,7 +24,7 @@ sub new {
 
 sub createType {
 	my ($type, @args) = @_;
-
+	
 	my $ret = undef;
 
 	given ($type) {
@@ -33,6 +36,9 @@ sub createType {
 		}
 		when ('Int') {
 			$ret = Symbol::Type::Int->new(@args);
+		}
+		when ('Ptr') {
+			$ret = Symbol::Type::Ptr->new(@args);
 		}
 		when ('String') {
 			$ret = Symbol::Type::String->new(@args);

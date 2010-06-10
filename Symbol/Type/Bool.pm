@@ -6,12 +6,12 @@ use Carp;
 
 use base qw/Symbol::Type/;
 
-our $VERSION = 2010.06.07;
+our $VERSION = 2010.06.10;
 
 sub new {
-	my ($c) = @_;
+	my ($c, $value) = @_;
 	
-	my $self = $c->SUPER::new('bool', 'false');
+	my $self = $c->SUPER::new('bool', ($value || 'false'));
 	
 	return $self;
 }
