@@ -434,7 +434,10 @@ var_decl_assign_o
 
 var_decl_assign
 	: '=' expr 
-		{ $_[2] }
+		{ 
+			my $ident_t = AST::Ident->new(Token->new($_[1], 'ident_t', 'default'));
+			return AST::Attr->new($ident_t, wrap($_[2]));
+		}
 	;
 
 fn_decl_arg
