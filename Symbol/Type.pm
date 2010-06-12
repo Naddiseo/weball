@@ -28,8 +28,8 @@ sub getTypeFromPrimitive {
 	
 	my $ret = undef;
 	
-	if (ref $astPrimitive ne 'AST::Primitive') {
-		carp __PACKAGE__, " Needs an AST::Primitive to determine type"
+	if (ref $astPrimitive !~ /AST::Primitive|AST::Var/) {
+		carp __PACKAGE__, " Needs an AST::Primitive or AST::Var to determine type"
 	}
 	
 	given ($astPrimitive->{type}) {

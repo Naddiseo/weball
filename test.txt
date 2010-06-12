@@ -1,6 +1,3 @@
-class C :foo :bar(1) :quax(1,2) {
-	uint   id = 0;
-	
-	function myfn() :bar{}
+class A {
+	function F(int a=1):a{}
 }
-

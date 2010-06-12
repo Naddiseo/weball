@@ -49,6 +49,13 @@ sub analyse {
 	
 	}
 	
+	
+	while (my ($attrname, $attr) = each %{$ast->{attrs}}) {
+		my $attrSym = Symbol::AttributeSymbol->new($attr);
+		Analysis::Attribute::analyse($attrSym);
+		$varSym->addAttr($attrSym->getSymbolEntryName(), $attrSym);
+	}
+	
 	#die Dumper($varSym, $ast);
 	
 	

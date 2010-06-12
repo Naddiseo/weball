@@ -4,46 +4,58 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.08;
+use Data::Dumper;
 
+our $VERSION = 2010.06.12;
+
+use Analysis::Attribute;
 use Analysis::Stmt;
+use Analysis::Variable;
 
-sub new {
-	my ($c, $ast) = @_;
-	
-	my $self = {
-		name   => $ast->getLocalName(),
-		fqname => $ast->getFqName(),
-		ast    => $ast,
-		attrs  => $ast->{attrs},
-		stmts  => [],
-	};
-	
-	bless $self => $c;
-}
+use Symbol::AttributeSymbol;
+use Symbol::VariableSymbol;
+use Symbol::Type;
+use Symbol::TypeFactory;
 
-sub getLocalName {
-	my ($self) = @_;
-	return $self->{name}
-}
+
+sub new { carp __PACKAGE__ . ' does have new()'; }
 
 
 sub analyse {
-	my ($self) = @_;
-	my $ast = $self->{ast};
-	delete $self->{ast};
+	my ($fnSym) = @_;
 	
-	my $sym = undef;
-	for my $arg (@{$ast->{args}}) {
-		$arg->{name}->addPart(split /\./, $self->{fqname});
-		$sym->addSym($arg->getFqName(), $arg);
+	
+	if( ref $fnSym->{ast}{argv} ne 'ARRAY') {
+		croak "ast->argv is not an array\n". Dumper $fnSym, ref($fnSym->{ast}{argv});
 	}
 	
-	for my $stmt (@{$ast->{stmts}}) {
-		say sprintf("%s::analyse(%s)", __PACKAGE__, ref $stmt);
-		push @{$self->{stmts}}, Analysis::Stmt::analyse($stmt);
+	my $ast = $fnSym->{ast};
+	delete $fnSym->{ast};
+	
+	$fnSym->{argc} = scalar @{$ast->{argv}};
+	
+	for my $arg (@{$ast->{argv}}) {
+		my $variableSym = Symbol::VariableSymbol->new($arg);
+		$variableSym->setScope($fnSym->getScope());
 		
+		Analysis::Variable::analyse($variableSym);
+
+		my $type = Symbol::Type::getTypeFromPrimitive($arg);
+		
+		$variableSym->setType($type);
+		
+		push @{$fnSym->{argv}}, $variableSym;
 	}
+	
+	
+	#die Dumper($ast);
+	
+	while (my ($attrname, $attr) = each %{$ast->{attrs}}) {
+		my $attrSym = Symbol::AttributeSymbol->new($attr);
+		Analysis::Attribute::analyse($attrSym);
+		$fnSym->addAttr($attrSym->getSymbolEntryName(), $attrSym);
+	}
+
 
 }
 1;

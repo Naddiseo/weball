@@ -49,12 +49,9 @@ sub analyse {
 				$ret->defineClass($symEntry);
 			}
 			when ('AST::Function') {
-				#my $semFn = Analysis::Function->new($stmt);
-				#$ret->addFunction($semFn);
-
-				#$sym->startScope();
-				#	$semFn->analyse();
-				#$sym->endScope();
+				my $symEntry = Symbol::FunctionSymbol->new($stmt);
+				#die(Dumper($stmt));
+				$ret->defineFunction($symEntry)
 			}
 			when ('AST::Template') {
 				#my $semTPL = Analysis::Template->new($stmt);

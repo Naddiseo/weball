@@ -4,12 +4,16 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.10;
+our $VERSION = 2010.06.08;
 
 use Symbol::TypeFactory;
 
 sub new {
 	my ($c, $ident_t, $scope, $ast, $type) = @_;
+	
+	unless (defined $ident_t) {
+		carp "SymbolEntry->new called with undef ident_t"
+	}
 	
 	my $self = {
 		name  => $ident_t->getLocalName(),

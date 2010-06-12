@@ -6,7 +6,7 @@ use Carp;
 
 use Data::Dumper;
 
-our $VERSION = 2010.06.08;
+our $VERSION = 2010.06.12;
 
 use Symbol::AttributeSymbol;
 use Symbol::ClassSymbol;
@@ -42,10 +42,15 @@ sub analyse {
 	
 	while (my ($fnname, $fn) = each %{$ast->{functions}}) {
 		my $fnSym = Symbol::FunctionSymbol->new($fn);
-		
+			
+		$classSym->{scope}->startScope();
+			
+		$fnSym->setScope($classSym->getScope());
 		Analysis::Function::analyse(
 			$classSym->addFunction($fnSym)
 		);
+		$classSym->{scope}->endScope();			
+		
 	}
 	
 	

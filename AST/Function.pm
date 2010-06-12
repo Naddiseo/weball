@@ -4,25 +4,25 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.05;
+our $VERSION = 2010.06.12;
 
 sub new {
-	my ($c, $ident, $args, $attrs, $stmts) = @_;
+	my ($c, $ident, $argv, $attrs, $stmts) = @_;
 	
-	$args  = [] unless defined $args;
+	$argv  = [] unless defined $argv;
 	$attrs = [] unless defined $attrs;
 	$stmts = [] unless defined $stmts;
 	
 	my $self = {
 		name  => $ident,
-		args  => $args,
-		attr  => {},
+		argv  => $argv,
+		attrs => {},
 		vars  => {},
 		stmts => $stmts,
 	};
 	
 	for my $attr (@{$attrs}) {
-		$self->{attr}{$attr->getName()} = $attr;
+		$self->{attrs}{$attr->getName()} = $attr;
 	}
 
 =pod

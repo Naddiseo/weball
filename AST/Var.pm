@@ -16,18 +16,18 @@ sub new {
 	my $self = {
 		name  => $ident,
 		type  => $type,
-		attr  => {}
+		attrs  => {}
 	};
 	
 	if (defined $attrs) {
 		#die (Dumper($type, $ident, $attrs));
 		for my $attr (@{$attrs}) {
-			$self->{attr}{$attr->getName()} = $attr;
+			$self->{attrs}{$attr->getName()} = $attr;
 		}
 	}
 	
 	if (defined $default) {
-		$self->{attr}{default} = $default;
+		$self->{attrs}{default} = $default;
 	}
 	
 	bless $self => $c;
@@ -49,11 +49,11 @@ sub getFqName {
 sub addAttr {
 	my ($self, $a) = @_;
 
-	if ($self->{attr}{$a->{name}}) {
+	if ($self->{attrs}{$a->{name}}) {
 		carp "Var $self->{name} already has attribute $a->{name}";
 	}
 
-	$self->{attr}{$a->{name}} = $a;
+	$self->{attrs}{$a->{name}} = $a;
 }
 
 1;

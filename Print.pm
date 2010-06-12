@@ -228,7 +228,7 @@ sub printTree {
 		}
 		
 		when (/./) {
-			say $tab . ref($tree);
+			say $tab . __PACKAGE__ . ': Unknown tree type: '. ref($tree);
 		}
 	}
 }

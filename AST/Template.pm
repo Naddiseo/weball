@@ -4,7 +4,7 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.05;
+our $VERSION = 2010.06.12;
 
 use AST::Attr;
 use AST::Template::Node;
@@ -18,12 +18,12 @@ sub new {
 	
 	my $self = {
 		name  => $ident,
-		attr  => {},
+		attrs => {},
 		stmts => $stmts,
 	};
 	
 	for my $attr (@{$attrs}) {
-		$self->{attr}{$attr->getName()} = $attr;
+		$self->{attrs}{$attr->getName()} = $attr;
 	}
 	
 	bless $self => $c;
@@ -37,7 +37,7 @@ sub getLocalName {
 sub hasAttr {
 	my ($self, $name) = @_;
 	
-	return exists $self->{attr}{$name};
+	return exists $self->{attrs}{$name};
 }
 
 1;

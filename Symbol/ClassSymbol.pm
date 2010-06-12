@@ -4,9 +4,11 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-use base qw/Symbol::SymbolEntry/;
+use Data::Dumper;
 
-our $VERSION = 2010.06.09;
+use base qw/Symbol::SymbolEntry Symbol::Base::AttributeBase/;
+
+our $VERSION = 2010.06.12;
 
 use Analysis::Function;
 
@@ -44,51 +46,17 @@ sub addFunction {
 	
 	my $name = $fnSym->getSymbolEntryName();
 	
+	#die(Dumper $fnSym);
+	
 	$self->{functions}{$name} = $fnSym;
 	$self->{scope}->define($name, $fnSym);
 	
-	$self->{scope}->startScope();
-		$fnSym->setScope($self->getScope());
-		Analysis::Function::analyse($fnSym);
-	$self->{scope}->endScope();
+
 	
 	return $fnSym;
 }
 
-sub hasAttr {
-	my ($self, $name) = @_;
-	return exists $self->{attrs}{$name};
-}
 
-sub getAttr {
-	my ($self, $name) = @_;
-	return ($self->hasAttr($name) ? $self->{attrs}{$name} : undef);
-}
-
-sub removeAttr {
-	my ($self, $name) = @_;
-	my $ret = undef;
-	
-	if ($self->hasAttr($name)) {
-		$ret = $self->getAttr($name);
-		delete $self->{attrs}{$name};
-	}
-	
-	return $ret;
-}
-
-sub addAttr {
-	my ($self, $name, $attr, $warn) = @_;
-	$warn ||= 0;
-	
-	if ($self->hasAttr($name) and $warn) {
-		croak sprintf("Class %s already has attribute %s", $self->getSymbolEntryName(), $name);
-	}
-	
-	$self->{attrs}{$name} = $attr;
-	
-	return $attr;
-}
 
 1;
 __END__

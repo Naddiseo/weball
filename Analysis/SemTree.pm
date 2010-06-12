@@ -51,6 +51,21 @@ sub defineClass {
 	$self->endScope();
 }
 
+sub defineFunction {
+	my ($self, $fnSym) = @_;
+	
+	my $name = $fnSym->getSymbolEntryName();
+	
+	$self->{functions}{$name} = $fnSym;
+	
+	my $sym = $self->define($name, $fnSym);
+	
+	$self->startScope();
+		$sym->setScope($self->getScope());
+		Analysis::Function::analyse($sym);
+	$self->endScope();
+}
+
 sub define {
 	my ($self, @args) = @_;
 	$self->{scope}->define(@args);

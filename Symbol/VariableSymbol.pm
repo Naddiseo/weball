@@ -4,14 +4,15 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-use base qw/Symbol::SymbolEntry/;
+use base qw/Symbol::SymbolEntry Symbol::Base::AttributeBase/;
 
-our $VERSION = 2010.06.08;
+our $VERSION = 2010.06.12;
 
 sub new {
 	my ($c, $ast) = @_;
 	
 	my $self = $c->SUPER::new($ast->{name}, undef, $ast);
+	$self->{attrs} = {};
 	
 	return $self;
 }
