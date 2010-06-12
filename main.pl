@@ -62,7 +62,7 @@ sub main {
 	
 	my $result  = $semTree->analyse();
 	
-	say Dumper($result);
+	#say Dumper($result);
 	Print::printTree($result);
 
 success:

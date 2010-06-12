@@ -35,6 +35,11 @@ sub printTree {
 				printTree($branch, "$tab ") if defined $branch;
 			}
 		}
+		when ('Analysis::SemTree') {
+			while (my ($name, $c) = each %{$tree->{classes}}) {
+				printTree($tree->{classes}{$name});
+			}
+		}
 		when ('AST::Template') {
 			if ($tree->{attr}{html}) {
 				require Print::HTML;
@@ -80,10 +85,10 @@ sub printTree {
 			printTree($tree->{expr}, "$tab  ");
 		}
 		
-		when ('AST::Var') {
+		when ('Symbol::VariableSymbol') {
 			my $l =  ($tree->{type}) ? 'Local' : '';
-			say "${tab}${l}Var($tree->{type}) " . $tree->getName();
-			while (my($k, $v) = each %{$tree->{attr}}) {
+			say "${tab}${l}Var($tree->{type}{name}) " . $tree->getSymbolEntryName();
+			while (my($k, $v) = each %{$tree->{attrs}}) {
 				say "$tab -Attr($k) :";
 				printTree($v, "$tab   ");
 			}
@@ -94,12 +99,12 @@ sub printTree {
 			say "${tab}${l}Ident(" . $tree->fqName() . ")";
 		}
 		
-		when ('AST::Attr') {
-			if (scalar @{$tree->{args}}) {
+		when ('Symbol::AttributeSymbol') {
+			if (scalar @{$tree->{argv}}) {
 			
 				say "$tab\[";
 			
-				for my $arg (@{$tree->{args}}) {
+				for my $arg (@{$tree->{argv}}) {
 					printTree($arg, "$tab ");
 				}
 			
@@ -117,8 +122,8 @@ sub printTree {
 			printTree($tree->{block}, $tab);
 		}
 		
-		when ('AST::Primitive') {
-			say "${tab}Const($tree->{type}:$tree->{value})";
+		when (/Symbol::Type::/) {
+			say "${tab}Const($tree->{name}:$tree->{value})";
 		}
 		
 		when ('AST::Stmt::ElseIf') {
@@ -162,19 +167,19 @@ sub printTree {
 			say $tab, '} DONE;';
 		}
 		
-		when ('AST::Function') {
-			say "$tab-FN(" . $tree->getName() .") :";
+		when ('Symbol::FunctionSymbol') {
+			say "$tab-FN(" . $tree->getSymbolEntryName() .") :";
 			say "${tab}(";
-			say "$tab Args:  None" unless scalar @{$tree->{args}};
+			say "$tab Args:  None" unless scalar @{$tree->{argv}};
 			
-			for my $arg (@{$tree->{args}}) {
+			for my $arg (@{$tree->{argv}}) {
 				say "$tab Arg: ";
 				printTree($arg, "$tab  ");
 			}
 			say "${tab})";
 			
 			
-			while (my($k, $v) = each %{$tree->{attr}}) {
+			while (my($k, $v) = each %{$tree->{attrs}}) {
 				say "$tab-Attr($k) :";
 				printTree($v, "$tab ");
 			}
@@ -189,11 +194,11 @@ sub printTree {
 			say "${tab}}";
 		}
 		
-		when ('AST::Class') {
-			say "$tab-Class($tree->{name}):";
+		when ('Symbol::ClassSymbol') {
+			say "$tab-Class(" . $tree->getSymbolEntryName() . "):";
 			$tab .= ' ';
 			#die(Dumper($tree));
-			while (my($k, $v) = each %{$tree->{attr}}) {
+			while (my($k, $v) = each %{$tree->{attrs}}) {
 				say "$tab-Attr($k) :";
 				printTree($v, "$tab ");
 			}
@@ -202,7 +207,7 @@ sub printTree {
 				say "$tab-Var($k) :";
 				printTree($v, "$tab ");
 			}
-			while (my($k, $v) = each %{$tree->{fn}}) {
+			while (my($k, $v) = each %{$tree->{functions}}) {
 				printTree($v, "$tab ");
 			}
 			
@@ -212,9 +217,9 @@ sub printTree {
 			#die Dumper($tree);
 			say $tab, 'CALL(', $tree->getName(), ')';
 			say "${tab}(";
-			say "$tab Args:  None" unless scalar @{$tree->{args}};
+			say "$tab Args:  None" unless scalar @{$tree->{argv}};
 			
-			for my $arg (@{$tree->{args}}) {
+			for my $arg (@{$tree->{argv}}) {
 				say "$tab Arg: ";
 				printTree($arg, "$tab  ");
 			}

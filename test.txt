@@ -1,3 +1,3 @@
 class A {
-	function F(int a=1):a{}
+	uint b = 1;
 }
