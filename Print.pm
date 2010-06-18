@@ -195,20 +195,26 @@ sub printTree {
 		}
 		
 		when ('Symbol::ClassSymbol') {
-			say "$tab-Class(" . $tree->getSymbolEntryName() . "):";
-			$tab .= ' ';
-			#die(Dumper($tree));
-			while (my($k, $v) = each %{$tree->{attrs}}) {
-				say "$tab-Attr($k) :";
-				printTree($v, "$tab ");
+			if ($tree->{attrs}{sql}) {
+				require Print::SQL;
+				Print::SQL->print($tree);
 			}
+			else {
+				say "$tab-Class(" . $tree->getSymbolEntryName() . "):";
+				$tab .= ' ';
+				#die(Dumper($tree));
+				while (my($k, $v) = each %{$tree->{attrs}}) {
+					say "$tab-Attr($k) :";
+					printTree($v, "$tab ");
+				}
 			
-			while (my($k, $v) = each %{$tree->{vars}}) {
-				say "$tab-Var($k) :";
-				printTree($v, "$tab ");
-			}
-			while (my($k, $v) = each %{$tree->{functions}}) {
-				printTree($v, "$tab ");
+				while (my($k, $v) = each %{$tree->{vars}}) {
+					say "$tab-Var($k) :";
+					printTree($v, "$tab ");
+				}
+				while (my($k, $v) = each %{$tree->{functions}}) {
+					printTree($v, "$tab ");
+				}
 			}
 			
 		}

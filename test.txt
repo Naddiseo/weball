@@ -1,3 +1,5 @@
-class A {
-	uint b = 1;
+class User :sql :pk('id') :index('string')  {
+	int id :medium :auto_increment;
+	string username :range(0, 522255);
 }
+
