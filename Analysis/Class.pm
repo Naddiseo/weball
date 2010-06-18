@@ -6,7 +6,7 @@ use Carp;
 
 use Data::Dumper;
 
-our $VERSION = 2010.06.12;
+our $VERSION = 2010.06.18;
 
 use Symbol::AttributeSymbol;
 use Symbol::ClassSymbol;
@@ -26,12 +26,17 @@ sub analyse {
 	my $ast = $classSym->{ast};
 	delete $classSym->{ast};
 	
-	while (my ($varname, $var) = each %{$ast->{vars}}) {
+	
+	for (my $i = 0; $i < $ast->getVarCount(); $i++) {
+		my $varname = $ast->{varorder}[$i];
+		my $var     = $ast->{vars}{$varname};
 		my $varSym = Symbol::VariableSymbol->new($var);
 		
 		Analysis::Variable::analyse(
 			$classSym->addVariable($varSym)
 		);
+
+
 	}
 	
 	while (my ($attrname, $attr) = each %{$ast->{attrs}}) {
@@ -49,7 +54,7 @@ sub analyse {
 		Analysis::Function::analyse(
 			$classSym->addFunction($fnSym)
 		);
-		$classSym->{scope}->endScope();			
+		$classSym->{scope}->endScope();	
 		
 	}
 	

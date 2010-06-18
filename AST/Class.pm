@@ -10,19 +10,20 @@ use AST::Attr;
 use AST::Var;
 use AST::Function;
 
-our $VERSION = 2010.06.08;
+our $VERSION = 2010.06.18;
 
 sub new {
 	my ($c, $ident, $attrs, $stmts) = @_;
 	
 	$attrs = [] unless defined $attrs;
 	
-	my $self = {
+	my $self = bless {
 		name      => $ident,
 		attrs     => {},
 		vars      => {},
 		functions => {},
-	};
+		varorder  => [],
+	} => $c;
 	
 	if (defined $stmts) {
 		for my $stmt (@{$stmts}) {
@@ -30,7 +31,7 @@ sub new {
 			
 			if ($type eq 'AST::Var') {
 				# a var declaration
-				$self->{vars}{$stmt->getLocalName()} = $stmt;
+				$self->addVar($stmt);
 			}
 			elsif ($type eq 'AST::Function') {
 				$self->{functions}{$stmt->getLocalName()} = $stmt;
@@ -47,12 +48,26 @@ sub new {
 	
 	#die(Dumper(@_));
 	
-	bless $self => $c;
+	return $self;
+}
+
+sub addVar {
+	my ($self, $ast) = @_;
+	
+	my $name = $ast->getLocalName();
+	
+	push @{$self->{varorder}}, $name;
+	$self->{vars}{$name} = $ast;
 }
 
 sub getLocalName {
 	my ($self) = @_;
 	return $self->{name}->getLocalName();
+}
+
+sub getVarCount {
+	my ($self) = @_;
+	return scalar @{$self->{varorder}};
 }
 
 sub getVars {

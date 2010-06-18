@@ -25,15 +25,25 @@ sub new {
 	$self->{vars}      = {};
 	$self->{functions} = {};
 	
+	$self->{varorder}  = [];
+	
 	$self->setType('Ptr', $self);
 	
 	return $self;
+}
+
+sub getVarCount {
+	my ($self) = @_;
+	
+	return scalar(@{$self->{varorder}});
 }
 
 sub addVariable {
 	my ($self, $varSym) = @_;
 	
 	my $name = $varSym->getSymbolEntryName();
+	
+	push @{$self->{varorder}}, $name;
 	
 	$self->{vars}{$name} = $varSym;
 	$self->{scope}->define($name, $varSym);
