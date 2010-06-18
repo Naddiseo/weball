@@ -6,7 +6,7 @@ use Carp;
 
 use base qw/Symbol::SymbolEntry/;
 
-our $VERSION = 2010.06.08;
+our $VERSION = 2010.06.18;
 
 sub new {
 	my ($c, $ast) = @_;
@@ -25,11 +25,21 @@ sub getArgc {
 }
 
 sub getArg {
-	my ($self, $n) = @_;
-	if ($n < 0 or $n > $self->getArgc()) {
-		croak "Arg Number is too hight"
+	my ($self, @n) = @_;
+	
+	my @ret = ();
+	
+	for my $i (@n) {
+		if ($i < 0 or $i > $self->getArgc()) {
+			croak "Arg Number is too high or < 0"
+		}
+		
+		push @ret, $self->{argv}[$i];
 	}
-	return $self->{argv}[$n];
+	
+	
+	
+	return wantarray ? @ret : $ret[0];
 }
 
 
