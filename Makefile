@@ -4,7 +4,7 @@ all:
 	yapp -v  -oParser.pm -m Parser weball.yp
 	#TODO: add the 'outdir' option to the main program
 	mkdir -pv ./out/
-	perl -I. -W main.pl test.txt
+	perl -I. -W main.pl -o=out/ test.txt
 	
 debug:
 	clear

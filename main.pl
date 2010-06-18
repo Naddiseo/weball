@@ -30,7 +30,7 @@ my @tokens = ();
 GetOptions(
 	'help|?' => \$opt_help,
 #	'P'      => \$PP_only,
-	'o'      => \$output,
+	'o=s'      => \$output,
 	'd=i'      => \$debug_flag
 ) or pod2usage();
 $opt_help and pod2usage();
@@ -62,6 +62,7 @@ sub main {
 	
 	my $result  = $semTree->analyse();
 	
+	$Print::OUTDIR = $output;
 	#say Dumper($result);
 	Print::printTree($result);
 

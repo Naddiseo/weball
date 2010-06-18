@@ -7,7 +7,7 @@ use Carp;
 use Data::Dumper;
 
 our $VERSION = 2010.06.18;
-
+our $OUTDIR = '';
 
 use AST::Template;
 use AST::Template::Node;
@@ -23,13 +23,14 @@ sub print {
 	my @idx    = getIndexes($tree);
 	my @vars   = getVars($tree);
 
+	my $output = "$OUTDIR/$filename.sql";
 	
-	open my $FH, ">out/$filename.sql" or die $!;
+	open my $FH, ">$output" or die "Error opening '$output': $!";
 	
 	say $FH "CREATE TABLE IF NOT EXISTS #db#.`$filename` (";
-	say $FH join(",\n", @vars) . ',';
-	say $FH join(",\n", @idx) . ',';
-	say $FH "\t$pk";
+	say $FH join(",\n", @vars) . ',' if scalar @vars;
+	say $FH join(",\n", @idx) . ','  if scalar @idx;
+	say $FH "\t$pk" if $pk;
 	say $FH ") Engine = $engine CHARACTER SET utf8 COLLATE utf8_unicode_ci;//";
 	close $FH;
 	

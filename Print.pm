@@ -4,19 +4,11 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.05.25;
+our $VERSION = 2010.06.18;
+
+our $OUTDIR = '';
 
 use Data::Dumper;
-
-sub new {
-	my ($c) = @_;
-	
-	my $self = {
-	
-	};
-	
-	bless $self => $c;
-}
 
 sub printTree {
 	my ($tree, $tab) = @_;
@@ -197,6 +189,7 @@ sub printTree {
 		when ('Symbol::ClassSymbol') {
 			if ($tree->{attrs}{sql}) {
 				require Print::SQL;
+				$Print::SQL::OUTDIR = $Print::OUTDIR;
 				Print::SQL->print($tree);
 			}
 			else {
