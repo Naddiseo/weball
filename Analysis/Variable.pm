@@ -6,7 +6,7 @@ use Carp;
 
 use Data::Dumper;
 
-our $VERSION = 2010.06.08;
+our $VERSION = 2010.06.18;
 
 use Eval::Eval;
 use Symbol::VariableSymbol;
@@ -53,8 +53,14 @@ sub analyse {
 	while (my ($attrname, $attr) = each %{$ast->{attrs}}) {
 		my $attrSym = Symbol::AttributeSymbol->new($attr);
 		Analysis::Attribute::analyse($attrSym);
+		
+		if ($attrname eq 'default') {
+			$attrSym->setType($ast->{type});
+		}
+		
 		$varSym->addAttr($attrSym->getSymbolEntryName(), $attrSym);
 	}
+
 	
 	#die Dumper($varSym, $ast);
 	

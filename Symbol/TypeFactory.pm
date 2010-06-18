@@ -6,7 +6,7 @@ use Carp;
 
 use Data::Dumper;
 
-our $VERSION = 2010.06.10;
+our $VERSION = 2010.06.18;
 
 use Symbol::Type;
 use Symbol::Type::Bool;
@@ -27,7 +27,7 @@ sub createType {
 	
 	my $ret = undef;
 
-	given ($type) {
+	given (ucfirst $type) {
 		when ('Bool') {
 			$ret = Symbol::Type::Bool->new(@args);
 		}
@@ -51,6 +51,9 @@ sub createType {
 		}
 		when ('Unresolved') {
 			$ret = Symbol::Type::Unresolved->new(@args);
+		}
+		default {
+			croak "Trying to create unknown Symbol::Type of '$_'"
 		}
 	}
 	
