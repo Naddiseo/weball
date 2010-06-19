@@ -1,4 +1,4 @@
-class User :sql :pk('id') :index('string')  {
+class User :sql :pk('a') :index('asdf')  {
 	int id :medium :auto_increment;
 	string username :range(0, 522255);
 }

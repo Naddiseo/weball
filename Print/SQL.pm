@@ -18,23 +18,80 @@ sub print {
 
 	die "Not class" unless ref $tree eq 'Symbol::ClassSymbol';
 	my $filename = $tree->getSymbolEntryName();
-	my $engine = getEngine($tree);
-	my $pk     = getPK($tree);
-	my @idx    = getIndexes($tree);
-	my @vars   = getVars($tree);
+	
 
 	my $output = "$OUTDIR/$filename.sql";
 	
 	open my $FH, ">$output" or die "Error opening '$output': $!";
 	
-	say $FH "CREATE TABLE IF NOT EXISTS #db#.`$filename` (";
-	say $FH join(",\n", @vars) . ',' if scalar @vars;
-	say $FH join(",\n", @idx) . ','  if scalar @idx;
-	say $FH "\t$pk" if $pk;
-	say $FH ") Engine = $engine CHARACTER SET utf8 COLLATE utf8_unicode_ci;//";
+	printCreate($tree, $FH);
+	
+	if ($tree->hasAttr('base')) {
+		my $crud = $tree->getAttr('base')->getArg(0)->value;
+		
+
+		printFNCreate($tree, $FH) if (index $crud, 'c');
+		printFNRead($tree, $FH) if (index $crud, 'r');
+		printFNUpdate($tree, $FH) if (index $crud, 'u');
+		printFNDelete($tree, $FH) if (index $crud, 'd');
+
+		
+	}
+	
 	close $FH;
 	
 }
+
+sub printFNCreate {}
+sub printFNRead {}
+sub printFNUpdate {}
+sub printFNDelete {}
+
+sub printCreate {
+	my ($tree, $FH) = @_;
+	
+	my $filename = $tree->getSymbolEntryName();
+	my $engine = getEngine($tree);
+	my $pk     = getPK($tree);
+	my @idx    = getIndexes($tree);
+	my @vars   = getVars($tree);
+	
+	say $FH "CREATE TABLE IF NOT EXISTS #db#.`$filename` (";
+
+	while (@vars) {
+		my $var = shift @vars;
+		my $name = $var->getSymbolEntryName();
+		my $type = getDBType($var);
+		my $str  = "\t`$name` $type NOT NULL";
+		
+		if ($var->hasAttr('auto_increment')) {
+			$str .= ' AUTO_INCREMENT';
+		}
+		
+		if ($var->hasAttr('default')) {
+			$str .= ' DEFAULT ' . quoteDBValue($var->getAttr('default'));
+		}
+		
+		if ($pk or scalar(@idx) > 0 or scalar(@vars) > 0) {
+			$str .= ',';
+		}
+		
+		say $FH $str;
+	}
+
+	while (@idx) {
+		my @keys = @{shift @idx};
+		my $str = "\tINDEX (`". join('`, `', @keys) . '`)' if scalar @keys;
+		
+		if ($pk or scalar(@idx) > 0) {
+			$str .= ',';
+		}
+		
+		say $FH $str;
+	}
+	say $FH "\t$pk" if $pk;
+	say $FH ") Engine = $engine CHARACTER SET utf8 COLLATE utf8_unicode_ci;//";
+} 
 
 sub getVars {
 	my ($tree) = @_;
@@ -44,18 +101,7 @@ sub getVars {
 	for (my $i = 0; $i < $tree->getVarCount(); $i++) {
 		my $k = $tree->{varorder}[$i];
 		my $v = $tree->{vars}{$k};
-		my $type = getDBType($v);
-		my $str  = "\t`$k` $type NOT NULL";
-		
-		if ($v->hasAttr('auto_increment')) {
-			$str .= ' AUTO_INCREMENT';
-		}
-		
-		if ($v->hasAttr('default')) {
-			$str .= ' DEFAULT ' . quoteDBValue($v->getAttr('default'));
-		}
-		
-		push @ret, $str;
+		push @ret, $v;
 
 	}
 	
@@ -108,7 +154,7 @@ sub getIndexes {
 		for (my $i = 0; $i < $idx->getArgc(); $i++) {
 			push @keys, $idx->getArg($i)->value;
 		}
-		@ret = "\t" . 'INDEX (`'. join('`, `', @keys) . '`)' if scalar @keys;
+		push @ret, [@keys];
 	}
 	
 	return @ret;
@@ -116,7 +162,7 @@ sub getIndexes {
 
 sub getDBType{
 	my ($type) = @_;
-	my $ret = 'TEXTB';
+	my $ret = 'TEXT';
 	
 	my ($min, $max) = (0, 0);
 	if ($type->hasAttr('range')) {			
