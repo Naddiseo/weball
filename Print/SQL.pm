@@ -13,6 +13,8 @@ use AST::Template;
 use AST::Template::Node;
 use AST::Primitive;
 
+use Symbol::AttributeSymbol;
+
 sub print {
 	my ($c, $tree) = @_;
 
@@ -28,12 +30,11 @@ sub print {
 	
 	if ($tree->hasAttr('base')) {
 		my $crud = $tree->getAttr('base')->getArg(0)->value;
-		
 
-		printFNCreate($tree, $FH) if (index $crud, 'c');
-		printFNRead($tree, $FH) if (index $crud, 'r');
-		printFNUpdate($tree, $FH) if (index $crud, 'u');
-		printFNDelete($tree, $FH) if (index $crud, 'd');
+		printFNCreate($tree, $FH) unless (index($crud, 'c') < 0);
+		printFNRead($tree, $FH)   unless (index($crud, 'r') < 0);
+		printFNUpdate($tree, $FH) unless (index($crud, 'u') < 0);
+		printFNDelete($tree, $FH) unless (index($crud, 'd') < 0);
 
 		
 	}
@@ -42,19 +43,220 @@ sub print {
 	
 }
 
-sub printFNCreate {}
-sub printFNRead {}
-sub printFNUpdate {}
-sub printFNDelete {}
+sub printFNCreate {
+	my ($tree, $FH) = @_;
+	
+	my $classname = ucfirst $tree->getSymbolEntryName();
+	my $fnname    = 'create' . $classname;
+	my @vars   = getVars($tree);
+	
+	say $FH "DROP PROCEDURE IF EXISTS #db#.`$fnname`;//";
+	say $FH "CREATE PROCEDURE #db#.`$fnname` (";
+	
+	my @args = ();
+	
+	for my $var (@vars) {
+		next if $var->{pk};
+		my $name = $var->getSymbolEntryName();
+		my $type = getDBType($var);
+		my $str  = "\t`a_$name` $type NOT NULL";
+		
+		if ($var->hasAttr('default')) {
+			$str .= ' DEFAULT ' . quoteDBValue($var->getAttr('default'));
+		}
+		
+		push @args, $str;
+	}
+	
+	say $FH join(",\n", @args);
+	say $FH ") BEGIN";
+	say $FH "\tINSERT INTO";
+	say $FH "\t\t#db#.`$classname`";
+	say $FH "\tSET";
+
+	@args = ();
+	
+	for my $var (@vars) {
+		next if $var->{pk};
+		my $name = $var->getSymbolEntryName();
+		my $str  = "\t\t`$name` = a_$name";
+		
+		push @args, $str;
+	}
+	
+	say $FH join(",\n", @args) . ';';
+	
+	say $FH "\tSELECT last_insert_id() AS retCode;";
+	say $FH "END;//\n";
+	
+}
+
+sub printFNRead {
+	my ($tree, $FH) = @_;
+	
+	my $classname = ucfirst $tree->getSymbolEntryName();
+	my $fnname    = 'read' . $classname;
+	my @vars   = getVars($tree);
+	
+	say $FH "DROP PROCEDURE IF EXISTS #db#.`$fnname`;//";
+	say $FH "CREATE PROCEDURE #db#.`$fnname` (";
+	
+	my @args = ();
+	
+	for my $var (@vars) {
+		next unless $var->{pk};
+		my $name = $var->getSymbolEntryName();
+		my $type = getDBType($var);
+		my $str  = "\t`a_$name` $type NOT NULL";
+		
+		if ($var->hasAttr('default')) {
+			$str .= ' DEFAULT ' . quoteDBValue($var->getAttr('default'));
+		}
+		
+		push @args, $str;
+	}
+	
+	say $FH join(",\n", @args);
+	say $FH ") BEGIN";
+	say $FH "\tSELECT";
+	say $FH "\t\t*";
+	say $FH "\tFROM";
+	say $FH "\t\t#db#.`$classname`";
+	say $FH "\tWHERE";
+
+	@args = ();
+	
+	for my $var (@vars) {
+		next unless $var->{pk};
+		my $name = $var->getSymbolEntryName();
+		my $str  = "\t\t`$name` = a_$name";
+		
+		push @args, $str;
+	}
+	
+	say $FH join(",\n", @args) . ';';
+	
+	say $FH "END;//\n";
+}
+
+sub printFNUpdate {
+	my ($tree, $FH) = @_;
+	
+	my $classname = ucfirst $tree->getSymbolEntryName();
+	my $fnname    = 'update' . $classname;
+	my @vars   = getVars($tree);
+	
+	say $FH "DROP PROCEDURE IF EXISTS #db#.`$fnname`;//";
+	say $FH "CREATE PROCEDURE #db#.`$fnname` (";
+	
+	my @args = ();
+	
+	for my $var (@vars) {
+		my $name = $var->getSymbolEntryName();
+		my $type = getDBType($var);
+		my $str  = "\t`a_$name` $type NOT NULL";
+		
+		if ($var->hasAttr('default')) {
+			$str .= ' DEFAULT ' . quoteDBValue($var->getAttr('default'));
+		}
+		
+		push @args, $str;
+	}
+	
+	say $FH join(",\n", @args);
+	say $FH ") BEGIN";
+	say $FH "\tUPDATE";
+	say $FH "\t\t#db#.`$classname`";
+	say $FH "\tSET";
+	
+	@args = ();
+	
+	for my $var (@vars) {
+		next if $var->{pk};
+		my $name = $var->getSymbolEntryName();
+		my $str  = "\t\t`$name` = a_$name";
+		
+		push @args, $str;
+	}
+	
+	say $FH join(",\n", @args) . ';';
+	
+	say $FH "\tWHERE";
+
+	@args = ();
+	
+	for my $var (@vars) {
+		next unless $var->{pk};
+		my $name = $var->getSymbolEntryName();
+		my $str  = "\t\t`$name` = a_$name";
+		
+		push @args, $str;
+	}
+	
+	say $FH join(",\n", @args) . ';';
+	
+	say $FH "\tSELECT ROW_COUNT() as retCode;";
+	say $FH "END;//\n";
+}
+
+sub printFNDelete {
+	my ($tree, $FH) = @_;
+	
+	my $classname = ucfirst $tree->getSymbolEntryName();
+	my $fnname    = 'delete' . $classname;
+	my @vars   = getVars($tree);
+	
+	say $FH "DROP PROCEDURE IF EXISTS #db#.`$fnname`;//";
+	say $FH "CREATE PROCEDURE #db#.`$fnname` (";
+	
+	my @args = ();
+	
+	for my $var (@vars) {
+		next unless $var->{pk};
+		my $name = $var->getSymbolEntryName();
+		my $type = getDBType($var);
+		my $str  = "\t`a_$name` $type NOT NULL";
+		
+		if ($var->hasAttr('default')) {
+			$str .= ' DEFAULT ' . quoteDBValue($var->getAttr('default'));
+		}
+		
+		push @args, $str;
+	}
+	
+	say $FH join(",\n", @args);
+	say $FH ") BEGIN";
+	say $FH "\tDELETE FROM";
+	say $FH "\t\t#db#.`$classname`";
+	
+	say $FH "\tWHERE";
+
+	@args = ();
+	
+	for my $var (@vars) {
+		next unless $var->{pk};
+		my $name = $var->getSymbolEntryName();
+		my $str  = "\t\t`$name` = a_$name";
+		
+		push @args, $str;
+	}
+	
+	say $FH join(",\n", @args) . ';';
+	
+	say $FH "\tSELECT ROW_COUNT() as retCode;";
+	say $FH "END;//\n";
+}
 
 sub printCreate {
 	my ($tree, $FH) = @_;
 	
 	my $filename = $tree->getSymbolEntryName();
 	my $engine = getEngine($tree);
-	my $pk     = getPK($tree);
+	my @pk     = getPK($tree);
 	my @idx    = getIndexes($tree);
 	my @vars   = getVars($tree);
+	
+	my %pkset = map { $_ => 1 } @pk;
 	
 	say $FH "CREATE TABLE IF NOT EXISTS #db#.`$filename` (";
 
@@ -72,8 +274,14 @@ sub printCreate {
 			$str .= ' DEFAULT ' . quoteDBValue($var->getAttr('default'));
 		}
 		
-		if ($pk or scalar(@idx) > 0 or scalar(@vars) > 0) {
+		if (scalar(@pk) or scalar(@idx) or scalar(@vars)) {
 			$str .= ',';
+		}
+		
+		# Check to see if this var is a pk
+		if ($pkset{$name}) {
+			# yes, so add an attribute to the variable
+			$var->{pk} = 1;
 		}
 		
 		say $FH $str;
@@ -83,14 +291,17 @@ sub printCreate {
 		my @keys = @{shift @idx};
 		my $str = "\tINDEX (`". join('`, `', @keys) . '`)' if scalar @keys;
 		
-		if ($pk or scalar(@idx) > 0) {
+		if (scalar(@pk) or scalar(@idx)) {
 			$str .= ',';
 		}
 		
 		say $FH $str;
 	}
-	say $FH "\t$pk" if $pk;
-	say $FH ") Engine = $engine CHARACTER SET utf8 COLLATE utf8_unicode_ci;//";
+	
+	if (scalar @pk) {
+		say $FH "\tPRIMARY KEY(`" . join('`, `', @pk) . '`)';
+	}
+	say $FH ") Engine = $engine CHARACTER SET utf8 COLLATE utf8_unicode_ci;//\n";
 } 
 
 sub getVars {
@@ -122,23 +333,17 @@ sub getEngine {
 sub getPK {
 	my ($tree) = @_;
 	
-	my $ret = '';
+	my @ret = ();
 	
 	if ($tree->hasAttr('pk')) {
 		my $pk = $tree->getAttr('pk');
-		my @keys = ();
 		
 		for (my $i = 0; $i < $pk->getArgc(); $i++) {
-			push @keys, $pk->getArg($i)->value;
+			push @ret, $pk->getArg($i)->value;
 		}
-		
-		if (scalar @keys) {
-			$ret = 'PRIMARY KEY(`' . join('`, `', @keys) . '`)';
-		}
-	
 	}
 	
-	return $ret;
+	return @ret;
 }
 
 sub getIndexes {

@@ -4,17 +4,9 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
-our $VERSION = 2010.06.11;
+our $VERSION = 2010.06.18;
 
-#sub new {
-#	my ($c) = @_;
-#	
-#	my $self = {
-#	
-#	};
-#	
-#	bless $self => $c;
-#}
+use AST::Ident;
 
 sub hasAttr {
 	my ($self, $name) = @_;
@@ -49,6 +41,21 @@ sub addAttr {
 	$self->{attrs}{$name} = $attr;
 	
 	return $attr;
+}
+
+sub createAttr {
+	my ($self, $name, %args) = @_;
+	carp "not implemented";
+	
+	my $ident_t = AST::Ident->new(
+		{value => $name},
+		0
+	);
+	
+	say $ident_t;
+	
+	my $attr = Symbol::AttributeSymbol->new($ident_t);
+	
 }
 
 1;

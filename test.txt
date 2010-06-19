@@ -1,5 +1,5 @@
-class User :sql :pk('a') :index('asdf')  {
-	int id :medium :auto_increment;
+class User  :pk('id', 0) :sql :base('crud') {
+	int id :medium :auto_increment(0,0);
 	string username :range(0, 522255);
 }
 

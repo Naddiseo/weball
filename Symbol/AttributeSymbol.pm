@@ -4,6 +4,8 @@ use warnings;
 use feature ':5.10';
 use Carp;
 
+use Data::Dumper;
+
 use base qw/Symbol::SymbolEntry/;
 
 our $VERSION = 2010.06.18;
